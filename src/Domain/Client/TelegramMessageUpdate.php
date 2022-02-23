@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Viktorprogger\TelegramBot\Domain\Client;
 
-use Viktorprogger\TelegramBot\Domain\Client\InlineKeyboardButton;
-use Viktorprogger\TelegramBot\Domain\Client\MessageFormat;
-
 final class TelegramMessageUpdate
 {
     /**
@@ -29,9 +26,9 @@ final class TelegramMessageUpdate
             'message_id' => $this->messageId,
         ];
 
-        if ($this->format->isMarkdown()) {
+        if ($this->format === MessageFormat::MARKDOWN) {
             $result['parse_mode'] = 'MarkdownV2';
-        } elseif ($this->format->isHtml()) {
+        } elseif ($this->format === MessageFormat::HTML) {
             $result['parse_mode'] = 'HTML';
         }
 

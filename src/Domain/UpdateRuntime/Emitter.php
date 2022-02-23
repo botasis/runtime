@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Viktorprogger\TelegramBot\Domain\UpdateRuntime;
 
-use Viktorprogger\TelegramBot\Domain\Client\Response;use Viktorprogger\TelegramBot\Domain\Client\TelegramCallbackResponse;use Viktorprogger\TelegramBot\Domain\Client\TelegramClientInterface;
+use Viktorprogger\TelegramBot\Domain\Client\ResponseInterface;
+use Viktorprogger\TelegramBot\Domain\Client\TelegramCallbackResponse;use Viktorprogger\TelegramBot\Domain\Client\TelegramClientInterface;
 
 final class Emitter
 {
@@ -12,10 +13,10 @@ final class Emitter
     {
     }
 
-    public function emit(Response $response, ?string $callbackQueryId): void
+    public function emit(ResponseInterface $response): void
     {
-        if ($callbackQueryId !== null) {
-            $callbackResponse = $response->getCallbackResponse() ?? new TelegramCallbackResponse($callbackQueryId);
+        $callbackResponse = $response->getCallbackResponse();
+        if ($callbackResponse !== null) {
             $data = [
                 'callback_query_id' => $callbackResponse->getId(),
                 'show_alert' => $callbackResponse->isShowAlert(),

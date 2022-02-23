@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace Viktorprogger\TelegramBot\Domain\Client;
 
-use Viktorprogger\TelegramBot\Domain\Client\InlineKeyboardButton;
-use Viktorprogger\TelegramBot\Domain\Client\MessageFormat;
+use JetBrains\PhpStorm\ArrayShape;
 
 final class TelegramMessage
 {
@@ -21,6 +20,14 @@ final class TelegramMessage
     ) {
     }
 
+    /** @psalm-suppress UndefinedAttributeClass */
+    #[ArrayShape([
+        'text' => "string",
+        'chat_id' => "string",
+        'disable_web_page_preview' => "bool",
+        'parse_mode' => "string",
+        'reply_markup' => "null|array"
+    ])]
     public function getArray(): array
     {
         $result = [
@@ -29,9 +36,9 @@ final class TelegramMessage
             'disable_web_page_preview' => $this->disableLinkPreview,
         ];
 
-        if ($this->format->isMarkdown()) {
+        if ($this->format === MessageFormat::MARKDOWN) {
             $result['parse_mode'] = 'MarkdownV2';
-        } elseif ($this->format->isHtml()) {
+        } elseif ($this->format === MessageFormat::HTML) {
             $result['parse_mode'] = 'HTML';
         }
 

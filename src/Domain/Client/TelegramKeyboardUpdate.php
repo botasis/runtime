@@ -4,17 +4,15 @@ declare(strict_types=1);
 
 namespace Viktorprogger\TelegramBot\Domain\Client;
 
-use Viktorprogger\TelegramBot\Domain\Client\InlineKeyboardButton;
-
 final class TelegramKeyboardUpdate
 {
     /**
-     * @param InlineKeyboardButton[] $inlineKeyboard
+     * @param InlineKeyboardButton[][] $inlineKeyboard
      */
     public function __construct(
-        private string $chatId,
+        private readonly string $chatId,
         public readonly string $messageId,
-        private array $inlineKeyboard = [],
+        private readonly array $inlineKeyboard = [],
     ) {
     }
 

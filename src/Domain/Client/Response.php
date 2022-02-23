@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Viktorprogger\TelegramBot\Domain\Client;
 
-final class Response
+final class Response implements ResponseInterface
 {
     /** @var TelegramMessage[] */
     private array $messages = [];
@@ -17,7 +17,7 @@ final class Response
     /** @var TelegramMessageUpdate[] */
     private array $messageUpdates = [];
 
-    public function withMessage(TelegramMessage $message): self
+    public function withMessage(TelegramMessage $message): ResponseInterface
     {
         $instance = clone $this;
         $instance->messages[] = $message;
@@ -25,7 +25,7 @@ final class Response
         return $instance;
     }
 
-    public function withMessageUpdate(TelegramMessageUpdate $message): self
+    public function withMessageUpdate(TelegramMessageUpdate $message): ResponseInterface
     {
         $instance = clone $this;
         $instance->messageUpdates[] = $message;
@@ -33,7 +33,7 @@ final class Response
         return $instance;
     }
 
-    public function withCallbackResponse(TelegramCallbackResponse $callbackResponse): self
+    public function withCallbackResponse(TelegramCallbackResponse $callbackResponse): ResponseInterface
     {
         $instance = clone $this;
         $instance->callbackResponse = $callbackResponse;
@@ -41,7 +41,7 @@ final class Response
         return $instance;
     }
 
-    public function withKeyboardUpdate(TelegramKeyboardUpdate $update): self
+    public function withKeyboardUpdate(TelegramKeyboardUpdate $update): ResponseInterface
     {
         $instance = clone $this;
         $instance->keyboardUpdates[] = $update;
@@ -54,7 +54,7 @@ final class Response
         return $this->messages;
     }
 
-    public function getMessageUpdates()
+    public function getMessageUpdates(): array
     {
         return $this->messageUpdates;
     }

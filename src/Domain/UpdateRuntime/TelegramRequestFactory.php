@@ -2,13 +2,12 @@
 
 namespace Viktorprogger\TelegramBot\Domain\UpdateRuntime;
 
-use Viktorprogger\TelegramBot\Domain\TelegramUserFactory;
-use Viktorprogger\TelegramBot\Domain\UpdateRuntime\TelegramRequest;
+use Viktorprogger\TelegramBot\Infrastructure\Entity\User\UserFactory;
 
 final class TelegramRequestFactory
 {
     public function __construct(
-        private readonly TelegramUserFactory $subscriberService,
+        private readonly UserFactory $userFactory,
     )
     {
     }
@@ -27,13 +26,13 @@ final class TelegramRequestFactory
         $data = trim($message['text'] ?? $message['data']);
         $chatId = (string) ($message['chat']['id'] ?? $message['message']['chat']['id']);
         $messageId = (string) ($message['message_id'] ?? $message['message']['message_id']);
-        $subscriber = $this->subscriberService->getSubscriber($message['from']['id'], $chatId);
+        $user = $this->userFactory->create($message['from']['id']);
 
         return new TelegramRequest(
             $chatId,
             $messageId,
             $data,
-            $subscriber,
+            $user,
             $update['callback_query']['id'] ?? null
         );
     }
