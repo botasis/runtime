@@ -1,6 +1,6 @@
 <?php
 
-namespace Viktorprogger\TelegramBot\Domain\UpdateRuntime;
+namespace Viktorprogger\TelegramBot\Domain\Entity\Request;
 
 use Viktorprogger\TelegramBot\Infrastructure\Entity\User\UserFactory;
 
@@ -29,11 +29,13 @@ final class TelegramRequestFactory
         $user = $this->userFactory->create($message['from']['id']);
 
         return new TelegramRequest(
+            new RequestId($update['update_id']),
             $chatId,
             $messageId,
             $data,
             $user,
-            $update['callback_query']['id'] ?? null
+            $update,
+            $update['callback_query']['id'] ?? null,
         );
     }
 }

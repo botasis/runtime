@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Viktorprogger\TelegramBot\Domain\UpdateRuntime\Middleware\Event;
 
+use Viktorprogger\TelegramBot\Domain\Entity\Request\TelegramRequest;
 use Viktorprogger\TelegramBot\Domain\UpdateRuntime\Middleware\MiddlewareInterface;
-use Viktorprogger\TelegramBot\Domain\UpdateRuntime\TelegramRequest;
 
 /**
  * BeforeMiddleware event is raised before executing a middleware.

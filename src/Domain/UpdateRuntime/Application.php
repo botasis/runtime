@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Viktorprogger\TelegramBot\Domain\UpdateRuntime;
 
+use Viktorprogger\TelegramBot\Domain\Entity\Request\TelegramRequest;
 use Viktorprogger\TelegramBot\Domain\UpdateRuntime\Middleware\MiddlewareDispatcher;
 
 final class Application

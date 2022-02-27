@@ -8,10 +8,10 @@ use Closure;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use RuntimeException;
 use Viktorprogger\TelegramBot\Domain\Client\ResponseInterface;
+use Viktorprogger\TelegramBot\Domain\Entity\Request\TelegramRequest;
 use Viktorprogger\TelegramBot\Domain\UpdateRuntime\Middleware\Event\AfterMiddleware;
 use Viktorprogger\TelegramBot\Domain\UpdateRuntime\Middleware\Event\BeforeMiddleware;
 use Viktorprogger\TelegramBot\Domain\UpdateRuntime\RequestHandlerInterface;
-use Viktorprogger\TelegramBot\Domain\UpdateRuntime\TelegramRequest;
 
 final class MiddlewareStack implements RequestHandlerInterface
 {

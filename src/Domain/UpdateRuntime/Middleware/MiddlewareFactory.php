@@ -8,9 +8,9 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Viktorprogger\TelegramBot\Domain\Client\ResponseInterface;
+use Viktorprogger\TelegramBot\Domain\Entity\Request\TelegramRequest;
 use Viktorprogger\TelegramBot\Domain\UpdateRuntime\CallableFactory;
 use Viktorprogger\TelegramBot\Domain\UpdateRuntime\RequestHandlerInterface;
-use Viktorprogger\TelegramBot\Domain\UpdateRuntime\TelegramRequest;
 use Yiisoft\Injector\Injector;
 
 use function is_string;

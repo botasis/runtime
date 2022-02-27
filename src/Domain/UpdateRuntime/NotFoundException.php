@@ -4,6 +4,7 @@ namespace Viktorprogger\TelegramBot\Domain\UpdateRuntime;
 
 use RuntimeException;
 use Throwable;
+use Viktorprogger\TelegramBot\Domain\Entity\Request\TelegramRequest;
 
 final class NotFoundException extends RuntimeException
 {

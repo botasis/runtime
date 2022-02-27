@@ -4,8 +4,8 @@ namespace Viktorprogger\TelegramBot\Infrastructure\Web\Controller;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Viktorprogger\TelegramBot\Domain\Entity\Request\TelegramRequestFactory;
 use Viktorprogger\TelegramBot\Domain\UpdateRuntime\Application;
-use Viktorprogger\TelegramBot\Domain\UpdateRuntime\TelegramRequestFactory;
 use Yiisoft\DataResponse\DataResponseFactoryInterface;
 
 final class TelegramHookController

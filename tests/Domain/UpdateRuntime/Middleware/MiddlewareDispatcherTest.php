@@ -11,6 +11,7 @@ use RuntimeException;
 use Viktorprogger\TelegramBot\Domain\Client\Response;
 use Viktorprogger\TelegramBot\Domain\Client\ResponseInterface;
 use Viktorprogger\TelegramBot\Domain\Client\TelegramCallbackResponse;
+use Viktorprogger\TelegramBot\Domain\Entity\Request\TelegramRequest;
 use Viktorprogger\TelegramBot\Domain\Entity\User\User;
 use Viktorprogger\TelegramBot\Domain\Entity\User\UserId;
 use Viktorprogger\TelegramBot\Domain\UpdateRuntime\CallableFactory;
@@ -19,7 +20,6 @@ use Viktorprogger\TelegramBot\Domain\UpdateRuntime\Middleware\Event\BeforeMiddle
 use Viktorprogger\TelegramBot\Domain\UpdateRuntime\Middleware\MiddlewareDispatcher;
 use Viktorprogger\TelegramBot\Domain\UpdateRuntime\Middleware\MiddlewareFactory;
 use Viktorprogger\TelegramBot\Domain\UpdateRuntime\RequestHandlerInterface;
-use Viktorprogger\TelegramBot\Domain\UpdateRuntime\TelegramRequest;
 use Viktorprogger\TelegramBot\Tests\Domain\UpdateRuntime\Middleware\Support\FailMiddleware;
 use Viktorprogger\TelegramBot\Tests\Domain\UpdateRuntime\Middleware\Support\TestController;
 use Viktorprogger\TelegramBot\Tests\Domain\UpdateRuntime\Middleware\Support\TestMiddleware;

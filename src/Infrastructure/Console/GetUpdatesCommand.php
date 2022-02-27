@@ -8,19 +8,21 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Viktorprogger\TelegramBot\Domain\Client\TelegramClientInterface;
+use Viktorprogger\TelegramBot\Domain\Entity\Request\RequestRepositoryInterface;
+use Viktorprogger\TelegramBot\Domain\Entity\Request\TelegramRequestFactory;
 use Viktorprogger\TelegramBot\Domain\UpdateRuntime\Application;
-use Viktorprogger\TelegramBot\Infrastructure\Entity\TelegramUpdateEntity;
-use Viktorprogger\TelegramBot\Infrastructure\Entity\TgUpdateEntityCycleRepository;
 use Yiisoft\Yii\Console\ExitCode;
 
 final class GetUpdatesCommand extends Command
 {
-    protected static $defaultName = 'inform/tg/updates';
+    protected static $defaultName = 'viktorprogger/telegram/updates';
+    protected static $defaultDescription = 'Get updates from the bot and process them';
 
     public function __construct(
-        private readonly TgUpdateEntityCycleRepository $tgUpdateEntityCycleRepository,
+        private readonly RequestRepositoryInterface $requestRepository,
         private readonly TelegramClientInterface $client,
         private readonly Application $application,
+        private readonly TelegramRequestFactory $requestFactory,
         string $name = null,
     ) {
         parent::__construct($name);
@@ -28,19 +30,14 @@ final class GetUpdatesCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        /** @var TelegramUpdateEntity|null $lastUpdate */
-        $lastUpdate = $this->tgUpdateEntityCycleRepository
-            ->select()
-            ->orderBy('id', 'DESC')
-            ->fetchOne();
-
         $data = ['allowed_updates' => ['message', 'callback_query']];
+        $lastUpdate = $this->requestRepository->getBiggestId();
         if ($lastUpdate !== null) {
-            $data['offset'] = $lastUpdate->id + 1;
+            $data['offset'] = $lastUpdate->value + 1;
         }
 
         foreach ($this->client->send('getUpdates', $data)['result'] ?? [] as $update) {
-            $this->application->handle($update);
+            $this->application->handle($this->requestFactory->create($update));
         }
 
         return ExitCode::OK;

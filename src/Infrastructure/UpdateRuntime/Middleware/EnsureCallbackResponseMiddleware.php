@@ -6,9 +6,9 @@ namespace Viktorprogger\TelegramBot\Infrastructure\UpdateRuntime\Middleware;
 
 use Viktorprogger\TelegramBot\Domain\Client\ResponseInterface;
 use Viktorprogger\TelegramBot\Domain\Client\TelegramCallbackResponse;
+use Viktorprogger\TelegramBot\Domain\Entity\Request\TelegramRequest;
 use Viktorprogger\TelegramBot\Domain\UpdateRuntime\Middleware\MiddlewareInterface;
 use Viktorprogger\TelegramBot\Domain\UpdateRuntime\RequestHandlerInterface;
-use Viktorprogger\TelegramBot\Domain\UpdateRuntime\TelegramRequest;
 
 final class EnsureCallbackResponseMiddleware implements MiddlewareInterface
 {

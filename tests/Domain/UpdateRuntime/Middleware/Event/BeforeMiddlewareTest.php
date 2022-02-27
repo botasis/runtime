@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Viktorprogger\TelegramBot\Tests\Domain\UpdateRuntime\Middleware\Event;
 
 use PHPUnit\Framework\TestCase;
+use Viktorprogger\TelegramBot\Domain\Entity\Request\TelegramRequest;
 use Viktorprogger\TelegramBot\Domain\Entity\User\User;
 use Viktorprogger\TelegramBot\Domain\Entity\User\UserId;
 use Viktorprogger\TelegramBot\Domain\UpdateRuntime\Middleware\Event\BeforeMiddleware;
 use Viktorprogger\TelegramBot\Domain\UpdateRuntime\Middleware\MiddlewareInterface;
-use Viktorprogger\TelegramBot\Domain\UpdateRuntime\TelegramRequest;
 
 final class BeforeMiddlewareTest extends TestCase
 {

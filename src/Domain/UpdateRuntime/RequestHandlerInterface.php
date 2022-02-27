@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Viktorprogger\TelegramBot\Domain\UpdateRuntime;
 
 use Viktorprogger\TelegramBot\Domain\Client\ResponseInterface;
+use Viktorprogger\TelegramBot\Domain\Entity\Request\TelegramRequest;
 
 interface RequestHandlerInterface
 {

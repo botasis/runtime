@@ -6,11 +6,11 @@ namespace Viktorprogger\TelegramBot\Tests\Domain\UpdateRuntime\Middleware;
 
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
+use Viktorprogger\TelegramBot\Domain\Entity\Request\TelegramRequest;
 use Viktorprogger\TelegramBot\Domain\Entity\User\User;
 use Viktorprogger\TelegramBot\Domain\Entity\User\UserId;
 use Viktorprogger\TelegramBot\Domain\UpdateRuntime\Middleware\MiddlewareStack;
 use Viktorprogger\TelegramBot\Domain\UpdateRuntime\RequestHandlerInterface;
-use Viktorprogger\TelegramBot\Domain\UpdateRuntime\TelegramRequest;
 use Yiisoft\Test\Support\EventDispatcher\SimpleEventDispatcher;
 
 final class MiddlewareStackTest extends TestCase

@@ -5,24 +5,22 @@ declare(strict_types=1);
 namespace Viktorprogger\TelegramBot\Infrastructure\UpdateRuntime\Middleware;
 
 use Viktorprogger\TelegramBot\Domain\Client\ResponseInterface;
+use Viktorprogger\TelegramBot\Domain\Entity\Request\RequestRepositoryInterface;
 use Viktorprogger\TelegramBot\Domain\Entity\Request\TelegramRequest;
 use Viktorprogger\TelegramBot\Domain\UpdateRuntime\Middleware\MiddlewareInterface;
-use Viktorprogger\TelegramBot\Domain\UpdateRuntime\NotFoundException;
 use Viktorprogger\TelegramBot\Domain\UpdateRuntime\RequestHandlerInterface;
-use Viktorprogger\TelegramBot\Domain\UpdateRuntime\Router;
 
-final class RouterMiddleware implements MiddlewareInterface
+final class RequestPersistingMiddleware implements MiddlewareInterface
 {
-    public function __construct(private readonly Router $router)
+    public function __construct(private readonly RequestRepositoryInterface $repository)
     {
     }
 
     public function process(TelegramRequest $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        try {
-            return $this->router->match($request)->handle($request);
-        } catch (NotFoundException) {
-            return $handler->handle($request);
-        }
+        $response = $handler->handle($request);
+        $this->repository->create($request);
+
+        return $response;
     }
 }

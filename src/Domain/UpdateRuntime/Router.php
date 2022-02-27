@@ -3,6 +3,7 @@
 namespace Viktorprogger\TelegramBot\Domain\UpdateRuntime;
 
 use Psr\Container\ContainerInterface;
+use Viktorprogger\TelegramBot\Domain\Entity\Request\TelegramRequest;
 
 final class Router
 {

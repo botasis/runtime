@@ -7,8 +7,8 @@ namespace Viktorprogger\TelegramBot\Domain\UpdateRuntime\Middleware;
 use Closure;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Viktorprogger\TelegramBot\Domain\Client\ResponseInterface;
+use Viktorprogger\TelegramBot\Domain\Entity\Request\TelegramRequest;
 use Viktorprogger\TelegramBot\Domain\UpdateRuntime\RequestHandlerInterface;
-use Viktorprogger\TelegramBot\Domain\UpdateRuntime\TelegramRequest;
 
 final class MiddlewareDispatcher
 {
