@@ -7,7 +7,7 @@ namespace Viktorprogger\TelegramBot\Infrastructure\Entity\User\Cycle;
 use Cycle\Annotated\Annotation\Column;
 use Cycle\Annotated\Annotation\Entity;
 
-#[Entity]
+#[Entity(table: 'viktorprogger_telegram_user')]
 final class UserEntity
 {
     public function __construct(

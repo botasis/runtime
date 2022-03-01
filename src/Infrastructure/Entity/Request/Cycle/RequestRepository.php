@@ -5,19 +5,23 @@ declare(strict_types=1);
 namespace Viktorprogger\TelegramBot\Infrastructure\Entity\Request\Cycle;
 
 use Cycle\ORM\ORM;
-use Cycle\ORM\RepositoryInterface;
+use Cycle\ORM\Select\Repository;
 use Cycle\ORM\Transaction;
+use DateTimeImmutable;
 use DateTimeZone;
 use Viktorprogger\TelegramBot\Domain\Entity\Request\RequestId;
 use Viktorprogger\TelegramBot\Domain\Entity\Request\RequestRepositoryInterface;
 use Viktorprogger\TelegramBot\Domain\Entity\Request\TelegramRequest;
+use Viktorprogger\TelegramBot\Domain\Entity\Request\TelegramRequestFactory;
 
 final class RequestRepository implements RequestRepositoryInterface
 {
-    private RepositoryInterface $repository;
+    private Repository $repository;
 
-    public function __construct(private readonly ORM $orm)
+    public function __construct(private readonly ORM $orm, private readonly TelegramRequestFactory $requestFactory)
     {
+        /** @noinspection PhpFieldAssignmentTypeMismatchInspection */
+        /** @psalm-suppress PropertyTypeCoercion */
         $this->repository = $this->orm->getRepository(RequestEntity::class);
     }
 
@@ -29,7 +33,7 @@ final class RequestRepository implements RequestRepositoryInterface
         $entity = new RequestEntity();
         $entity->id = $request->id->value;
         $entity->contents = json_encode($request->raw, JSON_THROW_ON_ERROR);
-        $entity->created_at = new \DateTimeImmutable(timezone: new DateTimeZone('UTC'));
+        $entity->created_at = new DateTimeImmutable(timezone: new DateTimeZone('UTC'));
         (new Transaction($this->orm))->persist($entity)->run();
     }
 
@@ -38,7 +42,13 @@ final class RequestRepository implements RequestRepositoryInterface
      */
     public function find(RequestId $id): ?TelegramRequest
     {
-        // TODO: Implement find() method.
+        /** @var RequestEntity|null $entity */
+        $entity = $this->repository->findByPK($id->value);
+        if ($entity === null) {
+            return null;
+        }
+
+        return $this->requestFactory->create(json_decode($entity->contents, true, flags: JSON_THROW_ON_ERROR));
     }
 
     /**
@@ -46,6 +56,16 @@ final class RequestRepository implements RequestRepositoryInterface
      */
     public function getBiggestId(): ?RequestId
     {
-        return null;
+        /** @var RequestEntity|null $entity */
+        $entity = $this->repository->select()
+            ->orderBy('created_at', 'DESC')
+            ->orderBy('id', 'DESC')
+            ->fetchOne();
+
+        if ($entity === null) {
+            return null;
+        }
+
+        return new RequestId($entity->id);
     }
 }
