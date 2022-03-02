@@ -8,7 +8,7 @@ use Cycle\Annotated\Annotation\Column;
 use Cycle\Annotated\Annotation\Entity;
 use DateTimeImmutable;
 
-#[Entity(table: 'viktorprogger_tg_request')]
+#[Entity(table: 'viktorprogger_telegram_request')]
 final class RequestEntity
 {
     #[Column(type: 'integer', primary: true)]
