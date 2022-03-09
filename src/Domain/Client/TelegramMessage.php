@@ -54,6 +54,17 @@ final class TelegramMessage
         return $result;
     }
 
+    public function withText(string $text): self
+    {
+        return new self(
+            $text,
+            $this->format,
+            $this->chatId,
+            $this->inlineKeyboard,
+            $this->disableLinkPreview,
+        );
+    }
+
     public function withFormat(MessageFormat $format): self
     {
         return new self(
@@ -65,14 +76,39 @@ final class TelegramMessage
         );
     }
 
-    public function withText(string $text): self
+    public function withChatId(string $chatId): self
     {
         return new self(
-            $text,
+            $this->text,
+            $this->format,
+            $chatId,
+            $this->inlineKeyboard,
+            $this->disableLinkPreview,
+        );
+    }
+
+    /**
+     * @param InlineKeyboardButton[][] $inlineKeyboard
+     */
+    public function withKeyboard(array $inlineKeyboard): self
+    {
+        return new self(
+            $this->text,
+            $this->format,
+            $this->chatId,
+            $inlineKeyboard,
+            $this->disableLinkPreview,
+        );
+    }
+
+    public function withLinkPreviewDisabled(bool $disableLinkPreview): self
+    {
+        return new self(
+            $this->text,
             $this->format,
             $this->chatId,
             $this->inlineKeyboard,
-            $this->disableLinkPreview,
+            $disableLinkPreview,
         );
     }
 }
