@@ -57,16 +57,16 @@ final class TelegramClientSymfony implements TelegramClientInterface
                 ['json' => $data]
             );
             $responseContent = $response->getContent();
-        } catch (ClientExceptionInterface $e) {
-            $response = $e->getResponse()->getContent(false);
+        } catch (ClientExceptionInterface $exception) {
+            $response = $exception->getResponse()->getContent(false);
             $decoded = json_decode($response, true);
             $context = [
                 'endpoint' => $apiEndpoint,
                 'data' => $data,
                 'responseRaw' => $response,
                 'response' => $decoded,
-                'responseCode' => $e->getResponse()->getStatusCode(),
-                'error' => $e->getMessage(),
+                'responseCode' => $exception->getResponse()->getStatusCode(),
+                'error' => $exception->getMessage(),
             ];
 
             if (in_array($decoded['description'] ?? '', self::ERRORS_IGNORED, true)) {
@@ -80,18 +80,18 @@ final class TelegramClientSymfony implements TelegramClientInterface
                     $context
                 );
 
-                if ($e->getResponse()->getStatusCode() === 429) {
-                    throw new TooManyRequestsException($e->getMessage(), previous: $e);
+                if ($exception->getResponse()->getStatusCode() === 429) {
+                    throw new TooManyRequestsException($exception);
                 }
 
                 if (
                     is_array($decoded)
                     && str_starts_with($decoded['description'], 'Bad Request: can\'t parse entities')
                 ) {
-                    throw new WrongEntitiesException($e->getMessage(), previous: $e);
+                    throw new WrongEntitiesException($exception);
                 }
 
-                throw new TelegramRequestException($e->getMessage(), previous: $e);
+                throw new TelegramRequestException($exception);
             }
         }
 
