@@ -8,7 +8,7 @@ use Cycle\Annotated\Annotation\Column;
 use Cycle\Annotated\Annotation\Entity;
 
 #[Entity(table: 'viktorprogger_telegram_user')]
-final class UserEntity
+class UserEntity
 {
     public function __construct(
         #[Column(type: 'string', primary: true)]

@@ -11,7 +11,7 @@ use Viktorprogger\TelegramBot\Domain\Entity\User\User;
 use Viktorprogger\TelegramBot\Domain\Entity\User\UserId;
 use Viktorprogger\TelegramBot\Domain\Entity\User\UserRepositoryInterface;
 
-final class UserRepository implements UserRepositoryInterface
+class UserRepository implements UserRepositoryInterface
 {
     private readonly Repository $cycleRepository;
 

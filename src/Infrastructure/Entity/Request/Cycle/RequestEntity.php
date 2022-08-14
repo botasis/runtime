@@ -9,7 +9,7 @@ use Cycle\Annotated\Annotation\Entity;
 use DateTimeImmutable;
 
 #[Entity(table: 'viktorprogger_telegram_request')]
-final class RequestEntity
+class RequestEntity
 {
     #[Column(type: 'integer', primary: true)]
     public int $id;

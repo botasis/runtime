@@ -14,7 +14,7 @@ use Viktorprogger\TelegramBot\Domain\Entity\Request\RequestRepositoryInterface;
 use Viktorprogger\TelegramBot\Domain\Entity\Request\TelegramRequest;
 use Viktorprogger\TelegramBot\Domain\Entity\Request\TelegramRequestFactory;
 
-final class RequestRepository implements RequestRepositoryInterface
+class RequestRepository implements RequestRepositoryInterface
 {
     private Repository $repository;
 
