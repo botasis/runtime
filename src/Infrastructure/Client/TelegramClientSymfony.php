@@ -73,8 +73,8 @@ final class TelegramClientSymfony implements TelegramClientInterface
             ];
 
             if (in_array($decoded['description'] ?? '', self::ERRORS_IGNORED, true)) {
-                $this->logger->warning(
-                    'Error occurred while sending Telegram request',
+                $this->logger->info(
+                    'Ignored error occurred while sending Telegram request',
                     $context
                 );
             } else {
