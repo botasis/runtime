@@ -15,6 +15,9 @@ use Viktorprogger\TelegramBot\Domain\Client\TelegramRequestException;
 use Viktorprogger\TelegramBot\Domain\Client\TooManyRequestsException;
 use Viktorprogger\TelegramBot\Domain\Client\WrongEntitiesException;
 
+/**
+ * @deprecated This client will be removed before the release
+ */
 final class TelegramClientSymfony implements TelegramClientInterface
 {
     private const URI = 'https://api.telegram.org/';
