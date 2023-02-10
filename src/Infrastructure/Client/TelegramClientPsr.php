@@ -93,14 +93,19 @@ readonly class TelegramClientPsr implements TelegramClientInterface
 
         $response = $this->client->sendRequest($request);
         if ($response->getStatusCode() !== 200) {
-            return $this->handeError($apiEndpoint, $data, $response);
+            return $this->handleError($apiEndpoint, $data, $response);
         }
 
         /** @noinspection JsonEncodingApiUsageInspection */
-        return json_decode($response->getBody()->getContents(), true, flags: JSON_THROW_ON_ERROR);
+        $responseDecoded = json_decode($response->getBody()->getContents(), true, flags: JSON_THROW_ON_ERROR);
+        if (($responseDecoded['ok'] ?? false) !== true) {
+            return $this->handleError($apiEndpoint, $data, $response);
+        }
+
+        return $this->handleSuccess($apiEndpoint, $data, $response, $responseDecoded);
     }
 
-    private function handeError(string $endpoint, array $data, ResponseInterface $response): array
+    private function handleError(string $endpoint, array $data, ResponseInterface $response): array
     {
         $content = $response->getBody()->getContents();
         /** @noinspection JsonEncodingApiUsageInspection */
@@ -119,26 +124,54 @@ readonly class TelegramClientPsr implements TelegramClientInterface
                 'Ignored error occurred while sending Telegram request',
                 $context
             );
-        } else {
-            $this->logger->error(
-                'Telegram request error',
-                $context
-            );
 
-            if ($response->getStatusCode() === 429) {
-                throw new TooManyRequestsException($response);
-            }
-
-            if (
-                is_array($decoded)
-                && str_starts_with($decoded['description'] ?? '', 'Bad Request: can\'t parse entities')
-            ) {
-                throw new WrongEntitiesException($response);
-            }
-
-            throw new TelegramRequestException($response);
+            return $this->handleSuccess($endpoint, $data, $response, $decoded);
         }
 
-        return [];
+        $this->logger->error(
+            'Telegram request error',
+            $context
+        );
+
+        if ($response->getStatusCode() === 429) {
+            throw new TooManyRequestsException('Too many requests', $response);
+        }
+
+        if (
+            is_array($decoded)
+            && str_starts_with($decoded['description'] ?? '', 'Bad Request: can\'t parse entities')
+        ) {
+            throw new WrongEntitiesException($decoded['description'], $response);
+        }
+
+        if (isset($decoded['description'])) {
+            $message = "Telegram request error: {$decoded['description']}";
+        } else {
+            $message = 'Telegram request error';
+        }
+
+        throw new TelegramRequestException($message, $response);
+    }
+
+    private function handleSuccess(
+        string $apiEndpoint,
+        array $data,
+        ResponseInterface $response,
+        array $responseDecoded
+    ): array {
+        $context = [
+            'endpoint' => $apiEndpoint,
+            'data' => $data,
+            'responseRaw' => $response->getBody()->getContents(),
+            'response' => $responseDecoded,
+            'responseCode' => $response->getStatusCode(),
+        ];
+
+        $this->logger->info(
+            'Telegram response',
+            $context
+        );
+
+        return $responseDecoded;
     }
 }

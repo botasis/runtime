@@ -84,17 +84,23 @@ final class TelegramClientSymfony implements TelegramClientInterface
                 );
 
                 if ($exception->getResponse()->getStatusCode() === 429) {
-                    throw new TooManyRequestsException($exception);
+                    throw new TooManyRequestsException('', $exception->getResponse());
                 }
 
                 if (
                     is_array($decoded)
                     && str_starts_with($decoded['description'], 'Bad Request: can\'t parse entities')
                 ) {
-                    throw new WrongEntitiesException($exception);
+                    throw new WrongEntitiesException($decoded['description'], $exception->getResponse());
                 }
 
-                throw new TelegramRequestException($exception);
+                if (isset($decoded['description'])) {
+                    $message = "Telegram request error: {$decoded['description']}";
+                } else {
+                    $message = 'Telegram request error';
+                }
+
+                throw new TelegramRequestException($message, $exception->getResponse());
             }
         }
 
