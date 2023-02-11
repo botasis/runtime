@@ -2,10 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Viktorprogger\TelegramBot\Infrastructure\Entity\User;
-
-use Viktorprogger\TelegramBot\Domain\Entity\User\User;
-use Viktorprogger\TelegramBot\Domain\Entity\User\UserIdFactoryInterface;
+namespace Viktorprogger\TelegramBot\Domain\Entity\User;
 
 final class UserFactory
 {

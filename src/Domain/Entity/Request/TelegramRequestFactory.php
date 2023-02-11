@@ -2,7 +2,7 @@
 
 namespace Viktorprogger\TelegramBot\Domain\Entity\Request;
 
-use Viktorprogger\TelegramBot\Infrastructure\Entity\User\UserFactory;
+use Viktorprogger\TelegramBot\Domain\Entity\User\UserFactory;
 
 final class TelegramRequestFactory
 {
