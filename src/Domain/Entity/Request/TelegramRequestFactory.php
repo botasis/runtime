@@ -4,10 +4,10 @@ namespace Viktorprogger\TelegramBot\Domain\Entity\Request;
 
 use Viktorprogger\TelegramBot\Domain\Entity\User\UserFactory;
 
-final class TelegramRequestFactory
+final readonly class TelegramRequestFactory
 {
     public function __construct(
-        private readonly UserFactory $userFactory,
+        private UserFactory $userFactory,
     )
     {
     }

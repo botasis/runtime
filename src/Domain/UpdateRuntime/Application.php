@@ -7,21 +7,20 @@ namespace Viktorprogger\TelegramBot\Domain\UpdateRuntime;
 use Viktorprogger\TelegramBot\Domain\Entity\Request\TelegramRequest;
 use Viktorprogger\TelegramBot\Domain\UpdateRuntime\Middleware\MiddlewareDispatcher;
 
-final class Application
+final readonly class Application
 {
     public function __construct(
-        private readonly Emitter $emitter,
-        private readonly RequestHandlerInterface $fallbackHandler,
-        private readonly MiddlewareDispatcher $dispatcher,
+        private Emitter $emitter,
+        private RequestHandlerInterface $fallbackHandler,
+        private MiddlewareDispatcher $dispatcher,
     ) {
     }
 
     /**
-     * @param array $update An update entry got from Telegram
+     * @param TelegramRequest $request
      *
      * @return void
      * @see https://core.telegram.org/bots/api#update
-     *
      */
     public function handle(TelegramRequest $request): void
     {

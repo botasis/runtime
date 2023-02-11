@@ -78,7 +78,6 @@ final class MiddlewareStack implements RequestHandlerInterface
             public function handle(TelegramRequest $request): ResponseInterface
             {
                 if ($this->middleware === null) {
-                    /** @var  MiddlewareInterface */
                     $this->middleware = ($this->middlewareFactory)();
                 }
 

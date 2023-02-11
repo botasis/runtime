@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Viktorprogger\TelegramBot\Domain\Entity\User;
 
-final class UserFactory
+final readonly class UserFactory
 {
-    public function __construct(private readonly UserIdFactoryInterface $idFactory)
+    public function __construct(private UserIdFactoryInterface $idFactory)
     {
     }
 

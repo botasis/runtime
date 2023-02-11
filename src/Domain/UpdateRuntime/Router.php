@@ -5,19 +5,13 @@ namespace Viktorprogger\TelegramBot\Domain\UpdateRuntime;
 use Psr\Container\ContainerInterface;
 use Viktorprogger\TelegramBot\Domain\Entity\Request\TelegramRequest;
 
-final class Router
+final readonly class Router
 {
-    /**
-     * @psalm-param list<array{rule: callable, action: class-string<RequestHandlerInterface>}>
-     */
-    private readonly array $routes;
-
     /**
      * @psalm-param $routes list<array{rule: callable, action: class-string<RequestHandlerInterface>}>
      */
-    public function __construct(private readonly ContainerInterface $container, array $routes)
+    public function __construct(private ContainerInterface $container, private array $routes)
     {
-        $this->routes = $routes;
     }
 
     public function match(TelegramRequest $request): RequestHandlerInterface

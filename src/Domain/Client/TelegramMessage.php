@@ -6,17 +6,17 @@ namespace Viktorprogger\TelegramBot\Domain\Client;
 
 use JetBrains\PhpStorm\ArrayShape;
 
-final class TelegramMessage
+final readonly class TelegramMessage
 {
     /**
      * @param InlineKeyboardButton[][] $inlineKeyboard
      */
     public function __construct(
-        public readonly string $text,
-        public readonly MessageFormat $format,
-        public readonly string $chatId,
-        public readonly array $inlineKeyboard = [],
-        public readonly bool $disableLinkPreview = false,
+        public string $text,
+        public MessageFormat $format,
+        public string $chatId,
+        public array $inlineKeyboard = [],
+        public bool $disableLinkPreview = false,
     ) {
     }
 
@@ -45,8 +45,8 @@ final class TelegramMessage
         foreach ($this->inlineKeyboard as $i => $row) {
             foreach ($row as $button) {
                 $result['reply_markup']['inline_keyboard'][$i][] = [
-                    'text' => $button->getLabel(),
-                    'callback_data' => $button->getCallbackData(),
+                    'text' => $button->label,
+                    'callback_data' => $button->callbackData,
                 ];
             }
         }

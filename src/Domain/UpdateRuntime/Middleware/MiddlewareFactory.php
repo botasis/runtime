@@ -18,14 +18,14 @@ use function is_string;
 /**
  * Creates a middleware based on the definition provided.
  */
-final class MiddlewareFactory implements MiddlewareFactoryInterface
+final readonly class MiddlewareFactory implements MiddlewareFactoryInterface
 {
     /**
      * @param ContainerInterface $container Container to use for resolving definitions.
      */
     public function __construct(
-        private readonly ContainerInterface $container,
-        private readonly CallableFactory $callableFactory,
+        private ContainerInterface $container,
+        private CallableFactory $callableFactory,
     ) {
     }
 

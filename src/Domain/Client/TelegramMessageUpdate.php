@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Viktorprogger\TelegramBot\Domain\Client;
 
-final class TelegramMessageUpdate
+final readonly class TelegramMessageUpdate
 {
     /**
      * @param InlineKeyboardButton[][] $inlineKeyboard
      */
     public function __construct(
-        public readonly string $text,
-        public readonly MessageFormat $format,
-        public readonly string $chatId,
-        public readonly string $messageId,
-        public readonly array $inlineKeyboard = [],
+        public string $text,
+        public MessageFormat $format,
+        public string $chatId,
+        public string $messageId,
+        public array $inlineKeyboard = [],
     ) {
     }
 
@@ -35,8 +35,8 @@ final class TelegramMessageUpdate
         foreach ($this->inlineKeyboard as $i => $row) {
             foreach ($row as $button) {
                 $result['reply_markup']['inline_keyboard'][$i][] = [
-                    'text' => $button->getLabel(),
-                    'callback_data' => $button->getCallbackData(),
+                    'text' => $button->label,
+                    'callback_data' => $button->callbackData,
                 ];
             }
         }
