@@ -16,16 +16,19 @@
         "cycle/annotated": "^2.4||^3.0",
         "cycle/orm": "^v1.0.0||^v2.0.0",
         "php-http/discovery": "^1.15",
+        "psr/container": "^2.0",
         "psr/http-client": "^1.0",
         "psr/http-factory": "^1.0",
         "psr/http-message": "^1.0",
         "psr/log": "^1.0.0||^2.0.0||^3.0.0",
+        "yiisoft/friendly-exception": "^1.1",
         "yiisoft/injector": "^1.0"
     },
     "require-dev": {
         "maglnet/composer-require-checker": "^4.5",
         "phpunit/phpunit": "^9.5",
         "roave/infection-static-analysis-plugin": "^1.16",
+        "symfony/console": "^6.2",
         "symfony/http-client": "^6.2",
         "vimeo/psalm": "^5.4",
         "yiisoft/test-support": "^3.0"
