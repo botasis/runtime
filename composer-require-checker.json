@@ -1,0 +1,9 @@
+{
+    "symbol-whitelist": [
+        "Symfony\\Component\\Console\\Command\\Command",
+        "Symfony\\Component\\Console\\Input\\InputInterface",
+        "Symfony\\Component\\Console\\Output\\OutputInterface",
+        "Symfony\\Contracts\\HttpClient\\Exception\\ClientExceptionInterface",
+        "Symfony\\Contracts\\HttpClient\\HttpClientInterface"
+    ]
+}
