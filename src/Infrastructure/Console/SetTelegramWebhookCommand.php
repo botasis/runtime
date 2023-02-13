@@ -33,6 +33,6 @@ final class SetTelegramWebhookCommand extends Command
 
         $this->client->send('setWebhook', $fields);
 
-        return ExitCode::OK;
+        return 0;
     }
 }
