@@ -88,7 +88,11 @@ readonly class TelegramClientPsr implements TelegramClientInterface
         $request = $this->requestFactory->createRequest('POST', $uri);
 
         if ($data !== []) {
-            $request = $request->withBody($this->streamFactory->createStream(json_encode($data, JSON_THROW_ON_ERROR)));
+            $content = json_encode($data, JSON_THROW_ON_ERROR);
+            $request = $request
+                ->withHeader('Content-Length', (string) strlen($content))
+                ->withHeader('Content-Type', 'application/json; charset=utf-8')
+                ->withBody($this->streamFactory->createStream($content));
         }
 
         $response = $this->client->sendRequest($request);
