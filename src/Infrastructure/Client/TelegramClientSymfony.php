@@ -106,6 +106,7 @@ final class TelegramClientSymfony implements TelegramClientInterface
 
         if (!empty($responseContent)) {
             $decoded = json_decode($responseContent, true, flags: JSON_THROW_ON_ERROR);
+            /** @psalm-suppress PossiblyInvalidMethodCall */
             $context = [
                 'endpoint' => $apiEndpoint,
                 'data' => $data,
