@@ -15,6 +15,9 @@ use Viktorprogger\TelegramBot\Domain\Client\TelegramRequestException;
 use Viktorprogger\TelegramBot\Domain\Client\TooManyRequestsException;
 use Viktorprogger\TelegramBot\Domain\Client\WrongEntitiesException;
 
+/**
+ * @deprecated This client will be removed before the release
+ */
 final class TelegramClientSymfony implements TelegramClientInterface
 {
     private const URI = 'https://api.telegram.org/';
@@ -70,8 +73,8 @@ final class TelegramClientSymfony implements TelegramClientInterface
             ];
 
             if (in_array($decoded['description'] ?? '', self::ERRORS_IGNORED, true)) {
-                $this->logger->warning(
-                    'Error occurred while sending Telegram request',
+                $this->logger->info(
+                    'Ignored error occurred while sending Telegram request',
                     $context
                 );
             } else {
@@ -81,22 +84,29 @@ final class TelegramClientSymfony implements TelegramClientInterface
                 );
 
                 if ($exception->getResponse()->getStatusCode() === 429) {
-                    throw new TooManyRequestsException($exception);
+                    throw new TooManyRequestsException('', $exception->getResponse());
                 }
 
                 if (
                     is_array($decoded)
                     && str_starts_with($decoded['description'], 'Bad Request: can\'t parse entities')
                 ) {
-                    throw new WrongEntitiesException($exception);
+                    throw new WrongEntitiesException($decoded['description'], $exception->getResponse());
                 }
 
-                throw new TelegramRequestException($exception);
+                if (isset($decoded['description'])) {
+                    $message = "Telegram request error: {$decoded['description']}";
+                } else {
+                    $message = 'Telegram request error';
+                }
+
+                throw new TelegramRequestException($message, $exception->getResponse());
             }
         }
 
         if (!empty($responseContent)) {
             $decoded = json_decode($responseContent, true, flags: JSON_THROW_ON_ERROR);
+            /** @psalm-suppress PossiblyInvalidMethodCall */
             $context = [
                 'endpoint' => $apiEndpoint,
                 'data' => $data,

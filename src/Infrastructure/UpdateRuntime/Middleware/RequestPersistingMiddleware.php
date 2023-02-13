@@ -19,7 +19,9 @@ final class RequestPersistingMiddleware implements MiddlewareInterface
     public function process(TelegramRequest $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $response = $handler->handle($request);
-        $this->repository->create($request);
+        if (!$this->repository->find($request->id)) {
+            $this->repository->create($request);
+        }
 
         return $response;
     }

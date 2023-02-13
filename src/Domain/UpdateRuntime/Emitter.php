@@ -7,9 +7,9 @@ namespace Viktorprogger\TelegramBot\Domain\UpdateRuntime;
 use Viktorprogger\TelegramBot\Domain\Client\ResponseInterface;
 use Viktorprogger\TelegramBot\Domain\Client\TelegramCallbackResponse;use Viktorprogger\TelegramBot\Domain\Client\TelegramClientInterface;
 
-final class Emitter
+final readonly class Emitter
 {
-    public function __construct(private readonly TelegramClientInterface $client)
+    public function __construct(private TelegramClientInterface $client)
     {
     }
 
@@ -18,16 +18,16 @@ final class Emitter
         $callbackResponse = $response->getCallbackResponse();
         if ($callbackResponse !== null) {
             $data = [
-                'callback_query_id' => $callbackResponse->getId(),
-                'show_alert' => $callbackResponse->isShowAlert(),
-                'cache_time' => $callbackResponse->getCacheTime(),
+                'callback_query_id' => $callbackResponse->id,
+                'show_alert' => $callbackResponse->showAlert,
+                'cache_time' => $callbackResponse->cacheTime,
             ];
 
-            if ($callbackResponse->getText() !== null) {
-                $data['text'] = $callbackResponse->getText();
+            if ($callbackResponse->text !== null) {
+                $data['text'] = $callbackResponse->text;
             }
 
-            $url = $callbackResponse->getUrl();
+            $url = $callbackResponse->url;
             if ($url !== null) {
                 $data['url'] = $url;
             }

@@ -35,7 +35,6 @@ final class CallableFactory
      */
     public function create(mixed $definition): callable
     {
-        /** @var mixed */
         $callable = $this->prepare($definition);
 
         if (is_callable($callable)) {

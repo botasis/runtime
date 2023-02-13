@@ -40,6 +40,6 @@ final class GetUpdatesCommand extends Command
             $this->application->handle($this->requestFactory->create($update));
         }
 
-        return ExitCode::OK;
+        return 0;
     }
 }

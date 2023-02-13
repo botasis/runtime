@@ -2,23 +2,19 @@
 
 namespace Viktorprogger\TelegramBot\Domain\Client;
 
+use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
-use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface as SymfonyResponseInterface;
+use Throwable;
 
 class TelegramRequestException extends RuntimeException
 {
-    private SymfonyResponseInterface $response;
-
-    public function __construct(ClientExceptionInterface $previous)
-    {
-        $this->response = $previous->getResponse();
-
-        parent::__construct($previous->getMessage(), 0, $previous);
-    }
-
-    public function getResponse(): SymfonyResponseInterface
-    {
-        return $this->response;
+    public function __construct(
+        string $message,
+        public readonly ResponseInterface|SymfonyResponseInterface $response,
+        int $code = 0,
+        Throwable $previous = null
+    ) {
+        parent::__construct($message, $code, $previous);
     }
 }
