@@ -12,7 +12,6 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Viktorprogger\TelegramBot\Domain\Client\TelegramClientInterface;
-use Yiisoft\Yii\Console\ExitCode;
 
 final class SetTelegramWebhookCommand extends Command
 {
@@ -27,7 +26,7 @@ final class SetTelegramWebhookCommand extends Command
         parent::__construct($name);
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->addOption(
             name: 'url',
@@ -88,7 +87,7 @@ final class SetTelegramWebhookCommand extends Command
             if ($answer === false) {
                 $output->writeln('Operation canceled');
 
-                return ExitCode::OK;
+                return 0;
             }
         }
 
