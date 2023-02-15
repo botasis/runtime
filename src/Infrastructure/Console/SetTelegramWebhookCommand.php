@@ -49,7 +49,7 @@ final class SetTelegramWebhookCommand extends Command
 
         $this->addOption(
             name: 'allowed_updates',
-            mode: InputOption::VALUE_IS_ARRAY,
+            mode: InputOption::VALUE_IS_ARRAY | InputOption::VALUE_OPTIONAL,
             description: 'A list of the update types you want your bot to receive. Complete list is at https://core.telegram.org/bots/api#update.',
             default: [],
         );
@@ -64,7 +64,6 @@ final class SetTelegramWebhookCommand extends Command
             name: 'secret_token',
             mode: InputOption::VALUE_OPTIONAL,
             description: 'A secret token to be sent in a header “X-Telegram-Bot-Api-Secret-Token” in every webhook request, 1-256 characters. Only characters A-Z, a-z, 0-9, _ and - are allowed. The header is useful to ensure that the request comes from a webhook set by you.',
-            default: [],
         );
     }
 
@@ -78,8 +77,8 @@ final class SetTelegramWebhookCommand extends Command
                 $output,
                 new ConfirmationQuestion(
                     'You are about to remove webhook because --url option is not set. ' .
-                    'Your application will no longer receive any message through Telegram webhooks. ' .
-                    'Are you sure?',
+                    "Your application will no longer receive any message through Telegram webhooks.\n" .
+                    'Are you sure? [y|N]: ',
                     false
                 ),
             );
@@ -95,7 +94,7 @@ final class SetTelegramWebhookCommand extends Command
             throw new InvalidArgumentException('url must not contain protocol or must start with https://');
         }
 
-        if (!str_starts_with($url, 'https://')) {
+        if ($url !== '' && !str_starts_with($url, 'https://')) {
             $url = "https://$url";
         }
 
