@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use Viktorprogger\TelegramBot\Infrastructure\Console\GetUpdatesCommand;
-use Viktorprogger\TelegramBot\Infrastructure\Console\SetTelegramWebhookCommand;
+use Viktorprogger\TelegramBot\Console\GetUpdatesCommand;
+use Viktorprogger\TelegramBot\Console\SetTelegramWebhookCommand;
 
 return [
     'viktorprogger/telegram-bot' => [
