@@ -20,15 +20,15 @@ final class InvalidMiddlewareDefinitionExceptionTest extends TestCase
             ],
             [
                 new TestController(),
-                'an instance of "Viktorprogger\TelegramBot\Tests\UpdateRuntimeMiddleware\Support\TestController"',
+                'an instance of "Viktorprogger\TelegramBot\Tests\UpdateRuntime\Middleware\Support\TestController"',
             ],
             [
                 [TestController::class, 'notExistsAction'],
-                '["Viktorprogger\TelegramBot\Tests\UpdateRuntimeMiddleware\Support\TestController", "notExistsAction"]',
+                '["Viktorprogger\TelegramBot\Tests\UpdateRuntime\Middleware\Support\TestController", "notExistsAction"]',
             ],
             [
                 ['class' => TestController::class, 'index'],
-                '["class" => "Viktorprogger\TelegramBot\Tests\UpdateRuntimeMiddleware\Support\TestController", "index"]',
+                '["class" => "Viktorprogger\TelegramBot\Tests\UpdateRuntime\Middleware\Support\TestController", "index"]',
             ],
         ];
     }

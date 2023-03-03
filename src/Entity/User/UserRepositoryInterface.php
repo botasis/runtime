@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Viktorprogger\TelegramBot\User;
+namespace Viktorprogger\TelegramBot\Entity\User;
 
 interface UserRepositoryInterface
 {

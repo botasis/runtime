@@ -7,7 +7,7 @@ namespace Viktorprogger\TelegramBot\UpdateRuntime\Middleware;
 use Closure;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use RuntimeException;
-use Viktorprogger\TelegramBot\Request\TelegramRequest;
+use Viktorprogger\TelegramBot\Update\Update;
 use Viktorprogger\TelegramBot\UpdateRuntime\Middleware\Event\AfterMiddleware;
 use Viktorprogger\TelegramBot\UpdateRuntime\Middleware\Event\BeforeMiddleware;
 use Viktorprogger\TelegramBot\UpdateRuntime\RequestHandlerInterface;
@@ -39,14 +39,14 @@ final class MiddlewareStack implements RequestHandlerInterface
         }
     }
 
-    public function handle(TelegramRequest $request): ResponseInterface
+    public function handle(Update $update): ResponseInterface
     {
         if ($this->stack === null) {
             $this->build();
         }
 
         /** @psalm-suppress PossiblyNullReference */
-        return $this->stack->handle($request);
+        return $this->stack->handle($update);
     }
 
     private function build(): void
@@ -75,16 +75,16 @@ final class MiddlewareStack implements RequestHandlerInterface
             ) {
             }
 
-            public function handle(TelegramRequest $request): ResponseInterface
+            public function handle(Update $update): ResponseInterface
             {
                 if ($this->middleware === null) {
                     $this->middleware = ($this->middlewareFactory)();
                 }
 
-                $this->dispatcher?->dispatch(new BeforeMiddleware($this->middleware, $request));
+                $this->dispatcher?->dispatch(new BeforeMiddleware($this->middleware, $update));
 
                 try {
-                    return $response = $this->middleware->process($request, $this->handler);
+                    return $response = $this->middleware->process($update, $this->handler);
                 } finally {
                     $this->dispatcher?->dispatch(new AfterMiddleware($this->middleware, $response ?? null));
                 }

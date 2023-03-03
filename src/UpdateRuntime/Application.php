@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Viktorprogger\TelegramBot\UpdateRuntime;
 
-use Viktorprogger\TelegramBot\Request\TelegramRequest;
+use Viktorprogger\TelegramBot\Update\Update;
 use Viktorprogger\TelegramBot\UpdateRuntime\Middleware\MiddlewareDispatcher;
 
 final readonly class Application
@@ -17,12 +17,12 @@ final readonly class Application
     }
 
     /**
-     * @param TelegramRequest $request
+     * @param Update $request
      *
      * @return void
      * @see https://core.telegram.org/bots/api#update
      */
-    public function handle(TelegramRequest $request): void
+    public function handle(Update $request): void
     {
         $response = $this->dispatcher->dispatch($request, $this->fallbackHandler);
         $this->emitter->emit($response);

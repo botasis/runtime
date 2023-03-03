@@ -7,7 +7,7 @@ namespace Viktorprogger\TelegramBot\UpdateRuntime\Middleware;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use Viktorprogger\TelegramBot\Request\TelegramRequest;
+use Viktorprogger\TelegramBot\Update\Update;
 use Viktorprogger\TelegramBot\Response\ResponseInterface;
 use Viktorprogger\TelegramBot\UpdateRuntime\CallableFactory;
 use Viktorprogger\TelegramBot\UpdateRuntime\Middleware\Exception\InvalidMiddlewareDefinitionException;
@@ -79,7 +79,7 @@ final readonly class MiddlewareFactory implements MiddlewareFactoryInterface
             }
 
             public function process(
-                TelegramRequest $request,
+                Update $request,
                 RequestHandlerInterface $handler,
             ): ResponseInterface {
                 $response = (new Injector($this->container))->invoke($this->callback, [$request, $handler]);

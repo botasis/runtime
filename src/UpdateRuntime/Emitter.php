@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Viktorprogger\TelegramBot\UpdateRuntime;
 
-use Viktorprogger\TelegramBot\Client\TelegramClientInterface;
+use Botasis\Client\Telegram\Client\TelegramClientInterface;
 use Viktorprogger\TelegramBot\Response\ResponseInterface;
 
 final readonly class Emitter

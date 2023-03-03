@@ -4,25 +4,26 @@ declare(strict_types=1);
 
 namespace Viktorprogger\TelegramBot\Response;
 
-use Viktorprogger\TelegramBot\Response\Keyboard\TelegramKeyboardUpdate;
-use Viktorprogger\TelegramBot\Response\Message\TelegramMessage;
-use Viktorprogger\TelegramBot\Response\Message\TelegramMessageUpdate;
+use Botasis\Client\Telegram\Entity\CallbackResponse;
+use Botasis\Client\Telegram\Entity\InlineKeyboard\InlineKeyboardUpdate;
+use Botasis\Client\Telegram\Entity\Message\Message;
+use Botasis\Client\Telegram\Entity\Message\MessageUpdate;
 
 interface ResponseInterface
 {
-    public function withMessage(TelegramMessage $message): ResponseInterface;
+    public function withMessage(Message $message): ResponseInterface;
 
-    public function withMessageUpdate(TelegramMessageUpdate $message): ResponseInterface;
+    public function withMessageUpdate(MessageUpdate $message): ResponseInterface;
 
-    public function withCallbackResponse(TelegramCallbackResponse $callbackResponse): ResponseInterface;
+    public function withCallbackResponse(CallbackResponse $callbackResponse): ResponseInterface;
 
-    public function withKeyboardUpdate(TelegramKeyboardUpdate $update): ResponseInterface;
+    public function withKeyboardUpdate(InlineKeyboardUpdate $update): ResponseInterface;
 
     public function getMessages(): array;
 
     public function getMessageUpdates(): array;
 
-    public function getCallbackResponse(): ?TelegramCallbackResponse;
+    public function getCallbackResponse(): ?CallbackResponse;
 
     public function getKeyboardUpdates(): array;
 }

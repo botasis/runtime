@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Viktorprogger\TelegramBot\UpdateRuntime\Middleware\Implementation;
 
-use Viktorprogger\TelegramBot\Request\TelegramRequest;
+use Viktorprogger\TelegramBot\Update\Update;
 use Viktorprogger\TelegramBot\Response\ResponseInterface;
 use Viktorprogger\TelegramBot\UpdateRuntime\Middleware\MiddlewareInterface;
 use Viktorprogger\TelegramBot\UpdateRuntime\NotFoundException;
@@ -17,7 +17,7 @@ final readonly class RouterMiddleware implements MiddlewareInterface
     {
     }
 
-    public function process(TelegramRequest $request, RequestHandlerInterface $handler): ResponseInterface
+    public function process(Update $request, RequestHandlerInterface $handler): ResponseInterface
     {
         try {
             return $this->router->match($request)->handle($request);

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Viktorprogger\TelegramBot\Request;
+namespace Viktorprogger\TelegramBot\Update;
 
-final readonly class RequestId
+final readonly class UpdateId
 {
     public function __construct(public int $value)
     {
