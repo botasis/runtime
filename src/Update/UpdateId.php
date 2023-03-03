@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Viktorprogger\TelegramBot\Update;
+namespace Botasis\Runtime\Update;
 
 final readonly class UpdateId
 {

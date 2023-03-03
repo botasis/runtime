@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Viktorprogger\TelegramBot\Response;
+namespace Botasis\Runtime\Response;
 
 use Botasis\Client\Telegram\Entity\CallbackResponse;
 use Botasis\Client\Telegram\Entity\InlineKeyboard\InlineKeyboardUpdate;

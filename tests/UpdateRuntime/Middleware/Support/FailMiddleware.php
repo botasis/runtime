@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Viktorprogger\TelegramBot\Tests\UpdateRuntime\Middleware\Support;
+namespace Botasis\Runtime\Tests\UpdateRuntime\Middleware\Support;
 
 use RuntimeException;
-use Viktorprogger\TelegramBot\Update\Update;
-use Viktorprogger\TelegramBot\Response\ResponseInterface;
-use Viktorprogger\TelegramBot\UpdateRuntime\Middleware\MiddlewareInterface;
-use Viktorprogger\TelegramBot\UpdateRuntime\RequestHandlerInterface;
+use Botasis\Runtime\Update\Update;
+use Botasis\Runtime\Response\ResponseInterface;
+use Botasis\Runtime\UpdateRuntime\Middleware\MiddlewareInterface;
+use Botasis\Runtime\UpdateRuntime\RequestHandlerInterface;
 
 final class FailMiddleware implements MiddlewareInterface
 {

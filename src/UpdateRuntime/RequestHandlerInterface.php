@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Viktorprogger\TelegramBot\UpdateRuntime;
+namespace Botasis\Runtime\UpdateRuntime;
 
-use Viktorprogger\TelegramBot\Update\Update;
-use Viktorprogger\TelegramBot\Response\ResponseInterface;
+use Botasis\Runtime\Update\Update;
+use Botasis\Runtime\Response\ResponseInterface;
 
 interface RequestHandlerInterface
 {

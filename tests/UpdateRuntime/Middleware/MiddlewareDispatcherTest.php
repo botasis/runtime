@@ -2,28 +2,28 @@
 
 declare(strict_types=1);
 
-namespace Viktorprogger\TelegramBot\Tests\UpdateRuntime\Middleware;
+namespace Botasis\Runtime\Tests\UpdateRuntime\Middleware;
 
 use Botasis\Client\Telegram\Entity\CallbackResponse;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use RuntimeException;
-use Viktorprogger\TelegramBot\Entity\User\User;
-use Viktorprogger\TelegramBot\Entity\User\UserId;
-use Viktorprogger\TelegramBot\Update\UpdateId;
-use Viktorprogger\TelegramBot\Update\Update;
-use Viktorprogger\TelegramBot\Response\Response;
-use Viktorprogger\TelegramBot\Response\ResponseInterface;
-use Viktorprogger\TelegramBot\Tests\UpdateRuntime\Middleware\Support\FailMiddleware;
-use Viktorprogger\TelegramBot\Tests\UpdateRuntime\Middleware\Support\TestController;
-use Viktorprogger\TelegramBot\Tests\UpdateRuntime\Middleware\Support\TestMiddleware;
-use Viktorprogger\TelegramBot\UpdateRuntime\CallableFactory;
-use Viktorprogger\TelegramBot\UpdateRuntime\Middleware\Event\AfterMiddleware;
-use Viktorprogger\TelegramBot\UpdateRuntime\Middleware\Event\BeforeMiddleware;
-use Viktorprogger\TelegramBot\UpdateRuntime\Middleware\MiddlewareDispatcher;
-use Viktorprogger\TelegramBot\UpdateRuntime\Middleware\MiddlewareFactory;
-use Viktorprogger\TelegramBot\UpdateRuntime\RequestHandlerInterface;
+use Botasis\Runtime\Entity\User\User;
+use Botasis\Runtime\Entity\User\UserId;
+use Botasis\Runtime\Update\UpdateId;
+use Botasis\Runtime\Update\Update;
+use Botasis\Runtime\Response\Response;
+use Botasis\Runtime\Response\ResponseInterface;
+use Botasis\Runtime\Tests\UpdateRuntime\Middleware\Support\FailMiddleware;
+use Botasis\Runtime\Tests\UpdateRuntime\Middleware\Support\TestController;
+use Botasis\Runtime\Tests\UpdateRuntime\Middleware\Support\TestMiddleware;
+use Botasis\Runtime\UpdateRuntime\CallableFactory;
+use Botasis\Runtime\UpdateRuntime\Middleware\Event\AfterMiddleware;
+use Botasis\Runtime\UpdateRuntime\Middleware\Event\BeforeMiddleware;
+use Botasis\Runtime\UpdateRuntime\Middleware\MiddlewareDispatcher;
+use Botasis\Runtime\UpdateRuntime\Middleware\MiddlewareFactory;
+use Botasis\Runtime\UpdateRuntime\RequestHandlerInterface;
 use Yiisoft\Test\Support\Container\SimpleContainer;
 use Yiisoft\Test\Support\EventDispatcher\SimpleEventDispatcher;
 

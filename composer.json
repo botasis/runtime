@@ -1,13 +1,13 @@
 {
-    "name": "viktorprogger/telegram-bot",
+    "name": "botasis/runtime",
     "type": "library",
-    "description": "Yet another Telegram bot SDK on PHP",
+    "description": "Bot runtime library to handle received updates",
     "keywords": [],
     "license": "BSD-3-Clause",
     "support": {
-        "issues": "https://github.com/viktorprogger/telegram-bot/issues?state=open",
-        "chat": "https://t.me/yii3en",
-        "source": "https://github.com/viktorprogger/telegram-bot"
+        "issues": "https://github.com/botasis/runtime/issues?state=open",
+        "chat": "https://t.me/viktorprogger_blog",
+        "source": "https://github.com/botasis/runtime"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
@@ -34,12 +34,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Viktorprogger\\TelegramBot\\": "src"
+            "Botasis\\Runtime\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Viktorprogger\\TelegramBot\\Tests\\": "tests"
+            "Botasis\\Runtime\\Tests\\": "tests"
         }
     },
     "config": {

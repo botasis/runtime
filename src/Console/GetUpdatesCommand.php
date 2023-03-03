@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Viktorprogger\TelegramBot\Console;
+namespace Botasis\Runtime\Console;
 
 use Botasis\Client\Telegram\Client\TelegramClientInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Viktorprogger\TelegramBot\Update\UpdateFactory;
-use Viktorprogger\TelegramBot\UpdateRuntime\Application;
+use Botasis\Runtime\Update\UpdateFactory;
+use Botasis\Runtime\UpdateRuntime\Application;
 
 final class GetUpdatesCommand extends Command
 {

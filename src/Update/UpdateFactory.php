@@ -1,8 +1,8 @@
 <?php
 
-namespace Viktorprogger\TelegramBot\Update;
+namespace Botasis\Runtime\Update;
 
-use Viktorprogger\TelegramBot\Entity\User\UserFactory;
+use Botasis\Runtime\Entity\User\UserFactory;
 
 final readonly class UpdateFactory
 {

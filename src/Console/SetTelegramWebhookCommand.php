@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Viktorprogger\TelegramBot\Console;
+namespace Botasis\Runtime\Console;
 
 use InvalidArgumentException;
 use Symfony\Component\Console\Command\Command;
@@ -11,7 +11,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
-use Viktorprogger\TelegramBot\Client\TelegramClientInterface;
+use Botasis\Runtime\Client\TelegramClientInterface;
 
 use function str_contains;
 use function str_starts_with;

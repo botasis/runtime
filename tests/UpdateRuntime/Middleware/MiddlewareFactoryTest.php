@@ -2,29 +2,29 @@
 
 declare(strict_types=1);
 
-namespace Viktorprogger\TelegramBot\Tests\UpdateRuntime\Middleware;
+namespace Botasis\Runtime\Tests\UpdateRuntime\Middleware;
 
 use Botasis\Client\Telegram\Entity\CallbackResponse;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
-use Viktorprogger\TelegramBot\Entity\User\User;
-use Viktorprogger\TelegramBot\Entity\User\UserId;
-use Viktorprogger\TelegramBot\Update\UpdateId;
-use Viktorprogger\TelegramBot\Update\Update;
-use Viktorprogger\TelegramBot\Response\Response;
-use Viktorprogger\TelegramBot\Response\ResponseInterface;
-use Viktorprogger\TelegramBot\Tests\UpdateRuntime\Middleware\Support\InvalidController;
-use Viktorprogger\TelegramBot\Tests\UpdateRuntime\Middleware\Support\TestController;
-use Viktorprogger\TelegramBot\Tests\UpdateRuntime\Middleware\Support\TestMiddleware;
-use Viktorprogger\TelegramBot\Tests\UpdateRuntime\Middleware\Support\UseParamsController;
-use Viktorprogger\TelegramBot\Tests\UpdateRuntime\Middleware\Support\UseParamsMiddleware;
-use Viktorprogger\TelegramBot\UpdateRuntime\CallableFactory;
-use Viktorprogger\TelegramBot\UpdateRuntime\InvalidCallableConfigurationException;
-use Viktorprogger\TelegramBot\UpdateRuntime\Middleware\Exception\InvalidMiddlewareDefinitionException;
-use Viktorprogger\TelegramBot\UpdateRuntime\Middleware\MiddlewareFactory;
-use Viktorprogger\TelegramBot\UpdateRuntime\Middleware\MiddlewareFactoryInterface;
-use Viktorprogger\TelegramBot\UpdateRuntime\Middleware\MiddlewareInterface;
-use Viktorprogger\TelegramBot\UpdateRuntime\RequestHandlerInterface;
+use Botasis\Runtime\Entity\User\User;
+use Botasis\Runtime\Entity\User\UserId;
+use Botasis\Runtime\Update\UpdateId;
+use Botasis\Runtime\Update\Update;
+use Botasis\Runtime\Response\Response;
+use Botasis\Runtime\Response\ResponseInterface;
+use Botasis\Runtime\Tests\UpdateRuntime\Middleware\Support\InvalidController;
+use Botasis\Runtime\Tests\UpdateRuntime\Middleware\Support\TestController;
+use Botasis\Runtime\Tests\UpdateRuntime\Middleware\Support\TestMiddleware;
+use Botasis\Runtime\Tests\UpdateRuntime\Middleware\Support\UseParamsController;
+use Botasis\Runtime\Tests\UpdateRuntime\Middleware\Support\UseParamsMiddleware;
+use Botasis\Runtime\UpdateRuntime\CallableFactory;
+use Botasis\Runtime\UpdateRuntime\InvalidCallableConfigurationException;
+use Botasis\Runtime\UpdateRuntime\Middleware\Exception\InvalidMiddlewareDefinitionException;
+use Botasis\Runtime\UpdateRuntime\Middleware\MiddlewareFactory;
+use Botasis\Runtime\UpdateRuntime\Middleware\MiddlewareFactoryInterface;
+use Botasis\Runtime\UpdateRuntime\Middleware\MiddlewareInterface;
+use Botasis\Runtime\UpdateRuntime\RequestHandlerInterface;
 use Yiisoft\Test\Support\Container\SimpleContainer;
 
 final class MiddlewareFactoryTest extends TestCase

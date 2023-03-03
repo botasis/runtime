@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Viktorprogger\TelegramBot\Entity\User;
+namespace Botasis\Runtime\Entity\User;
 
 interface UserRepositoryInterface
 {

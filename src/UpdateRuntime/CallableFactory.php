@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Viktorprogger\TelegramBot\UpdateRuntime;
+namespace Botasis\Runtime\UpdateRuntime;
 
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;

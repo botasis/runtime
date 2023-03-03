@@ -1,10 +1,10 @@
 <?php
 
-namespace Viktorprogger\TelegramBot\UpdateRuntime;
+namespace Botasis\Runtime\UpdateRuntime;
 
 use InvalidArgumentException;
 use Psr\Container\ContainerInterface;
-use Viktorprogger\TelegramBot\Update\Update;
+use Botasis\Runtime\Update\Update;
 
 final readonly class Router
 {

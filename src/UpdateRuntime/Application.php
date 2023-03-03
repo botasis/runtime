@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Viktorprogger\TelegramBot\UpdateRuntime;
+namespace Botasis\Runtime\UpdateRuntime;
 
-use Viktorprogger\TelegramBot\Update\Update;
-use Viktorprogger\TelegramBot\UpdateRuntime\Middleware\MiddlewareDispatcher;
+use Botasis\Runtime\Update\Update;
+use Botasis\Runtime\UpdateRuntime\Middleware\MiddlewareDispatcher;
 
 final readonly class Application
 {

@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Viktorprogger\TelegramBot\UpdateRuntime\Middleware;
+namespace Botasis\Runtime\UpdateRuntime\Middleware;
 
 use Closure;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use RuntimeException;
-use Viktorprogger\TelegramBot\Update\Update;
-use Viktorprogger\TelegramBot\UpdateRuntime\Middleware\Event\AfterMiddleware;
-use Viktorprogger\TelegramBot\UpdateRuntime\Middleware\Event\BeforeMiddleware;
-use Viktorprogger\TelegramBot\UpdateRuntime\RequestHandlerInterface;
-use Viktorprogger\TelegramBot\Response\ResponseInterface;
+use Botasis\Runtime\Update\Update;
+use Botasis\Runtime\UpdateRuntime\Middleware\Event\AfterMiddleware;
+use Botasis\Runtime\UpdateRuntime\Middleware\Event\BeforeMiddleware;
+use Botasis\Runtime\UpdateRuntime\RequestHandlerInterface;
+use Botasis\Runtime\Response\ResponseInterface;
 
 final class MiddlewareStack implements RequestHandlerInterface
 {

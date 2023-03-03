@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Viktorprogger\TelegramBot\UpdateRuntime\Middleware;
+namespace Botasis\Runtime\UpdateRuntime\Middleware;
 
-use Viktorprogger\TelegramBot\Update\Update;
-use Viktorprogger\TelegramBot\UpdateRuntime\RequestHandlerInterface;
-use Viktorprogger\TelegramBot\Response\ResponseInterface;
+use Botasis\Runtime\Update\Update;
+use Botasis\Runtime\UpdateRuntime\RequestHandlerInterface;
+use Botasis\Runtime\Response\ResponseInterface;
 
 interface MiddlewareInterface
 {

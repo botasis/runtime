@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Viktorprogger\TelegramBot\UpdateRuntime\Middleware\Exception;
+namespace Botasis\Runtime\UpdateRuntime\Middleware\Exception;
 
 use InvalidArgumentException;
 

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Viktorprogger\TelegramBot\Update;
+namespace Botasis\Runtime\Update;
 
-use Viktorprogger\TelegramBot\Entity\User\User;
+use Botasis\Runtime\Entity\User\User;
 
 final class Update
 {

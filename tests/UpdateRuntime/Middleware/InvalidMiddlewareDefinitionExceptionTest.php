@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Viktorprogger\TelegramBot\Tests\UpdateRuntime\Middleware;
+namespace Botasis\Runtime\Tests\UpdateRuntime\Middleware;
 
 use PHPUnit\Framework\TestCase;
 use stdClass;
-use Viktorprogger\TelegramBot\Tests\UpdateRuntime\Middleware\Support\TestController;
-use Viktorprogger\TelegramBot\UpdateRuntime\Middleware\Exception\InvalidMiddlewareDefinitionException;
+use Botasis\Runtime\Tests\UpdateRuntime\Middleware\Support\TestController;
+use Botasis\Runtime\UpdateRuntime\Middleware\Exception\InvalidMiddlewareDefinitionException;
 
 final class InvalidMiddlewareDefinitionExceptionTest extends TestCase
 {
@@ -20,15 +20,15 @@ final class InvalidMiddlewareDefinitionExceptionTest extends TestCase
             ],
             [
                 new TestController(),
-                'an instance of "Viktorprogger\TelegramBot\Tests\UpdateRuntime\Middleware\Support\TestController"',
+                'an instance of "Botasis\Runtime\Tests\UpdateRuntime\Middleware\Support\TestController"',
             ],
             [
                 [TestController::class, 'notExistsAction'],
-                '["Viktorprogger\TelegramBot\Tests\UpdateRuntime\Middleware\Support\TestController", "notExistsAction"]',
+                '["Botasis\Runtime\Tests\UpdateRuntime\Middleware\Support\TestController", "notExistsAction"]',
             ],
             [
                 ['class' => TestController::class, 'index'],
-                '["class" => "Viktorprogger\TelegramBot\Tests\UpdateRuntime\Middleware\Support\TestController", "index"]',
+                '["class" => "Botasis\Runtime\Tests\UpdateRuntime\Middleware\Support\TestController", "index"]',
             ],
         ];
     }

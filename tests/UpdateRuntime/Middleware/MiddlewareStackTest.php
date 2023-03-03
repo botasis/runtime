@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Viktorprogger\TelegramBot\Tests\UpdateRuntime\Middleware;
+namespace Botasis\Runtime\Tests\UpdateRuntime\Middleware;
 
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
-use Viktorprogger\TelegramBot\Entity\User\User;
-use Viktorprogger\TelegramBot\Entity\User\UserId;
-use Viktorprogger\TelegramBot\Update\UpdateId;
-use Viktorprogger\TelegramBot\Update\Update;
-use Viktorprogger\TelegramBot\UpdateRuntime\Middleware\MiddlewareStack;
-use Viktorprogger\TelegramBot\UpdateRuntime\RequestHandlerInterface;
+use Botasis\Runtime\Entity\User\User;
+use Botasis\Runtime\Entity\User\UserId;
+use Botasis\Runtime\Update\UpdateId;
+use Botasis\Runtime\Update\Update;
+use Botasis\Runtime\UpdateRuntime\Middleware\MiddlewareStack;
+use Botasis\Runtime\UpdateRuntime\RequestHandlerInterface;
 use Yiisoft\Test\Support\EventDispatcher\SimpleEventDispatcher;
 
 final class MiddlewareStackTest extends TestCase

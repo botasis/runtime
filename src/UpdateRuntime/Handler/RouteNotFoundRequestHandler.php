@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Viktorprogger\TelegramBot\UpdateRuntime\Handler;
+namespace Botasis\Runtime\UpdateRuntime\Handler;
 
 use Botasis\Client\Telegram\Entity\Message\Message;
 use Botasis\Client\Telegram\Entity\Message\MessageFormat;
-use Viktorprogger\TelegramBot\Update\Update;
-use Viktorprogger\TelegramBot\UpdateRuntime\RequestHandlerInterface;
-use Viktorprogger\TelegramBot\Response\Response;
-use Viktorprogger\TelegramBot\Response\ResponseInterface;
+use Botasis\Runtime\Update\Update;
+use Botasis\Runtime\UpdateRuntime\RequestHandlerInterface;
+use Botasis\Runtime\Response\Response;
+use Botasis\Runtime\Response\ResponseInterface;
 
 final readonly class RouteNotFoundRequestHandler implements RequestHandlerInterface
 {

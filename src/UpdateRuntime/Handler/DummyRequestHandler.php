@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Viktorprogger\TelegramBot\UpdateRuntime\Handler;
+namespace Botasis\Runtime\UpdateRuntime\Handler;
 
-use Viktorprogger\TelegramBot\Update\Update;
-use Viktorprogger\TelegramBot\Response\Response;
-use Viktorprogger\TelegramBot\Response\ResponseInterface;
-use Viktorprogger\TelegramBot\UpdateRuntime\RequestHandlerInterface;
+use Botasis\Runtime\Update\Update;
+use Botasis\Runtime\Response\Response;
+use Botasis\Runtime\Response\ResponseInterface;
+use Botasis\Runtime\UpdateRuntime\RequestHandlerInterface;
 
 final class DummyRequestHandler implements RequestHandlerInterface
 {

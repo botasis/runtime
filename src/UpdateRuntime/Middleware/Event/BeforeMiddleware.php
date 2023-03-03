@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Viktorprogger\TelegramBot\UpdateRuntime\Middleware\Event;
+namespace Botasis\Runtime\UpdateRuntime\Middleware\Event;
 
-use Viktorprogger\TelegramBot\Update\Update;
-use Viktorprogger\TelegramBot\UpdateRuntime\Middleware\MiddlewareInterface;
+use Botasis\Runtime\Update\Update;
+use Botasis\Runtime\UpdateRuntime\Middleware\MiddlewareInterface;
 
 /**
  * BeforeMiddleware event is raised before executing a middleware.
