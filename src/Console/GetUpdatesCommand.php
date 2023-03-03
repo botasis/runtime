@@ -34,7 +34,7 @@ final class GetUpdatesCommand extends Command
             $this->application->handle($update);
         }
         if ($update !== null) {
-            $data['offset'] = (int) $update->id + 1;
+            $data['offset'] = $update->id->value + 1;
             $this->client->send('getUpdates', $data);
         }
 
