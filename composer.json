@@ -26,6 +26,7 @@
         "symfony/console": "^6.2",
         "symfony/http-client": "^6.2",
         "vimeo/psalm": "^5.4",
+        "xepozz/test-it": "^1.2.1",
         "yiisoft/test-support": "^3.0"
     },
     "suggest": {
