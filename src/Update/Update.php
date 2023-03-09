@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace Viktorprogger\TelegramBot\Request;
+namespace Botasis\Runtime\Update;
 
-use Viktorprogger\TelegramBot\User\User;
+use Botasis\Runtime\Entity\User\User;
 
-final class TelegramRequest
+final class Update
 {
     private array $attributes = [];
 
     public function __construct(
-        public readonly RequestId $id,
+        public readonly UpdateId $id,
         public readonly string $chatId,
         public readonly string $messageId,
         public readonly string $requestData,
-        public readonly User $user,
+        public readonly ?User $user,
         public readonly array $raw,
         public readonly ?string $callbackQueryId = null,
     ) {
@@ -52,9 +52,9 @@ final class TelegramRequest
     }
 
     /**
-     * @return TelegramRequest
+     * @return Update
      */
-    private function getNewRequest(): TelegramRequest
+    private function getNewRequest(): Update
     {
         return new self(
             $this->id,

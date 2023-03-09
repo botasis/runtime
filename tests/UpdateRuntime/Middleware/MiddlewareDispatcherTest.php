@@ -2,28 +2,28 @@
 
 declare(strict_types=1);
 
-namespace Viktorprogger\TelegramBot\Tests\UpdateRuntime\Middleware;
+namespace Botasis\Runtime\Tests\UpdateRuntime\Middleware;
 
+use Botasis\Client\Telegram\Entity\CallbackResponse;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use RuntimeException;
-use Viktorprogger\TelegramBot\Request\RequestId;
-use Viktorprogger\TelegramBot\Request\TelegramRequest;
-use Viktorprogger\TelegramBot\Response\Response;
-use Viktorprogger\TelegramBot\Response\ResponseInterface;
-use Viktorprogger\TelegramBot\Response\TelegramCallbackResponse;
-use Viktorprogger\TelegramBot\Tests\UpdateRuntime\Middleware\Support\FailMiddleware;
-use Viktorprogger\TelegramBot\Tests\UpdateRuntime\Middleware\Support\TestController;
-use Viktorprogger\TelegramBot\Tests\UpdateRuntime\Middleware\Support\TestMiddleware;
-use Viktorprogger\TelegramBot\UpdateRuntime\CallableFactory;
-use Viktorprogger\TelegramBot\UpdateRuntime\Middleware\Event\AfterMiddleware;
-use Viktorprogger\TelegramBot\UpdateRuntime\Middleware\Event\BeforeMiddleware;
-use Viktorprogger\TelegramBot\UpdateRuntime\Middleware\MiddlewareDispatcher;
-use Viktorprogger\TelegramBot\UpdateRuntime\Middleware\MiddlewareFactory;
-use Viktorprogger\TelegramBot\UpdateRuntime\RequestHandlerInterface;
-use Viktorprogger\TelegramBot\User\User;
-use Viktorprogger\TelegramBot\User\UserId;
+use Botasis\Runtime\Entity\User\User;
+use Botasis\Runtime\Entity\User\UserId;
+use Botasis\Runtime\Update\UpdateId;
+use Botasis\Runtime\Update\Update;
+use Botasis\Runtime\Response\Response;
+use Botasis\Runtime\Response\ResponseInterface;
+use Botasis\Runtime\Tests\UpdateRuntime\Middleware\Support\FailMiddleware;
+use Botasis\Runtime\Tests\UpdateRuntime\Middleware\Support\TestController;
+use Botasis\Runtime\Tests\UpdateRuntime\Middleware\Support\TestMiddleware;
+use Botasis\Runtime\UpdateRuntime\CallableFactory;
+use Botasis\Runtime\UpdateRuntime\Middleware\Event\AfterMiddleware;
+use Botasis\Runtime\UpdateRuntime\Middleware\Event\BeforeMiddleware;
+use Botasis\Runtime\UpdateRuntime\Middleware\MiddlewareDispatcher;
+use Botasis\Runtime\UpdateRuntime\Middleware\MiddlewareFactory;
+use Botasis\Runtime\UpdateRuntime\RequestHandlerInterface;
 use Yiisoft\Test\Support\Container\SimpleContainer;
 use Yiisoft\Test\Support\EventDispatcher\SimpleEventDispatcher;
 
@@ -36,7 +36,7 @@ final class MiddlewareDispatcherTest extends TestCase
         $dispatcher = $this->createDispatcher()->withMiddlewares(
             [
                 static function (): ResponseInterface {
-                    return (new Response())->withCallbackResponse(new TelegramCallbackResponse('middleware-id'));
+                    return (new Response())->withCallbackResponse(new CallbackResponse('middleware-id'));
                 },
             ]
         );
@@ -63,13 +63,13 @@ final class MiddlewareDispatcherTest extends TestCase
     {
         $request = $this->getTelegramRequest();
 
-        $middleware1 = static function (TelegramRequest $request, RequestHandlerInterface $handler): ResponseInterface {
+        $middleware1 = static function (Update $request, RequestHandlerInterface $handler): ResponseInterface {
             $request = $request->withAttribute('middleware', 'middleware1');
 
             return $handler->handle($request);
         };
-        $middleware2 = static function (TelegramRequest $request): ResponseInterface {
-            $callbackResponse = new TelegramCallbackResponse($request->getAttribute('middleware'));
+        $middleware2 = static function (Update $request): ResponseInterface {
+            $callbackResponse = new CallbackResponse($request->getAttribute('middleware'));
 
             return (new Response())->withCallbackResponse($callbackResponse);
         };
@@ -85,12 +85,12 @@ final class MiddlewareDispatcherTest extends TestCase
         $request = $this->getTelegramRequest();
 
         $middleware1 = static function (): ResponseInterface {
-            $callbackResponse = new TelegramCallbackResponse('first');
+            $callbackResponse = new CallbackResponse('first');
 
             return (new Response())->withCallbackResponse($callbackResponse);
         };
         $middleware2 = static function (): ResponseInterface {
-            $callbackResponse = new TelegramCallbackResponse('second');
+            $callbackResponse = new CallbackResponse('second');
 
             return (new Response())->withCallbackResponse($callbackResponse);
         };
@@ -106,7 +106,7 @@ final class MiddlewareDispatcherTest extends TestCase
         $eventDispatcher = new SimpleEventDispatcher();
         $request = $this->getTelegramRequest();
 
-        $middleware1 = static function (TelegramRequest $request, RequestHandlerInterface $handler): ResponseInterface {
+        $middleware1 = static function (Update $request, RequestHandlerInterface $handler): ResponseInterface {
             return $handler->handle($request);
         };
         $middleware2 = static function (): ResponseInterface {
@@ -199,9 +199,9 @@ final class MiddlewareDispatcherTest extends TestCase
     private function getRequestHandler(): RequestHandlerInterface
     {
         return new class () implements RequestHandlerInterface {
-            public function handle(TelegramRequest $request): ResponseInterface
+            public function handle(Update $update): ResponseInterface
             {
-                return (new Response())->withCallbackResponse(new TelegramCallbackResponse('default-id'));
+                return (new Response())->withCallbackResponse(new CallbackResponse('default-id'));
             }
         };
     }
@@ -224,14 +224,26 @@ final class MiddlewareDispatcherTest extends TestCase
         return new SimpleContainer($instances);
     }
 
-    private function getTelegramRequest(): TelegramRequest
+    private function getTelegramRequest(): Update
     {
-        return new TelegramRequest(
-            new RequestId(123),
+        return new Update(
+            new UpdateId(123),
             'chatId',
             'messageId',
             'data',
-            new User(new UserId('user-id')),
+            new User(
+                new UserId('user-id'),
+                false,
+                'testUser',
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+            ),
             []
         );
     }

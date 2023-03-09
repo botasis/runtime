@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Viktorprogger\TelegramBot\UpdateRuntime\Middleware;
+namespace Botasis\Runtime\UpdateRuntime\Middleware;
 
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use Viktorprogger\TelegramBot\Request\TelegramRequest;
-use Viktorprogger\TelegramBot\Response\ResponseInterface;
-use Viktorprogger\TelegramBot\UpdateRuntime\CallableFactory;
-use Viktorprogger\TelegramBot\UpdateRuntime\Middleware\Exception\InvalidMiddlewareDefinitionException;
-use Viktorprogger\TelegramBot\UpdateRuntime\RequestHandlerInterface;
+use Botasis\Runtime\Update\Update;
+use Botasis\Runtime\Response\ResponseInterface;
+use Botasis\Runtime\UpdateRuntime\CallableFactory;
+use Botasis\Runtime\UpdateRuntime\Middleware\Exception\InvalidMiddlewareDefinitionException;
+use Botasis\Runtime\UpdateRuntime\RequestHandlerInterface;
 use Yiisoft\Injector\Injector;
 
 use function is_string;
@@ -79,7 +79,7 @@ final readonly class MiddlewareFactory implements MiddlewareFactoryInterface
             }
 
             public function process(
-                TelegramRequest $request,
+                Update $request,
                 RequestHandlerInterface $handler,
             ): ResponseInterface {
                 $response = (new Injector($this->container))->invoke($this->callback, [$request, $handler]);

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Viktorprogger\TelegramBot\UpdateRuntime\Middleware;
+namespace Botasis\Runtime\UpdateRuntime\Middleware;
 
 use Closure;
 use Psr\EventDispatcher\EventDispatcherInterface;
-use Viktorprogger\TelegramBot\Request\TelegramRequest;
-use Viktorprogger\TelegramBot\UpdateRuntime\RequestHandlerInterface;
-use Viktorprogger\TelegramBot\Response\ResponseInterface;
+use Botasis\Runtime\Update\Update;
+use Botasis\Runtime\UpdateRuntime\RequestHandlerInterface;
+use Botasis\Runtime\Response\ResponseInterface;
 
 final class MiddlewareDispatcher
 {
@@ -33,11 +33,11 @@ final class MiddlewareDispatcher
     /**
      * Dispatch request through middleware to get response.
      *
-     * @param TelegramRequest $request Request to pass to middleware.
+     * @param Update $request Request to pass to middleware.
      * @param RequestHandlerInterface $fallbackHandler Handler to use in case no middleware produced response.
      */
     public function dispatch(
-        TelegramRequest $request,
+        Update $request,
         RequestHandlerInterface $fallbackHandler
     ): ResponseInterface {
         if ($this->stack === null) {

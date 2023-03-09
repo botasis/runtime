@@ -1,25 +1,20 @@
 {
-    "name": "viktorprogger/telegram-bot",
+    "name": "botasis/runtime",
     "type": "library",
-    "description": "Yet another Telegram bot SDK on PHP",
+    "description": "Bot runtime library to handle received updates",
     "keywords": [],
     "license": "BSD-3-Clause",
     "support": {
-        "issues": "https://github.com/viktorprogger/telegram-bot/issues?state=open",
-        "chat": "https://t.me/yii3en",
-        "source": "https://github.com/viktorprogger/telegram-bot"
+        "issues": "https://github.com/botasis/runtime/issues?state=open",
+        "chat": "https://t.me/viktorprogger_blog",
+        "source": "https://github.com/botasis/runtime"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
         "php": "^8.2",
-        "cycle/annotated": "^2.4||^3.0",
-        "cycle/orm": "^v1.0.0||^v2.0.0",
-        "php-http/discovery": "^1.15",
+        "botasis/telegram-client": "dev-main",
         "psr/container": "^2.0",
-        "psr/http-client": "^1.0",
-        "psr/http-factory": "^1.0",
-        "psr/http-message": "^1.0",
         "psr/log": "^1.0.0||^2.0.0||^3.0.0",
         "yiisoft/friendly-exception": "^1.1",
         "yiisoft/injector": "^1.0"
@@ -31,6 +26,7 @@
         "symfony/console": "^6.2",
         "symfony/http-client": "^6.2",
         "vimeo/psalm": "^5.4",
+        "xepozz/test-it": "^1.2.1",
         "yiisoft/test-support": "^3.0"
     },
     "suggest": {
@@ -39,12 +35,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Viktorprogger\\TelegramBot\\": "src"
+            "Botasis\\Runtime\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Viktorprogger\\TelegramBot\\Tests\\": "tests"
+            "Botasis\\Runtime\\Tests\\": "tests"
         }
     },
     "config": {

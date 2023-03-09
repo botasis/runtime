@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Viktorprogger\TelegramBot\Tests\UpdateRuntime\Middleware\Event;
+namespace Botasis\Runtime\Tests\UpdateRuntime\Middleware\Event;
 
 use PHPUnit\Framework\TestCase;
-use Viktorprogger\TelegramBot\Response\ResponseInterface;
-use Viktorprogger\TelegramBot\UpdateRuntime\Middleware\Event\AfterMiddleware;
-use Viktorprogger\TelegramBot\UpdateRuntime\Middleware\MiddlewareInterface;
+use Botasis\Runtime\Response\ResponseInterface;
+use Botasis\Runtime\UpdateRuntime\Middleware\Event\AfterMiddleware;
+use Botasis\Runtime\UpdateRuntime\Middleware\MiddlewareInterface;
 
 final class AfterMiddlewareTest extends TestCase
 {

@@ -1,10 +1,10 @@
 <?php
 
-namespace Viktorprogger\TelegramBot\UpdateRuntime;
+namespace Botasis\Runtime\UpdateRuntime;
 
 use InvalidArgumentException;
 use Psr\Container\ContainerInterface;
-use Viktorprogger\TelegramBot\Request\TelegramRequest;
+use Botasis\Runtime\Update\Update;
 
 final readonly class Router
 {
@@ -34,7 +34,7 @@ final readonly class Router
         $this->rulesStatic = $rulesStatic;
     }
 
-    public function match(TelegramRequest $request): RequestHandlerInterface
+    public function match(Update $request): RequestHandlerInterface
     {
         if (isset($this->rulesStatic[$request->requestData])) {
             return $this->container->get($this->rulesStatic[$request->requestData]); // TODO validate action

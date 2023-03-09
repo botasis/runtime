@@ -1,15 +1,14 @@
 <?php
 
-namespace Viktorprogger\TelegramBot\Request;
+namespace Botasis\Runtime\Update;
 
-use Viktorprogger\TelegramBot\User\UserFactory;
+use Botasis\Runtime\Entity\User\UserFactory;
 
-final readonly class TelegramRequestFactory
+final readonly class UpdateFactory
 {
     public function __construct(
         private UserFactory $userFactory,
-    )
-    {
+    ) {
     }
 
     /**
@@ -18,18 +17,18 @@ final readonly class TelegramRequestFactory
      *
      * @param array $update An update entry
      *
-     * @return TelegramRequest
+     * @return Update
      */
-    public function create(array $update): TelegramRequest
+    public function create(array $update): Update
     {
         $message = $update['message'] ?? $update['callback_query'];
         $data = trim($message['text'] ?? $message['data']);
-        $chatId = (string) ($message['chat']['id'] ?? $message['message']['chat']['id']);
-        $messageId = (string) ($message['message_id'] ?? $message['message']['message_id']);
-        $user = $this->userFactory->create($message['from']['id']);
+        $chatId = (string)($message['chat']['id'] ?? $message['message']['chat']['id']);
+        $messageId = (string)($message['message_id'] ?? $message['message']['message_id']);
+        $user = isset($message['from']) ? $this->userFactory->create($message['from']) : null;
 
-        return new TelegramRequest(
-            new RequestId($update['update_id']),
+        return new Update(
+            new UpdateId($update['update_id']),
             $chatId,
             $messageId,
             $data,

@@ -2,26 +2,27 @@
 
 declare(strict_types=1);
 
-namespace Viktorprogger\TelegramBot\Response;
+namespace Botasis\Runtime\Response;
 
-use Viktorprogger\TelegramBot\Response\Keyboard\TelegramKeyboardUpdate;
-use Viktorprogger\TelegramBot\Response\Message\TelegramMessage;
-use Viktorprogger\TelegramBot\Response\Message\TelegramMessageUpdate;
+use Botasis\Client\Telegram\Entity\CallbackResponse;
+use Botasis\Client\Telegram\Entity\InlineKeyboard\InlineKeyboardUpdate;
+use Botasis\Client\Telegram\Entity\Message\Message;
+use Botasis\Client\Telegram\Entity\Message\MessageUpdate;
 
 final class Response implements ResponseInterface
 {
-    /** @var TelegramMessage[] */
+    /** @var Message[] */
     private array $messages = [];
 
-    private ?TelegramCallbackResponse $callbackResponse = null;
+    private ?CallbackResponse $callbackResponse = null;
 
-    /** @var TelegramKeyboardUpdate[] */
+    /** @var InlineKeyboardUpdate[] */
     private array $keyboardUpdates = [];
 
-    /** @var TelegramMessageUpdate[] */
+    /** @var MessageUpdate[] */
     private array $messageUpdates = [];
 
-    public function withMessage(TelegramMessage $message): ResponseInterface
+    public function withMessage(Message $message): ResponseInterface
     {
         $instance = clone $this;
         $instance->messages[] = $message;
@@ -29,7 +30,7 @@ final class Response implements ResponseInterface
         return $instance;
     }
 
-    public function withMessageUpdate(TelegramMessageUpdate $message): ResponseInterface
+    public function withMessageUpdate(MessageUpdate $message): ResponseInterface
     {
         $instance = clone $this;
         $instance->messageUpdates[] = $message;
@@ -37,7 +38,7 @@ final class Response implements ResponseInterface
         return $instance;
     }
 
-    public function withCallbackResponse(TelegramCallbackResponse $callbackResponse): ResponseInterface
+    public function withCallbackResponse(CallbackResponse $callbackResponse): ResponseInterface
     {
         $instance = clone $this;
         $instance->callbackResponse = $callbackResponse;
@@ -45,7 +46,7 @@ final class Response implements ResponseInterface
         return $instance;
     }
 
-    public function withKeyboardUpdate(TelegramKeyboardUpdate $update): ResponseInterface
+    public function withKeyboardUpdate(InlineKeyboardUpdate $update): ResponseInterface
     {
         $instance = clone $this;
         $instance->keyboardUpdates[] = $update;
@@ -63,7 +64,7 @@ final class Response implements ResponseInterface
         return $this->messageUpdates;
     }
 
-    public function getCallbackResponse(): ?TelegramCallbackResponse
+    public function getCallbackResponse(): ?CallbackResponse
     {
         return $this->callbackResponse;
     }

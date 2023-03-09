@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Viktorprogger\TelegramBot\Tests\UpdateRuntime\Middleware;
+namespace Botasis\Runtime\Tests\UpdateRuntime\Middleware;
 
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
-use Viktorprogger\TelegramBot\Request\RequestId;
-use Viktorprogger\TelegramBot\Request\TelegramRequest;
-use Viktorprogger\TelegramBot\UpdateRuntime\Middleware\MiddlewareStack;
-use Viktorprogger\TelegramBot\UpdateRuntime\RequestHandlerInterface;
-use Viktorprogger\TelegramBot\User\User;
-use Viktorprogger\TelegramBot\User\UserId;
+use Botasis\Runtime\Entity\User\User;
+use Botasis\Runtime\Entity\User\UserId;
+use Botasis\Runtime\Update\UpdateId;
+use Botasis\Runtime\Update\Update;
+use Botasis\Runtime\UpdateRuntime\Middleware\MiddlewareStack;
+use Botasis\Runtime\UpdateRuntime\RequestHandlerInterface;
 use Yiisoft\Test\Support\EventDispatcher\SimpleEventDispatcher;
 
 final class MiddlewareStackTest extends TestCase
@@ -21,15 +21,28 @@ final class MiddlewareStackTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Stack is empty.');
 
-        $request = new TelegramRequest(
-            new RequestId(123),
+        $request = new Update(
+            new UpdateId(123),
             'chatId',
             'messageId',
             'data',
-            new User(new UserId('user-id')),
+            new User(
+                new UserId('user-id'),
+                false,
+                'testUser',
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+            ),
             []
         );
-        $stack = new MiddlewareStack([], $this->createMock(RequestHandlerInterface::class), new SimpleEventDispatcher());
+        $stack = new MiddlewareStack([], $this->createMock(RequestHandlerInterface::class), new SimpleEventDispatcher()
+        );
         $stack->handle($request);
     }
 }

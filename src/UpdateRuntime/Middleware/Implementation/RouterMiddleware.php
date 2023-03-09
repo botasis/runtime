@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Viktorprogger\TelegramBot\UpdateRuntime\Middleware\Implementation;
+namespace Botasis\Runtime\UpdateRuntime\Middleware\Implementation;
 
-use Viktorprogger\TelegramBot\Request\TelegramRequest;
-use Viktorprogger\TelegramBot\Response\ResponseInterface;
-use Viktorprogger\TelegramBot\UpdateRuntime\Middleware\MiddlewareInterface;
-use Viktorprogger\TelegramBot\UpdateRuntime\NotFoundException;
-use Viktorprogger\TelegramBot\UpdateRuntime\RequestHandlerInterface;
-use Viktorprogger\TelegramBot\UpdateRuntime\Router;
+use Botasis\Runtime\Update\Update;
+use Botasis\Runtime\Response\ResponseInterface;
+use Botasis\Runtime\UpdateRuntime\Middleware\MiddlewareInterface;
+use Botasis\Runtime\UpdateRuntime\NotFoundException;
+use Botasis\Runtime\UpdateRuntime\RequestHandlerInterface;
+use Botasis\Runtime\UpdateRuntime\Router;
 
 final readonly class RouterMiddleware implements MiddlewareInterface
 {
@@ -17,7 +17,7 @@ final readonly class RouterMiddleware implements MiddlewareInterface
     {
     }
 
-    public function process(TelegramRequest $request, RequestHandlerInterface $handler): ResponseInterface
+    public function process(Update $request, RequestHandlerInterface $handler): ResponseInterface
     {
         try {
             return $this->router->match($request)->handle($request);

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-use Viktorprogger\TelegramBot\Client\TelegramClientInterface;
-use Viktorprogger\TelegramBot\Client\TelegramClientPsr;
-use Viktorprogger\TelegramBot\UpdateRuntime\Middleware\MiddlewareFactory;
-use Viktorprogger\TelegramBot\UpdateRuntime\Middleware\MiddlewareFactoryInterface;
-use Viktorprogger\TelegramBot\User\SimpleUserIdFactory;
-use Viktorprogger\TelegramBot\User\UserIdFactoryInterface;
+use Botasis\Runtime\Client\TelegramClientInterface;
+use Botasis\Runtime\Client\TelegramClientPsr;
+use Botasis\Runtime\UpdateRuntime\Middleware\MiddlewareFactory;
+use Botasis\Runtime\UpdateRuntime\Middleware\MiddlewareFactoryInterface;
+use Botasis\Runtime\User\SimpleUserIdFactory;
+use Botasis\Runtime\User\UserIdFactoryInterface;
 
 /**
  * @var array $params

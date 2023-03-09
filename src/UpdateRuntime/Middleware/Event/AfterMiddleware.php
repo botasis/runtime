@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Viktorprogger\TelegramBot\UpdateRuntime\Middleware\Event;
+namespace Botasis\Runtime\UpdateRuntime\Middleware\Event;
 
-use Viktorprogger\TelegramBot\UpdateRuntime\Middleware\MiddlewareInterface;
-use Viktorprogger\TelegramBot\Response\ResponseInterface;
+use Botasis\Runtime\UpdateRuntime\Middleware\MiddlewareInterface;
+use Botasis\Runtime\Response\ResponseInterface;
 
 /**
  * AfterMiddleware event is raised after a middleware was executed.

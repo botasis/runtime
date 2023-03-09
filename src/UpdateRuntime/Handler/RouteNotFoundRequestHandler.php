@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Viktorprogger\TelegramBot\UpdateRuntime\Handler;
+namespace Botasis\Runtime\UpdateRuntime\Handler;
 
-use Viktorprogger\TelegramBot\Request\TelegramRequest;
-use Viktorprogger\TelegramBot\UpdateRuntime\RequestHandlerInterface;
-use Viktorprogger\TelegramBot\Response\Message\MessageFormat;
-use Viktorprogger\TelegramBot\Response\Message\TelegramMessage;
-use Viktorprogger\TelegramBot\Response\Response;
-use Viktorprogger\TelegramBot\Response\ResponseInterface;
+use Botasis\Client\Telegram\Entity\Message\Message;
+use Botasis\Client\Telegram\Entity\Message\MessageFormat;
+use Botasis\Runtime\Update\Update;
+use Botasis\Runtime\UpdateRuntime\RequestHandlerInterface;
+use Botasis\Runtime\Response\Response;
+use Botasis\Runtime\Response\ResponseInterface;
 
 final readonly class RouteNotFoundRequestHandler implements RequestHandlerInterface
 {
@@ -17,9 +17,9 @@ final readonly class RouteNotFoundRequestHandler implements RequestHandlerInterf
     {
     }
 
-    public function handle(TelegramRequest $request): ResponseInterface
+    public function handle(Update $update): ResponseInterface
     {
         return (new Response())
-            ->withMessage(new TelegramMessage($this->message, MessageFormat::TEXT, $request->chatId));
+            ->withMessage(new Message($this->message, MessageFormat::TEXT, $update->chatId));
     }
 }

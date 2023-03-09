@@ -2,29 +2,29 @@
 
 declare(strict_types=1);
 
-namespace Viktorprogger\TelegramBot\Tests\UpdateRuntime\Middleware;
+namespace Botasis\Runtime\Tests\UpdateRuntime\Middleware;
 
+use Botasis\Client\Telegram\Entity\CallbackResponse;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
-use Viktorprogger\TelegramBot\Request\RequestId;
-use Viktorprogger\TelegramBot\Request\TelegramRequest;
-use Viktorprogger\TelegramBot\Response\Response;
-use Viktorprogger\TelegramBot\Response\ResponseInterface;
-use Viktorprogger\TelegramBot\Response\TelegramCallbackResponse;
-use Viktorprogger\TelegramBot\Tests\UpdateRuntime\Middleware\Support\InvalidController;
-use Viktorprogger\TelegramBot\Tests\UpdateRuntime\Middleware\Support\TestController;
-use Viktorprogger\TelegramBot\Tests\UpdateRuntime\Middleware\Support\TestMiddleware;
-use Viktorprogger\TelegramBot\Tests\UpdateRuntime\Middleware\Support\UseParamsController;
-use Viktorprogger\TelegramBot\Tests\UpdateRuntime\Middleware\Support\UseParamsMiddleware;
-use Viktorprogger\TelegramBot\UpdateRuntime\CallableFactory;
-use Viktorprogger\TelegramBot\UpdateRuntime\InvalidCallableConfigurationException;
-use Viktorprogger\TelegramBot\UpdateRuntime\Middleware\Exception\InvalidMiddlewareDefinitionException;
-use Viktorprogger\TelegramBot\UpdateRuntime\Middleware\MiddlewareFactory;
-use Viktorprogger\TelegramBot\UpdateRuntime\Middleware\MiddlewareFactoryInterface;
-use Viktorprogger\TelegramBot\UpdateRuntime\Middleware\MiddlewareInterface;
-use Viktorprogger\TelegramBot\UpdateRuntime\RequestHandlerInterface;
-use Viktorprogger\TelegramBot\User\User;
-use Viktorprogger\TelegramBot\User\UserId;
+use Botasis\Runtime\Entity\User\User;
+use Botasis\Runtime\Entity\User\UserId;
+use Botasis\Runtime\Update\UpdateId;
+use Botasis\Runtime\Update\Update;
+use Botasis\Runtime\Response\Response;
+use Botasis\Runtime\Response\ResponseInterface;
+use Botasis\Runtime\Tests\UpdateRuntime\Middleware\Support\InvalidController;
+use Botasis\Runtime\Tests\UpdateRuntime\Middleware\Support\TestController;
+use Botasis\Runtime\Tests\UpdateRuntime\Middleware\Support\TestMiddleware;
+use Botasis\Runtime\Tests\UpdateRuntime\Middleware\Support\UseParamsController;
+use Botasis\Runtime\Tests\UpdateRuntime\Middleware\Support\UseParamsMiddleware;
+use Botasis\Runtime\UpdateRuntime\CallableFactory;
+use Botasis\Runtime\UpdateRuntime\InvalidCallableConfigurationException;
+use Botasis\Runtime\UpdateRuntime\Middleware\Exception\InvalidMiddlewareDefinitionException;
+use Botasis\Runtime\UpdateRuntime\Middleware\MiddlewareFactory;
+use Botasis\Runtime\UpdateRuntime\Middleware\MiddlewareFactoryInterface;
+use Botasis\Runtime\UpdateRuntime\Middleware\MiddlewareInterface;
+use Botasis\Runtime\UpdateRuntime\RequestHandlerInterface;
 use Yiisoft\Test\Support\Container\SimpleContainer;
 
 final class MiddlewareFactoryTest extends TestCase
@@ -43,7 +43,7 @@ final class MiddlewareFactoryTest extends TestCase
         self::assertSame(
             'test message',
             $middleware->process(
-                $this->getTelegramRequest(),
+                $this->getTelegramUpdate(),
                 $this->createMock(RequestHandlerInterface::class)
             )->getMessages()[0]?->text
         );
@@ -54,13 +54,13 @@ final class MiddlewareFactoryTest extends TestCase
         $container = $this->getContainer([TestController::class => new TestController()]);
         $middleware = $this->getMiddlewareFactory($container)->create(
             static function (): ResponseInterface {
-                return (new Response())->withCallbackResponse(new TelegramCallbackResponse('418'));
+                return (new Response())->withCallbackResponse(new CallbackResponse('418'));
             }
         );
         self::assertSame(
             '418',
             $middleware->process(
-                $this->getTelegramRequest(),
+                $this->getTelegramUpdate(),
                 $this->createMock(RequestHandlerInterface::class)
             )->getCallbackResponse()?->id
         );
@@ -77,7 +77,7 @@ final class MiddlewareFactoryTest extends TestCase
         self::assertSame(
             '42',
             $middleware->process(
-                $this->getTelegramRequest(),
+                $this->getTelegramUpdate(),
                 $this->createMock(RequestHandlerInterface::class)
             )->getCallbackResponse()?->id
         );
@@ -91,7 +91,7 @@ final class MiddlewareFactoryTest extends TestCase
         self::assertSame(
             'fake-id',
             $middleware->process(
-                $this->getTelegramRequest(),
+                $this->getTelegramUpdate(),
                 $this->getRequestHandler()
             )->getCallbackResponse()?->id
         );
@@ -101,7 +101,7 @@ final class MiddlewareFactoryTest extends TestCase
     {
         $container = $this->getContainer([UseParamsController::class => new UseParamsController()]);
         $middleware = $this->getMiddlewareFactory($container)->create([UseParamsController::class, 'index']);
-        $request = $this->getTelegramRequest();
+        $request = $this->getTelegramUpdate();
 
         self::assertSame(
             $request->chatId,
@@ -123,7 +123,7 @@ final class MiddlewareFactoryTest extends TestCase
 
         $this->expectException(InvalidMiddlewareDefinitionException::class);
         $middleware->process(
-            $this->getTelegramRequest(),
+            $this->getTelegramUpdate(),
             $this->createMock(RequestHandlerInterface::class)
         );
     }
@@ -147,7 +147,7 @@ final class MiddlewareFactoryTest extends TestCase
 
         $this->expectException(InvalidMiddlewareDefinitionException::class);
         $middleware->process(
-            $this->getTelegramRequest(),
+            $this->getTelegramUpdate(),
             $this->createMock(RequestHandlerInterface::class)
         );
     }
@@ -191,21 +191,33 @@ final class MiddlewareFactoryTest extends TestCase
     private function getRequestHandler(): RequestHandlerInterface
     {
         return new class () implements RequestHandlerInterface {
-            public function handle(TelegramRequest $request): ResponseInterface
+            public function handle(Update $update): ResponseInterface
             {
-                return (new Response())->withCallbackResponse(new TelegramCallbackResponse('default-id'));
+                return (new Response())->withCallbackResponse(new CallbackResponse('default-id'));
             }
         };
     }
 
-    private function getTelegramRequest(): TelegramRequest
+    private function getTelegramUpdate(): Update
     {
-        return new TelegramRequest(
-            new RequestId(123),
+        return new Update(
+            new UpdateId(123),
             'chatId',
             'messageId',
             'data',
-            new User(new UserId('user-id')),
+            new User(
+                new UserId('user-id'),
+                false,
+                'testUser',
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+            ),
             []
         );
     }

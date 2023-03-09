@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Viktorprogger\TelegramBot\UpdateRuntime\Middleware;
+namespace Botasis\Runtime\UpdateRuntime\Middleware;
 
 /**
  * Creates a PSR-15 middleware based on the definition provided.

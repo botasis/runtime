@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Viktorprogger\TelegramBot\UpdateRuntime;
+namespace Botasis\Runtime\UpdateRuntime;
 
-use Viktorprogger\TelegramBot\Request\TelegramRequest;
-use Viktorprogger\TelegramBot\Response\ResponseInterface;
+use Botasis\Runtime\Update\Update;
+use Botasis\Runtime\Response\ResponseInterface;
 
 interface RequestHandlerInterface
 {
@@ -14,5 +14,5 @@ interface RequestHandlerInterface
      *
      * May call other collaborating code to generate the response.
      */
-    public function handle(TelegramRequest $request): ResponseInterface;
+    public function handle(Update $update): ResponseInterface;
 }
