@@ -62,7 +62,7 @@
             "source-directory": "config"
         },
         "config-plugin": {
-            "common": "common.php",
+            "di": "common.php",
             "params": "params.php"
         }
     }
