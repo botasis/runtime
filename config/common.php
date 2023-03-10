@@ -16,8 +16,8 @@ return [
     ClientInterface::class => [
         'class' => ClientPsr::class,
         '__construct()' => [
-            'token' => $params['viktorprogger/telegram-bot']['bot token'],
-            'errorsToIgnore' => $params['viktorprogger/telegram-bot']['errors to ignore'],
+            'token' => $params['botasis/telegram-bot']['bot token'],
+            'errorsToIgnore' => $params['botasis/telegram-bot']['errors to ignore'],
         ],
     ],
 ];

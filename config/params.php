@@ -6,7 +6,7 @@ use Botasis\Runtime\Console\GetUpdatesCommand;
 use Botasis\Runtime\Console\SetTelegramWebhookCommand;
 
 return [
-    'botasis/bot' => [
+    'botasis/telegram-bot' => [
         'bot token' => '',
         'errors to ignore' => [],
     ],
