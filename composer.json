@@ -9,11 +9,10 @@
         "chat": "https://t.me/viktorprogger_blog",
         "source": "https://github.com/botasis/runtime"
     },
-    "minimum-stability": "dev",
-    "prefer-stable": true,
+    "minimum-stability": "stable",
     "require": {
         "php": "^8.2",
-        "botasis/telegram-client": "dev-main",
+        "botasis/telegram-client": "0.1.0",
         "psr/container": "^2.0",
         "psr/log": "^1.0.0||^2.0.0||^3.0.0",
         "yiisoft/friendly-exception": "^1.1",
