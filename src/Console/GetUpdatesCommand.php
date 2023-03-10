@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Botasis\Runtime\Console;
 
-use Botasis\Client\Telegram\Client\TelegramClientInterface;
+use Botasis\Client\Telegram\Client\ClientInterface;
+use Botasis\Runtime\Application;
+use Botasis\Runtime\Update\UpdateFactory;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Botasis\Runtime\Update\UpdateFactory;
-use Botasis\Runtime\UpdateRuntime\Application;
 
 final class GetUpdatesCommand extends Command
 {
@@ -17,7 +17,7 @@ final class GetUpdatesCommand extends Command
     protected static $defaultDescription = 'Get updates from the bot and process them';
 
     public function __construct(
-        private readonly TelegramClientInterface $client,
+        private readonly ClientInterface $client,
         private readonly Application $application,
         private readonly UpdateFactory $requestFactory,
         string $name = null,

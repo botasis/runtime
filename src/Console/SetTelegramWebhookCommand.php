@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Botasis\Runtime\Console;
 
-use Botasis\Client\Telegram\Client\TelegramClientInterface;
+use Botasis\Client\Telegram\Client\ClientInterface;
 use InvalidArgumentException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\QuestionHelper;
@@ -22,7 +22,7 @@ final class SetTelegramWebhookCommand extends Command
     protected static $defaultDescription = 'Set TG webhook address';
 
     public function __construct(
-        private readonly TelegramClientInterface $client,
+        private readonly ClientInterface $client,
         private readonly QuestionHelper $questionHelper,
         string $name = null
     ) {
