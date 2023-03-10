@@ -6,14 +6,14 @@ use Botasis\Runtime\Console\GetUpdatesCommand;
 use Botasis\Runtime\Console\SetTelegramWebhookCommand;
 
 return [
-    'viktorprogger/telegram-bot' => [
+    'botasis/bot' => [
         'bot token' => '',
         'errors to ignore' => [],
     ],
     'yiisoft/yii-console' => [
         'commands' => [
-            'viktorprogger/telegram/updates' => GetUpdatesCommand::class,
-            'viktorprogger/telegram/set-webhook' => SetTelegramWebhookCommand::class,
+            'botasis/telegram/updates' => GetUpdatesCommand::class,
+            'botasis/telegram/set-webhook' => SetTelegramWebhookCommand::class,
         ],
     ],
 ];

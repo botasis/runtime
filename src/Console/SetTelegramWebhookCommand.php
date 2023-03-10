@@ -18,7 +18,7 @@ use function str_starts_with;
 
 final class SetTelegramWebhookCommand extends Command
 {
-    protected static $defaultName = 'viktorprogger/telegram/set-webhook';
+    protected static $defaultName = 'botasis/telegram/set-webhook';
     protected static $defaultDescription = 'Set TG webhook address';
 
     public function __construct(

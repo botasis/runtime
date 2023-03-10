@@ -13,7 +13,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 final class GetUpdatesCommand extends Command
 {
-    protected static $defaultName = 'viktorprogger/telegram/updates';
+    protected static $defaultName = 'botasis/telegram/updates';
     protected static $defaultDescription = 'Get updates from the bot and process them';
 
     public function __construct(
