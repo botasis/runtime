@@ -13,12 +13,12 @@ final readonly class UserFactory
     public function create(array $userData): User
     {
         return new User(
-            new UserId($userData['id']),
+            new UserId((string) $userData['id']),
             (bool) $userData['is_bot'],
-            $userData['first_name'],
-            $userData['last_name'],
-            $userData['username'],
-            $userData['language_code'],
+            $userData['first_name'] ?? null,
+            $userData['last_name'] ?? null,
+            $userData['username'] ?? null,
+            $userData['language_code'] ?? null,
             isset($userData['is_premium']) ? (bool) $userData['is_premium'] : null,
             isset($userData['added_to_attachment_menu']) ? (bool) $userData['added_to_attachment_menu'] : null,
             isset($userData['can_join_groups']) ? (bool) $userData['can_join_groups'] : null,
