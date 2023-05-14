@@ -12,7 +12,7 @@
     "minimum-stability": "stable",
     "require": {
         "php": "^8.2",
-        "botasis/telegram-client": "0.1.0",
+        "botasis/telegram-client": "^0.1",
         "psr/container": "^2.0",
         "psr/log": "^1.0.0||^2.0.0||^3.0.0",
         "yiisoft/friendly-exception": "^1.1",
