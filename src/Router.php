@@ -34,19 +34,19 @@ final readonly class Router
         $this->rulesStatic = $rulesStatic;
     }
 
-    public function match(Update $request): UpdateHandlerInterface
+    public function match(Update $update): UpdateHandlerInterface
     {
-        if (isset($this->rulesStatic[$request->requestData])) {
-            return $this->container->get($this->rulesStatic[$request->requestData]); // TODO validate action
+        if (isset($this->rulesStatic[$update->requestData])) {
+            return $this->container->get($this->rulesStatic[$update->requestData]); // TODO validate action
         }
 
         foreach ($this->routes as $route) {
-            if ($route['rule']($request->requestData)) {
+            if ($route['rule']($update)) {
                 return $this->container->get($route['action']); // TODO validate action
             }
         }
 
-        throw new NotFoundException($request);
+        throw new NotFoundException($update);
     }
 
     private function getRuleStatic(array $route): array
