@@ -11,7 +11,7 @@ use stdClass;
 
 final class InvalidMiddlewareDefinitionExceptionTest extends TestCase
 {
-    public function dataBase(): array
+    public static function dataBase(): array
     {
         return [
             [
@@ -45,7 +45,7 @@ final class InvalidMiddlewareDefinitionExceptionTest extends TestCase
         self::assertStringEndsWith('. Got ' . $expected . '.', $exception->getMessage());
     }
 
-    public function dataUnknownDefinition(): array
+    public static function dataUnknownDefinition(): array
     {
         return [
             [42],

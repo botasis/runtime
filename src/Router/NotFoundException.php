@@ -1,6 +1,6 @@
 <?php
 
-namespace Botasis\Runtime;
+namespace Botasis\Runtime\Router;
 
 use Botasis\Runtime\Update\Update;
 use RuntimeException;

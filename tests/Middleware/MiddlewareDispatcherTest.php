@@ -150,7 +150,7 @@ final class MiddlewareDispatcherTest extends TestCase
         }
     }
 
-    public function dataHasMiddlewares(): array
+    public static function dataHasMiddlewares(): array
     {
         return [
             [[], false],
