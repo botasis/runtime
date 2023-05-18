@@ -19,11 +19,20 @@ interface ResponseInterface
 
     public function withKeyboardUpdate(InlineKeyboardUpdate $update): ResponseInterface;
 
+    /**
+     * @return Message[]
+     */
     public function getMessages(): array;
 
+    /**
+     * @return MessageUpdate[]
+     */
     public function getMessageUpdates(): array;
 
     public function getCallbackResponse(): ?CallbackResponse;
 
+    /**
+     * @return InlineKeyboardUpdate[]
+     */
     public function getKeyboardUpdates(): array;
 }
