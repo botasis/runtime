@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Botasis\Runtime\Middleware\Implementation;
 
 use Botasis\Runtime\Middleware\MiddlewareInterface;
-use Botasis\Runtime\NotFoundException;
 use Botasis\Runtime\Response\ResponseInterface;
-use Botasis\Runtime\Router;
+use Botasis\Runtime\Router\NotFoundException;
+use Botasis\Runtime\Router\Router;
 use Botasis\Runtime\Update\Update;
 use Botasis\Runtime\UpdateHandlerInterface;
 
