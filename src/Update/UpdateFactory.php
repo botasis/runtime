@@ -24,7 +24,7 @@ final readonly class UpdateFactory
     {
         $message = $update['message'] ?? $update['callback_query'] ?? [];
         if ($message !== []) {
-            $data = trim((string) ($message['text'] ?? $message['data']));
+            $data = $message['text'] ?? $message['data'] ?? null;
             $messageId = (string)($message['message_id'] ?? $message['message']['message_id'] ?? '');
         } else {
             $data = $messageId = null;
