@@ -9,6 +9,7 @@ use Botasis\Runtime\Application;
 use Botasis\Runtime\Update\UpdateFactory;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 final class GetUpdatesCommand extends Command
@@ -25,10 +26,21 @@ final class GetUpdatesCommand extends Command
         parent::__construct($name);
     }
 
+    protected function configure(): void
+    {
+        $this->addOption(
+            name: 'allowed-updates',
+            shortcut: 'u',
+            mode: InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
+            description: 'Allowed updates type. For a complete list of available update types see https://core.telegram.org/bots/api#update',
+            default: ['message', 'callback_query']
+        );
+    }
+
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $update = null;
-        $data = ['allowed_updates' => ['message', 'callback_query']];
+        $data = ['allowed_updates' => $input->getOption('allowed-updates')];
         foreach ($this->client->send('getUpdates', $data)['result'] ?? [] as $update) {
             $update = $this->requestFactory->create($update);
             $this->application->handle($update);
