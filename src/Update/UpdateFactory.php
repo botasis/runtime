@@ -66,8 +66,8 @@ final readonly class UpdateFactory
             return null;
         }
 
-        if (!str_starts_with($id, '-')) {
-            $id = "-$id";
+        if (str_starts_with($id, '-')) {
+            $id = substr($id, 1);
         }
 
         return $id;
