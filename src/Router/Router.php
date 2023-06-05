@@ -66,8 +66,9 @@ final class Router
 
         if ($route === null) {
             foreach ($this->routes as $key => $routeConfig) {
-                if ($routeConfig[self::ROUTE_KEY_RULE]($update)) {
+                if (isset($routeConfig[self::ROUTE_KEY_RULE]) && $routeConfig[self::ROUTE_KEY_RULE]($update)) {
                     $route = $key;
+
                     break;
                 }
             }
