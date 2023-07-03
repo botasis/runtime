@@ -104,7 +104,7 @@ final class Router
     {
         $middlewares = $route[self::ROUTE_KEY_MIDDLEWARES] ?? [];
         $middlewares[] = $this->getActionWrapped($route[self::ROUTE_KEY_ACTION]);
-        $dispatcher = $this->middlewareDispatcher->withMiddlewares($middlewares);
+        $dispatcher = $this->middlewareDispatcher->withMiddlewares(...$middlewares);
 
         return new class ($dispatcher, $this->getEmptyFallbackHandler()) implements UpdateHandlerInterface {
             public function __construct(

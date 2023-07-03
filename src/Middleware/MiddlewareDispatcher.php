@@ -51,14 +51,15 @@ final class MiddlewareDispatcher
      * Returns new instance with middleware handlers replaced with the ones provided.
      * Last specified handler will be executed first.
      *
-     * @param array[]|callable[]|string[] $middlewareDefinitions Each array element is:
+     * @param MiddlewareInterface[]|array[]|callable[]|string[] $middlewareDefinitions Each array element is:
      *
-     * - A name of PSR-15 middleware class. The middleware instance will be obtained from container executed.
+     * - A name of a middleware class. The middleware instance will be obtained from container executed.
      * - A callable with `function(ServerRequestInterface $request, RequestHandlerInterface $handler):
      *     ResponseInterface` signature.
-     * - A controller handler action in format `[TestController::class, 'index']`. `TestController` instance will
+     * - A handler action in format `[TestController::class, 'index']`. `TestController` instance will
      *   be created and `index()` method will be executed.
      * - A function returning a middleware. The middleware returned will be executed.
+     * - A middleware object
      *
      * For handler action and callable
      * typed parameters are automatically injected using dependency injection container.
@@ -67,7 +68,7 @@ final class MiddlewareDispatcher
      *
      * @return self
      */
-    public function withMiddlewares(array $middlewareDefinitions): self
+    public function withMiddlewares(MiddlewareInterface|array|callable|string ...$middlewareDefinitions): self
     {
         $new = clone $this;
         $new->middlewareDefinitions = array_reverse($middlewareDefinitions);

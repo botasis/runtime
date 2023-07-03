@@ -4,73 +4,67 @@ declare(strict_types=1);
 
 namespace Botasis\Runtime\Response;
 
-use Botasis\Client\Telegram\Entity\CallbackResponse;
-use Botasis\Client\Telegram\Entity\InlineKeyboard\InlineKeyboardUpdate;
-use Botasis\Client\Telegram\Entity\Message\Message;
-use Botasis\Client\Telegram\Entity\Message\MessageUpdate;
+use Botasis\Client\Telegram\Request\CallbackResponse;
+use Botasis\Client\Telegram\Request\InlineKeyboard\InlineKeyboardUpdate;
+use Botasis\Client\Telegram\Request\Message\Message;
+use Botasis\Client\Telegram\Request\Message\MessageUpdate;
+use Botasis\Client\Telegram\Request\TelegramRequestInterface;
 
 final class Response implements ResponseInterface
 {
-    /** @var Message[] */
-    private array $messages = [];
+    /** @var TelegramRequestInterface[] */
+    private array $requests = [];
 
-    private ?CallbackResponse $callbackResponse = null;
+    private bool $hasCallbackResponse = false;
 
-    /** @var InlineKeyboardUpdate[] */
-    private array $keyboardUpdates = [];
-
-    /** @var MessageUpdate[] */
-    private array $messageUpdates = [];
-
-    public function withMessage(Message $message): ResponseInterface
+    public function withRequest(TelegramRequestInterface $request): ResponseInterface
     {
         $instance = clone $this;
-        $instance->messages[] = $message;
+
+        if ($request->getMethod() === CallbackResponse::METHOD) {
+            $instance->hasCallbackResponse = true;
+            array_unshift($instance->requests, $request);
+        } else {
+            $instance->requests[] = $request;
+        }
 
         return $instance;
     }
 
-    public function withMessageUpdate(MessageUpdate $message): ResponseInterface
+    public function withRequestReplaced(TelegramRequestInterface $search, ?TelegramRequestInterface $replace): ResponseInterface
     {
         $instance = clone $this;
-        $instance->messageUpdates[] = $message;
+
+        $requests = $this->requests;
+        foreach ($requests as $index => $request) {
+            if ($request === $search) {
+                if ($replace === null) {
+                    unset($requests[$index]);
+                } elseif ($request->getMethod() !== CallbackResponse::METHOD && $replace?->getMethod() === CallbackResponse::METHOD) {
+                    unset($requests[$index]);
+                    array_unshift($requests, $replace);
+                } elseif($replace->getMethod() !== CallbackResponse::METHOD && $request?->getMethod() === CallbackResponse::METHOD) {
+                    unset($requests[$index]);
+                    $requests[] = $replace;
+                } else {
+                    $requests[$index] = $replace;
+                }
+
+                break;
+            }
+        }
+        $instance->requests = $requests;
 
         return $instance;
     }
 
-    public function withCallbackResponse(CallbackResponse $callbackResponse): ResponseInterface
+    public function getRequests(): array
     {
-        $instance = clone $this;
-        $instance->callbackResponse = $callbackResponse;
-
-        return $instance;
+        return $this->requests;
     }
 
-    public function withKeyboardUpdate(InlineKeyboardUpdate $update): ResponseInterface
+    public function hasCallbackResponse(): bool
     {
-        $instance = clone $this;
-        $instance->keyboardUpdates[] = $update;
-
-        return $instance;
-    }
-
-    public function getMessages(): array
-    {
-        return $this->messages;
-    }
-
-    public function getMessageUpdates(): array
-    {
-        return $this->messageUpdates;
-    }
-
-    public function getCallbackResponse(): ?CallbackResponse
-    {
-        return $this->callbackResponse;
-    }
-
-    public function getKeyboardUpdates(): array
-    {
-        return $this->keyboardUpdates;
+        return $this->hasCallbackResponse;
     }
 }

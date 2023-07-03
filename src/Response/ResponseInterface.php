@@ -4,35 +4,22 @@ declare(strict_types=1);
 
 namespace Botasis\Runtime\Response;
 
-use Botasis\Client\Telegram\Entity\CallbackResponse;
-use Botasis\Client\Telegram\Entity\InlineKeyboard\InlineKeyboardUpdate;
-use Botasis\Client\Telegram\Entity\Message\Message;
-use Botasis\Client\Telegram\Entity\Message\MessageUpdate;
+use Botasis\Client\Telegram\Request\CallbackResponse;
+use Botasis\Client\Telegram\Request\InlineKeyboard\InlineKeyboardUpdate;
+use Botasis\Client\Telegram\Request\Message\Message;
+use Botasis\Client\Telegram\Request\Message\MessageUpdate;
+use Botasis\Client\Telegram\Request\TelegramRequestInterface;
 
 interface ResponseInterface
 {
-    public function withMessage(Message $message): ResponseInterface;
+    public function withRequest(TelegramRequestInterface $request): ResponseInterface;
 
-    public function withMessageUpdate(MessageUpdate $message): ResponseInterface;
-
-    public function withCallbackResponse(CallbackResponse $callbackResponse): ResponseInterface;
-
-    public function withKeyboardUpdate(InlineKeyboardUpdate $update): ResponseInterface;
+    public function withRequestReplaced(TelegramRequestInterface $search, ?TelegramRequestInterface $replace): ResponseInterface;
 
     /**
-     * @return Message[]
+     * @return TelegramRequestInterface[]
      */
-    public function getMessages(): array;
+    public function getRequests(): array;
 
-    /**
-     * @return MessageUpdate[]
-     */
-    public function getMessageUpdates(): array;
-
-    public function getCallbackResponse(): ?CallbackResponse;
-
-    /**
-     * @return InlineKeyboardUpdate[]
-     */
-    public function getKeyboardUpdates(): array;
+    public function hasCallbackResponse(): bool;
 }

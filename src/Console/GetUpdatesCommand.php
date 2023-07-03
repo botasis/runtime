@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Botasis\Runtime\Console;
 
 use Botasis\Client\Telegram\Client\ClientInterface;
+use Botasis\Client\Telegram\Request\TelegramRequest;
 use Botasis\Runtime\Application;
 use Botasis\Runtime\Update\UpdateFactory;
 use Symfony\Component\Console\Command\Command;
@@ -41,13 +42,16 @@ final class GetUpdatesCommand extends Command
     {
         $update = null;
         $data = ['allowed_updates' => $input->getOption('allowed-updates')];
-        foreach ($this->client->send('getUpdates', $data)['result'] ?? [] as $update) {
+        $request = new TelegramRequest('getUpdates', $data);
+
+        foreach ($this->client->send($request)['result'] ?? [] as $update) {
             $update = $this->requestFactory->create($update);
             $this->application->handle($update);
         }
+
         if ($update !== null) {
             $data['offset'] = $update->id->value + 1;
-            $this->client->send('getUpdates', $data);
+            $this->client->send(new TelegramRequest('getUpdates', $data));
         }
 
         return 0;

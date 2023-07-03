@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Botasis\Runtime\Tests\Middleware;
 
-use Botasis\Client\Telegram\Entity\CallbackResponse;
+use Botasis\Client\Telegram\Request\CallbackResponse;
 use Botasis\Runtime\CallableFactory;
 use Botasis\Runtime\Entity\User\User;
 use Botasis\Runtime\Entity\User\UserId;
@@ -45,7 +45,7 @@ final class MiddlewareFactoryTest extends TestCase
             $middleware->process(
                 $this->getTelegramUpdate(),
                 $this->createMock(UpdateHandlerInterface::class)
-            )->getMessages()[0]?->text
+            )->getRequests()[0]?->text
         );
     }
 
@@ -54,7 +54,7 @@ final class MiddlewareFactoryTest extends TestCase
         $container = $this->getContainer([TestController::class => new TestController()]);
         $middleware = $this->getMiddlewareFactory($container)->create(
             static function (): ResponseInterface {
-                return (new Response())->withCallbackResponse(new CallbackResponse('418'));
+                return (new Response())->withRequest(new CallbackResponse('418'));
             }
         );
         self::assertSame(
@@ -62,7 +62,7 @@ final class MiddlewareFactoryTest extends TestCase
             $middleware->process(
                 $this->getTelegramUpdate(),
                 $this->createMock(UpdateHandlerInterface::class)
-            )->getCallbackResponse()?->id
+            )->getRequests()[0]?->id
         );
     }
 
@@ -79,7 +79,7 @@ final class MiddlewareFactoryTest extends TestCase
             $middleware->process(
                 $this->getTelegramUpdate(),
                 $this->createMock(UpdateHandlerInterface::class)
-            )->getCallbackResponse()?->id
+            )->getRequests()[0]?->id
         );
     }
 
@@ -93,7 +93,7 @@ final class MiddlewareFactoryTest extends TestCase
             $middleware->process(
                 $this->getTelegramUpdate(),
                 $this->getRequestHandler()
-            )->getCallbackResponse()?->id
+            )->getRequests()[0]?->id
         );
     }
 
@@ -101,14 +101,15 @@ final class MiddlewareFactoryTest extends TestCase
     {
         $container = $this->getContainer([UseParamsController::class => new UseParamsController()]);
         $middleware = $this->getMiddlewareFactory($container)->create([UseParamsController::class, 'index']);
-        $request = $this->getTelegramUpdate();
+        $update = $this->getTelegramUpdate();
 
+        /** Key "0" contains a {@see CallbackResponse} */
         self::assertSame(
-            $request->chatId,
+            $update->chatId,
             $middleware->process(
-                $request,
+                $update,
                 $this->getRequestHandler()
-            )->getMessages()[0]?->chatId
+            )->getRequests()[1]?->chatId
         );
     }
 
@@ -193,7 +194,7 @@ final class MiddlewareFactoryTest extends TestCase
         return new class () implements UpdateHandlerInterface {
             public function handle(Update $update): ResponseInterface
             {
-                return (new Response())->withCallbackResponse(new CallbackResponse('default-id'));
+                return (new Response())->withRequest(new CallbackResponse('default-id'));
             }
         };
     }
@@ -203,6 +204,7 @@ final class MiddlewareFactoryTest extends TestCase
         return new Update(
             new UpdateId(123),
             'chatId',
+            null,
             'messageId',
             'data',
             new User(

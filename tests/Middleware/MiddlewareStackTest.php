@@ -24,6 +24,7 @@ final class MiddlewareStackTest extends TestCase
         $request = new Update(
             new UpdateId(123),
             'chatId',
+            null,
             'messageId',
             'data',
             new User(

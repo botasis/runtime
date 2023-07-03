@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Botasis\Runtime;
 
 use Botasis\Runtime\Middleware\MiddlewareDispatcher;
+use Botasis\Runtime\Response\ResponseInterface;
 use Botasis\Runtime\Update\Update;
 
 final readonly class Application
@@ -17,14 +18,15 @@ final readonly class Application
     }
 
     /**
-     * @param Update $request
+     * @param Update $update
      *
-     * @return void
-     * @see https://core.telegram.org/bots/api#update
+     * @return ResponseInterface
      */
-    public function handle(Update $request): void
+    public function handle(Update $update): ResponseInterface
     {
-        $response = $this->dispatcher->dispatch($request, $this->fallbackHandler);
+        $response = $this->dispatcher->dispatch($update, $this->fallbackHandler);
         $this->emitter->emit($response);
+
+        return $response;
     }
 }

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Botasis\Runtime\Tests;
 
-use Botasis\Client\Telegram\Entity\Message\Message;
-use Botasis\Client\Telegram\Entity\Message\MessageFormat;
+use Botasis\Client\Telegram\Request\Message\Message;
+use Botasis\Client\Telegram\Request\Message\MessageFormat;
 use Botasis\Runtime\CallableFactory;
 use Botasis\Runtime\Middleware\MiddlewareDispatcher;
 use Botasis\Runtime\Middleware\MiddlewareFactory;
@@ -49,7 +49,7 @@ final class RouterTest extends TestCase
                                     public function handle(Update $update): ResponseInterface
                                     {
                                         return (new Response())
-                                            ->withMessage(
+                                            ->withRequest(
                                                 new Message(
                                                     ($update->getAttribute('test') ?? '') . '4',
                                                     MessageFormat::TEXT,
@@ -65,10 +65,10 @@ final class RouterTest extends TestCase
             ],
         ];
         $router = $this->getRouter($routes);
-        $update = new Update(new UpdateId(1), '1', '1', 'test', null, []);
+        $update = new Update(new UpdateId(1), '1', null, '1', 'test', null, []);
         $response = $router->match($update)->handle($update);
 
-        assertEquals('1234', $response->getMessages()[0]?->text);
+        assertEquals('1234', $response->getRequests()[0]?->text);
     }
 
     public function getRouter(array $routes): Router

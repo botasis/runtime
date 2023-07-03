@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Botasis\Runtime\Tests\Middleware\Support;
 
-use Botasis\Client\Telegram\Entity\Message\Message;
-use Botasis\Client\Telegram\Entity\Message\MessageFormat;
+use Botasis\Client\Telegram\Request\Message\Message;
+use Botasis\Client\Telegram\Request\Message\MessageFormat;
 use Botasis\Runtime\Response\ResponseInterface;
 use Botasis\Runtime\Update\Update;
 use Botasis\Runtime\UpdateHandlerInterface;
@@ -16,7 +16,7 @@ final class UseParamsController
     {
         return $handler
             ->handle($request)
-            ->withMessage(
+            ->withRequest(
                 new Message('message text', MessageFormat::TEXT, $request->chatId)
             );
     }
