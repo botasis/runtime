@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Botasis\Runtime\Console;
 
 use Botasis\Client\Telegram\Client\ClientInterface;
+use Botasis\Client\Telegram\Request\TelegramRequest;
 use InvalidArgumentException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\QuestionHelper;
@@ -122,7 +123,7 @@ final class SetTelegramWebhookCommand extends Command
             $fields['secret_token'] = $token;
         }
 
-        $this->client->send('setWebhook', $fields);
+        $this->client->send(new TelegramRequest('setWebhook', $fields));
 
         return 0;
     }
