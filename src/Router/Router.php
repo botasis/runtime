@@ -26,9 +26,9 @@ final class Router
      * @psalm-param $routes list<array{rule: callable, action: class-string<UpdateHandlerInterface>}>
      */
     public function __construct(
-        private ContainerInterface $container,
-        private MiddlewareDispatcher $middlewareDispatcher,
-        private array $routes,
+        private readonly ContainerInterface $container,
+        private readonly MiddlewareDispatcher $middlewareDispatcher,
+        private readonly array $routes,
     ) {
         $rulesStatic = [];
         foreach ($this->routes as $key => &$route) {
@@ -79,7 +79,7 @@ final class Router
         }
 
         if (!isset($this->compiled[$route])) {
-            $this->compiled[$route] = $this->compileRoute($this->routes[$route], $update);
+            $this->compiled[$route] = $this->compileRoute($this->routes[$route]);
         }
 
         return $this->compiled[$route];

@@ -5,9 +5,6 @@ declare(strict_types=1);
 namespace Botasis\Runtime\Response;
 
 use Botasis\Client\Telegram\Request\CallbackResponse;
-use Botasis\Client\Telegram\Request\InlineKeyboard\InlineKeyboardUpdate;
-use Botasis\Client\Telegram\Request\Message\Message;
-use Botasis\Client\Telegram\Request\Message\MessageUpdate;
 use Botasis\Client\Telegram\Request\TelegramRequestInterface;
 
 final class Response implements ResponseInterface
@@ -40,10 +37,10 @@ final class Response implements ResponseInterface
             if ($request === $search) {
                 if ($replace === null) {
                     unset($requests[$index]);
-                } elseif ($request->getMethod() !== CallbackResponse::METHOD && $replace?->getMethod() === CallbackResponse::METHOD) {
+                } elseif ($request->getMethod() !== CallbackResponse::METHOD && $replace->getMethod() === CallbackResponse::METHOD) {
                     unset($requests[$index]);
                     array_unshift($requests, $replace);
-                } elseif($replace->getMethod() !== CallbackResponse::METHOD && $request?->getMethod() === CallbackResponse::METHOD) {
+                } elseif($replace->getMethod() !== CallbackResponse::METHOD && $request->getMethod() === CallbackResponse::METHOD) {
                     unset($requests[$index]);
                     $requests[] = $replace;
                 } else {
