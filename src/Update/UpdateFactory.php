@@ -50,7 +50,7 @@ final readonly class UpdateFactory
             return null;
         }
 
-        $id = $this->getChatId($data);
+        $id = $data['id'] ?? null;
         if ($id === null) {
             return null;
         }
@@ -99,21 +99,6 @@ final readonly class UpdateFactory
             ?? $update['chat_member']['chat']
             ?? $update['chat_join_request']['chat']
             ?? null;
-    }
-
-    private function getChatId(?array $chat): ?string
-    {
-        $id = $chat['id'] ?? null;
-
-        if ($id === null) {
-            return null;
-        }
-
-        if (str_starts_with($id, '-')) {
-            $id = substr($id, 1);
-        }
-
-        return $id;
     }
 
     private function getChatUsername(?array $chat): ?string

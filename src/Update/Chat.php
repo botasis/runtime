@@ -10,6 +10,7 @@ final readonly class Chat
         public string $id,
         public ChatType $type,
         public ?string $title,
+        /** Always starts with @ */
         public ?string $username,
         public ?string $firstName,
         public ?string $lastName,
