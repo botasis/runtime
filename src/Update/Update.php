@@ -12,8 +12,7 @@ final class Update
 
     public function __construct(
         public readonly UpdateId $id,
-        public readonly ?string $chatId,
-        public readonly ?string $chatName,
+        public readonly ?Chat $chat,
         public readonly ?string $messageId,
         public readonly ?string $requestData,
         public readonly ?User $user,
@@ -59,8 +58,7 @@ final class Update
     {
         return new self(
             $this->id,
-            $this->chatId,
-            $this->chatName,
+            $this->chat,
             $this->messageId,
             $this->requestData,
             $this->user,

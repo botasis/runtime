@@ -65,7 +65,7 @@ final class RouterTest extends TestCase
             ],
         ];
         $router = $this->getRouter($routes);
-        $update = new Update(new UpdateId(1), '1', null, '1', 'test', null, []);
+        $update = new Update(new UpdateId(1), null, '1', 'test', null, []);
         $response = $router->match($update)->handle($update);
 
         assertEquals('1234', $response->getRequests()[0]?->text);

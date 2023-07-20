@@ -20,6 +20,8 @@ use Botasis\Runtime\Tests\Middleware\Support\TestController;
 use Botasis\Runtime\Tests\Middleware\Support\TestMiddleware;
 use Botasis\Runtime\Tests\Middleware\Support\UseParamsController;
 use Botasis\Runtime\Tests\Middleware\Support\UseParamsMiddleware;
+use Botasis\Runtime\Update\Chat;
+use Botasis\Runtime\Update\ChatType;
 use Botasis\Runtime\Update\Update;
 use Botasis\Runtime\Update\UpdateId;
 use Botasis\Runtime\UpdateHandlerInterface;
@@ -105,7 +107,7 @@ final class MiddlewareFactoryTest extends TestCase
 
         /** Key "0" contains a {@see CallbackResponse} */
         self::assertSame(
-            $update->chatId,
+            $update->chat->id,
             $middleware->process(
                 $update,
                 $this->getRequestHandler()
@@ -203,8 +205,37 @@ final class MiddlewareFactoryTest extends TestCase
     {
         return new Update(
             new UpdateId(123),
-            'chatId',
-            null,
+            new Chat(
+                'chat-id',
+                ChatType::PRIVATE,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                [],
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                [],
+            ),
             'messageId',
             'data',
             new User(

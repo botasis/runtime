@@ -19,7 +19,6 @@ final class BeforeMiddlewareTest extends TestCase
         $middleware = $this->createMock(MiddlewareInterface::class);
         $request = new Update(
             new UpdateId(123),
-            'chatId',
             null,
             'messageId',
             'data',

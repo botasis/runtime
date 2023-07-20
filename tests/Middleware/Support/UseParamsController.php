@@ -17,7 +17,7 @@ final class UseParamsController
         return $handler
             ->handle($request)
             ->withRequest(
-                new Message('message text', MessageFormat::TEXT, $request->chatId)
+                new Message('message text', MessageFormat::TEXT, $request->chat->id)
             );
     }
 }

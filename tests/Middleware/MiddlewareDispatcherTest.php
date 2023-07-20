@@ -226,7 +226,6 @@ final class MiddlewareDispatcherTest extends TestCase
     {
         return new Update(
             new UpdateId(123),
-            'chatId',
             null,
             'messageId',
             'data',

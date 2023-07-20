@@ -89,7 +89,7 @@ final class ApplicationTest extends TestCase
         $httpClient->method('sendRequest')->willReturn($httpResponse);
 
 
-        $update = new Update(new UpdateId(1), '1', null, '1', 'test', null, []);
+        $update = new Update(new UpdateId(1), null, '1', 'test', null, []);
         $container = $this->createMock(ContainerInterface::class);
 
         $middlewareDispatcher = new MiddlewareDispatcher(
