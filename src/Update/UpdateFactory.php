@@ -50,8 +50,13 @@ final readonly class UpdateFactory
             return null;
         }
 
+        $id = $this->getChatId($data);
+        if ($id === null) {
+            return null;
+        }
+
         return new Chat(
-            $this->getChatId($data),
+            $id,
             ChatType::tryFrom($data['type']) ?? ChatType::UNKNOWN,
             $data['title'] ?? null,
             $this->getChatUsername($data),

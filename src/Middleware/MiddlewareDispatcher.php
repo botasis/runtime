@@ -20,7 +20,7 @@ final class MiddlewareDispatcher
     private ?MiddlewareStack $stack = null;
 
     /**
-     * @var array[]|callable[]|string[]
+     * @var array[]|callable[]|string[]|MiddlewareInterface[]
      */
     private array $middlewareDefinitions = [];
 
