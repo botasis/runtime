@@ -28,7 +28,7 @@ final class Router
     public function __construct(
         private readonly ContainerInterface $container,
         private readonly MiddlewareDispatcher $middlewareDispatcher,
-        private readonly array $routes,
+        private array $routes,
     ) {
         $rulesStatic = [];
         foreach ($this->routes as $key => &$route) {
