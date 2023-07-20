@@ -10,5 +10,5 @@ use Botasis\Runtime\UpdateHandlerInterface;
 
 interface MiddlewareInterface
 {
-    public function process(Update $request, UpdateHandlerInterface $handler): ResponseInterface;
+    public function process(Update $update, UpdateHandlerInterface $handler): ResponseInterface;
 }
