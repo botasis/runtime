@@ -6,6 +6,7 @@ namespace Botasis\Runtime\Response;
 
 use Botasis\Client\Telegram\Request\CallbackResponse;
 use Botasis\Client\Telegram\Request\TelegramRequestInterface;
+use Botasis\Runtime\Update\Update;
 
 final class Response implements ResponseInterface
 {
@@ -13,6 +14,18 @@ final class Response implements ResponseInterface
     private array $requests = [];
 
     private bool $hasCallbackResponse = false;
+
+    public function __construct(private Update $update)
+    {
+    }
+
+    public function withUpdate(Update $update): ResponseInterface
+    {
+        $instance = clone $this;
+        $instance->update = $update;
+
+        return $instance;
+    }
 
     public function withRequest(TelegramRequestInterface $request): ResponseInterface
     {
@@ -53,6 +66,11 @@ final class Response implements ResponseInterface
         $instance->requests = $requests;
 
         return $instance;
+    }
+
+    public function getUpdate(): Update
+    {
+        return $this->update;
     }
 
     public function getRequests(): array
