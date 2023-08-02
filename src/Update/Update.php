@@ -33,7 +33,8 @@ final class Update
 
     public function withAttribute(string $attribute, mixed $value): self
     {
-        $instance = $this->getNewRequest();
+        $instance = $this->getNewInstance();
+        $instance->attributes = $this->attributes;
         $instance->attributes[$attribute] = $value;
 
         return $instance;
@@ -42,7 +43,7 @@ final class Update
     public function withoutAttribute(string $attribute): self
     {
         if (isset($this->attributes[$attribute])) {
-            $instance = $this->getNewRequest();
+            $instance = $this->getNewInstance();
             unset($instance->attributes[$attribute]);
 
             return $instance;
@@ -54,7 +55,7 @@ final class Update
     /**
      * @return Update
      */
-    private function getNewRequest(): Update
+    private function getNewInstance(): Update
     {
         return new self(
             $this->id,
