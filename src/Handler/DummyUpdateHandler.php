@@ -13,6 +13,6 @@ final class DummyUpdateHandler implements UpdateHandlerInterface
 {
     public function handle(Update $update): ResponseInterface
     {
-        return new Response();
+        return new Response($update);
     }
 }

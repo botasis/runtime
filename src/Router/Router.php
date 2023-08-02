@@ -150,7 +150,7 @@ final class Router
             $this->emptyFallbackHandler = new class implements UpdateHandlerInterface {
                 public function handle(Update $update): ResponseInterface
                 {
-                    return new Response();
+                    return new Response($update);
                 }
             };
         }

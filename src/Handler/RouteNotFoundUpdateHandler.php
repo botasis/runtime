@@ -20,10 +20,10 @@ final readonly class RouteNotFoundUpdateHandler implements UpdateHandlerInterfac
     public function handle(Update $update): ResponseInterface
     {
         if ($update->chat !== null) {
-            return (new Response())
+            return (new Response($update))
                 ->withRequest(new Message($this->message, MessageFormat::TEXT, $update->chat->id));
         }
 
-        return new Response;
+        return new Response($update);
     }
 }
