@@ -8,7 +8,6 @@ use Botasis\Client\Telegram\Client\Exception\TelegramRequestException;
 use Botasis\Client\Telegram\Request\TelegramRequestInterface;
 use Botasis\Runtime\Update\Update;
 use Psr\EventDispatcher\StoppableEventInterface;
-use Psr\Http\Message\ResponseInterface;
 
 final class RequestErrorEvent implements StoppableEventInterface
 {
