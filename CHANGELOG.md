@@ -1,5 +1,6 @@
-# _____ Change Log
+# Botasis Runtime Change Log
 
-## 1.0.0 under development
+## 0.10.0 under development
 
-- Initial release.
+- Documentation is added.
+- UserRepositoryInterface is removed as it's not responsibility of the Runtime library and is not used here.
