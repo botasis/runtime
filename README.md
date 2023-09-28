@@ -89,7 +89,7 @@ If you don't want to use it, or you want to embed Botasis into your existing app
     *                                                it's {@see RequestFactory}.
     * @var StreamFactoryInterface $streamFactory - a PSR-17 HTTP stream factory. If you've installed the httpsoft/http-message package,
     *                                              it's {@see StreamFactory}.
-    * @var EventDispatcherInterface $eventDispatcher - a PSR- event dispatcher. If you've installed the yiisoft/event-dispatcher package,
+    * @var EventDispatcherInterface $eventDispatcher - a PSR-14 event dispatcher. If you've installed the yiisoft/event-dispatcher package,
     *                                                  it's {@see Dispatcher}.
     * @var ContainerInterface $container - a PST-11 DI container. If you've installed the yiisoft/di package,
     *                                      it's {@see Container}.
