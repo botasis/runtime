@@ -21,7 +21,7 @@ final class GetUpdatesCommand extends Command
     public function __construct(
         private readonly ClientInterface $client,
         private readonly Application $application,
-        private readonly UpdateFactory $requestFactory,
+        private readonly UpdateFactory $updateFactory,
         string $name = null,
     ) {
         parent::__construct($name);
@@ -45,7 +45,7 @@ final class GetUpdatesCommand extends Command
         $request = new TelegramRequest('getUpdates', $data);
 
         foreach ($this->client->send($request)['result'] ?? [] as $update) {
-            $update = $this->requestFactory->create($update);
+            $update = $this->updateFactory->create($update);
             $this->application->handle($update);
         }
 

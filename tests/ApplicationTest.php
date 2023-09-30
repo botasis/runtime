@@ -16,7 +16,11 @@ use Botasis\Runtime\Middleware\MiddlewareFactory;
 use Botasis\Runtime\Middleware\MiddlewareInterface;
 use Botasis\Runtime\Response\Response;
 use Botasis\Runtime\Response\ResponseInterface;
+use Botasis\Runtime\Router\Group;
+use Botasis\Runtime\Router\Route;
 use Botasis\Runtime\Router\Router;
+use Botasis\Runtime\Router\RuleDynamic;
+use Botasis\Runtime\Router\RuleStatic;
 use Botasis\Runtime\Update\Update;
 use Botasis\Runtime\Update\UpdateId;
 use Botasis\Runtime\UpdateHandlerInterface;
@@ -28,6 +32,7 @@ use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\StreamInterface;
+
 use function PHPUnit\Framework\assertEquals;
 
 final class ApplicationTest extends TestCase
@@ -45,7 +50,7 @@ final class ApplicationTest extends TestCase
                     MessageFormat::TEXT,
                     'test',
                 );
-                return (new Response())
+                return (new Response($update))
                     ->withRequest(
                         $message->onSuccess(function () use ($handler, $message) {
                             $handler->successCheck = $message->text . '5';
@@ -54,29 +59,16 @@ final class ApplicationTest extends TestCase
             }
         };
         $routes = [
-            [
-                Router::ROUTE_KEY_RULE => static fn() => true,
-                Router::ROUTE_KEY_MIDDLEWARES => [
-                    $this->getMiddleware('1'),
-                ],
-                Router::ROUTE_KEY_ROUTES_LIST => [
-                    [
-                        Router::ROUTE_KEY_RULE_STATIC => 'test',
-                        Router::ROUTE_KEY_MIDDLEWARES => [
-                            $this->getMiddleware('2'),
-                        ],
-                        Router::ROUTE_KEY_ROUTES_LIST => [
-                            [
-                                Router::ROUTE_KEY_RULE => static fn() => true,
-                                Router::ROUTE_KEY_MIDDLEWARES => [
-                                    $this->getMiddleware('3'),
-                                ],
-                                Router::ROUTE_KEY_ACTION => $updateHandler,
-                            ],
-                        ],
-                    ],
-                ]
-            ],
+            (new Group(
+                new RuleDynamic(static fn() => true),
+                (new Group(
+                    new RuleStatic('test'),
+                    (new Route(
+                        new RuleDynamic(static fn() => true),
+                        $updateHandler,
+                    ))->withMiddlewares($this->getMiddleware('3')),
+                ))->withMiddlewares($this->getMiddleware('2')),
+            ))->withMiddlewares($this->getMiddleware('1')),
         ];
 
 
@@ -91,13 +83,14 @@ final class ApplicationTest extends TestCase
 
         $update = new Update(new UpdateId(1), null, '1', 'test', null, []);
         $container = $this->createMock(ContainerInterface::class);
+        $eventDispatcher = $this->createMock(EventDispatcherInterface::class);
 
         $middlewareDispatcher = new MiddlewareDispatcher(
             new MiddlewareFactory(
                 $container,
                 new CallableFactory($container)
             ),
-            $this->createMock(EventDispatcherInterface::class),
+            $eventDispatcher,
         );
 
         $apiRequest = $this->createMock(RequestInterface::class);
@@ -108,19 +101,22 @@ final class ApplicationTest extends TestCase
         $requestFactory->method('createRequest')->willReturn($apiRequest);
 
         $response = (new Application(
-            new Emitter(new ClientPsr(
-                'token',
-                $httpClient,
-                $requestFactory,
-                $this->createMock(StreamFactoryInterface::class),
-            )),
+            new Emitter(
+                new ClientPsr(
+                    'token',
+                    $httpClient,
+                    $requestFactory,
+                    $this->createMock(StreamFactoryInterface::class),
+                ),
+                $eventDispatcher,
+            ),
             $this->createMock(UpdateHandlerInterface::class),
             $middlewareDispatcher->withMiddlewares(
                 new RouterMiddleware(
                     new Router(
                         $container,
                         $middlewareDispatcher,
-                        $routes,
+                        ...$routes,
                     )
                 )
             ),
@@ -137,12 +133,12 @@ final class ApplicationTest extends TestCase
             {
             }
 
-            public function process(Update $request, UpdateHandlerInterface $handler): ResponseInterface
+            public function process(Update $update, UpdateHandlerInterface $handler): ResponseInterface
             {
                 $response = $handler->handle(
-                    $request->withAttribute(
+                    $update->withAttribute(
                         'test',
-                        ($request->getAttribute('test') ?? '') . $this->addition,
+                        ($update->getAttribute('test') ?? '') . $this->addition,
                     )
                 );
 

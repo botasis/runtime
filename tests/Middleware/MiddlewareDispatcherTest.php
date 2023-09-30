@@ -31,21 +31,21 @@ final class MiddlewareDispatcherTest extends TestCase
 {
     public function testCallableMiddlewareCalled(): void
     {
-        $request = $this->getTelegramRequest();
+        $update = $this->getTelegramUpdate();
 
         $dispatcher = $this->createDispatcher()->withMiddlewares(
-            static function (): ResponseInterface {
-                return (new Response())->withRequest(new CallbackResponse('middleware-id'));
+            static function () use ($update): ResponseInterface {
+                return (new Response($update))->withRequest(new CallbackResponse('middleware-id'));
             },
         );
 
-        $response = $dispatcher->dispatch($request, $this->getRequestHandler());
+        $response = $dispatcher->dispatch($update, $this->getRequestHandler());
         $this->assertSame('middleware-id', $response->getRequests()[0]?->id);
     }
 
     public function testArrayMiddlewareCall(): void
     {
-        $request = $this->getTelegramRequest();
+        $update = $this->getTelegramUpdate();
         $container = $this->createContainer(
             [
                 TestController::class => new TestController(),
@@ -53,66 +53,66 @@ final class MiddlewareDispatcherTest extends TestCase
         );
         $dispatcher = $this->createDispatcher($container)->withMiddlewares([TestController::class, 'index']);
 
-        $response = $dispatcher->dispatch($request, $this->getRequestHandler());
+        $response = $dispatcher->dispatch($update, $this->getRequestHandler());
         $this->assertSame('test message', $response->getRequests()[0]?->text);
     }
 
     public function testMiddlewareFullStackCalled(): void
     {
-        $request = $this->getTelegramRequest();
+        $update = $this->getTelegramUpdate();
 
         $middleware1 = static function (Update $request, UpdateHandlerInterface $handler): ResponseInterface {
             $request = $request->withAttribute('middleware', 'middleware1');
 
             return $handler->handle($request);
         };
-        $middleware2 = static function (Update $request): ResponseInterface {
-            $callbackResponse = new CallbackResponse($request->getAttribute('middleware'));
+        $middleware2 = static function (Update $update): ResponseInterface {
+            $callbackResponse = new CallbackResponse($update->getAttribute('middleware'));
 
-            return (new Response())->withRequest($callbackResponse);
+            return (new Response($update))->withRequest($callbackResponse);
         };
 
         $dispatcher = $this->createDispatcher()->withMiddlewares($middleware1, $middleware2);
 
-        $response = $dispatcher->dispatch($request, $this->getRequestHandler());
+        $response = $dispatcher->dispatch($update, $this->getRequestHandler());
         $this->assertSame('middleware1', $response->getRequests()[0]?->id);
     }
 
     public function testMiddlewareStackInterrupted(): void
     {
-        $request = $this->getTelegramRequest();
+        $update = $this->getTelegramUpdate();
 
-        $middleware1 = static function (): ResponseInterface {
+        $middleware1 = static function () use ($update): ResponseInterface {
             $callbackResponse = new CallbackResponse('first');
 
-            return (new Response())->withRequest($callbackResponse);
+            return (new Response($update))->withRequest($callbackResponse);
         };
-        $middleware2 = static function (): ResponseInterface {
+        $middleware2 = static function () use ($update): ResponseInterface {
             $callbackResponse = new CallbackResponse('second');
 
-            return (new Response())->withRequest($callbackResponse);
+            return (new Response($update))->withRequest($callbackResponse);
         };
 
         $dispatcher = $this->createDispatcher()->withMiddlewares($middleware1, $middleware2);
 
-        $response = $dispatcher->dispatch($request, $this->getRequestHandler());
+        $response = $dispatcher->dispatch($update, $this->getRequestHandler());
         $this->assertSame('first', $response->getRequests()[0]?->id);
     }
 
     public function testEventsAreDispatched(): void
     {
         $eventDispatcher = new SimpleEventDispatcher();
-        $request = $this->getTelegramRequest();
+        $update = $this->getTelegramUpdate();
 
         $middleware1 = static function (Update $request, UpdateHandlerInterface $handler): ResponseInterface {
             return $handler->handle($request);
         };
-        $middleware2 = static function (): ResponseInterface {
-            return new Response();
+        $middleware2 = static function () use ($update): ResponseInterface {
+            return new Response($update);
         };
 
         $dispatcher = $this->createDispatcher(null, $eventDispatcher)->withMiddlewares($middleware1, $middleware2);
-        $dispatcher->dispatch($request, $this->getRequestHandler());
+        $dispatcher->dispatch($update, $this->getRequestHandler());
 
         $this->assertEquals(
             [
@@ -130,13 +130,13 @@ final class MiddlewareDispatcherTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Middleware failed.');
 
-        $request = $this->getTelegramRequest();
+        $update = $this->getTelegramUpdate();
         $eventDispatcher = new SimpleEventDispatcher();
         $middleware = static fn(): FailMiddleware => new FailMiddleware();
         $dispatcher = $this->createDispatcher(null, $eventDispatcher)->withMiddlewares($middleware);
 
         try {
-            $dispatcher->dispatch($request, $this->getRequestHandler());
+            $dispatcher->dispatch($update, $this->getRequestHandler());
         } finally {
             $this->assertEquals(
                 [
@@ -175,7 +175,7 @@ final class MiddlewareDispatcherTest extends TestCase
 
     public function testResetStackOnWithMiddlewares(): void
     {
-        $request = $this->getTelegramRequest();
+        $update = $this->getTelegramUpdate();
         $container = $this->createContainer(
             [
                 TestController::class => new TestController(),
@@ -186,10 +186,10 @@ final class MiddlewareDispatcherTest extends TestCase
         $dispatcher = $this
             ->createDispatcher($container)
             ->withMiddlewares([TestController::class, 'index']);
-        $dispatcher->dispatch($request, $this->getRequestHandler());
+        $dispatcher->dispatch($update, $this->getRequestHandler());
 
         $dispatcher = $dispatcher->withMiddlewares(TestMiddleware::class);
-        $response = $dispatcher->dispatch($request, $this->getRequestHandler());
+        $response = $dispatcher->dispatch($update, $this->getRequestHandler());
 
         self::assertSame('42', $response->getRequests()[0]?->id);
     }
@@ -199,7 +199,7 @@ final class MiddlewareDispatcherTest extends TestCase
         return new class () implements UpdateHandlerInterface {
             public function handle(Update $update): ResponseInterface
             {
-                return (new Response())->withRequest(new CallbackResponse('default-id'));
+                return (new Response($update))->withRequest(new CallbackResponse('default-id'));
             }
         };
     }
@@ -222,7 +222,7 @@ final class MiddlewareDispatcherTest extends TestCase
         return new SimpleContainer($instances);
     }
 
-    private function getTelegramRequest(): Update
+    private function getTelegramUpdate(): Update
     {
         return new Update(
             new UpdateId(123),

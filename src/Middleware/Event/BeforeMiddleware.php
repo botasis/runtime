@@ -14,11 +14,11 @@ final readonly class BeforeMiddleware
 {
     /**
      * @param MiddlewareInterface $middleware Middleware to be executed.
-     * @param Update $request Request to be passed to the middleware.
+     * @param Update $update Update to be passed to the middleware.
      */
     public function __construct(
         public MiddlewareInterface $middleware,
-        public Update $request
+        public Update $update
     ) {
     }
 }

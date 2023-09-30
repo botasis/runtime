@@ -14,6 +14,7 @@ final class Update
         public readonly UpdateId $id,
         public readonly ?Chat $chat,
         public readonly ?string $messageId,
+        /** Data sent as a message or as a callback query */
         public readonly ?string $requestData,
         public readonly ?User $user,
         public readonly array $raw,

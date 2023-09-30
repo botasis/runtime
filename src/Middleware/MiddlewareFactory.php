@@ -79,15 +79,15 @@ final readonly class MiddlewareFactory implements MiddlewareFactoryInterface
             }
 
             public function process(
-                Update $request,
+                Update $update,
                 UpdateHandlerInterface $handler,
             ): ResponseInterface {
-                $response = (new Injector($this->container))->invoke($this->callback, [$request, $handler]);
+                $response = (new Injector($this->container))->invoke($this->callback, [$update, $handler]);
                 if ($response instanceof ResponseInterface) {
                     return $response;
                 }
                 if ($response instanceof MiddlewareInterface) {
-                    return $response->process($request, $handler);
+                    return $response->process($update, $handler);
                 }
 
                 throw new InvalidMiddlewareDefinitionException($this->callback);

@@ -12,7 +12,7 @@ use RuntimeException;
 
 final class FailMiddleware implements MiddlewareInterface
 {
-    public function process(Update $request, UpdateHandlerInterface $handler): ResponseInterface
+    public function process(Update $update, UpdateHandlerInterface $handler): ResponseInterface
     {
         throw new RuntimeException('Middleware failed.');
     }

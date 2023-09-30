@@ -17,12 +17,12 @@ final readonly class RouterMiddleware implements MiddlewareInterface
     {
     }
 
-    public function process(Update $request, UpdateHandlerInterface $handler): ResponseInterface
+    public function process(Update $update, UpdateHandlerInterface $handler): ResponseInterface
     {
         try {
-            return $this->router->match($request)->handle($request);
+            return $this->router->match($update)->handle($update);
         } catch (NotFoundException) {
-            return $handler->handle($request);
+            return $handler->handle($update);
         }
     }
 }

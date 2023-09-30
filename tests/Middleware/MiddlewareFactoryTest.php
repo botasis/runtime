@@ -45,7 +45,7 @@ final class MiddlewareFactoryTest extends TestCase
         self::assertSame(
             'test message',
             $middleware->process(
-                $this->getTelegramUpdate(),
+                $this->createTelegramUpdate(),
                 $this->createMock(UpdateHandlerInterface::class)
             )->getRequests()[0]?->text
         );
@@ -54,15 +54,16 @@ final class MiddlewareFactoryTest extends TestCase
     public function testCreateFromClosureResponse(): void
     {
         $container = $this->getContainer([TestController::class => new TestController()]);
+        $update = $this->createTelegramUpdate();
         $middleware = $this->getMiddlewareFactory($container)->create(
-            static function (): ResponseInterface {
-                return (new Response())->withRequest(new CallbackResponse('418'));
+            static function () use ($update): ResponseInterface {
+                return (new Response($update))->withRequest(new CallbackResponse('418'));
             }
         );
         self::assertSame(
             '418',
             $middleware->process(
-                $this->getTelegramUpdate(),
+                $update,
                 $this->createMock(UpdateHandlerInterface::class)
             )->getRequests()[0]?->id
         );
@@ -79,7 +80,7 @@ final class MiddlewareFactoryTest extends TestCase
         self::assertSame(
             '42',
             $middleware->process(
-                $this->getTelegramUpdate(),
+                $this->createTelegramUpdate(),
                 $this->createMock(UpdateHandlerInterface::class)
             )->getRequests()[0]?->id
         );
@@ -93,7 +94,7 @@ final class MiddlewareFactoryTest extends TestCase
         self::assertSame(
             'fake-id',
             $middleware->process(
-                $this->getTelegramUpdate(),
+                $this->createTelegramUpdate(),
                 $this->getRequestHandler()
             )->getRequests()[0]?->id
         );
@@ -103,7 +104,7 @@ final class MiddlewareFactoryTest extends TestCase
     {
         $container = $this->getContainer([UseParamsController::class => new UseParamsController()]);
         $middleware = $this->getMiddlewareFactory($container)->create([UseParamsController::class, 'index']);
-        $update = $this->getTelegramUpdate();
+        $update = $this->createTelegramUpdate();
 
         /** Key "0" contains a {@see CallbackResponse} */
         self::assertSame(
@@ -126,7 +127,7 @@ final class MiddlewareFactoryTest extends TestCase
 
         $this->expectException(InvalidMiddlewareDefinitionException::class);
         $middleware->process(
-            $this->getTelegramUpdate(),
+            $this->createTelegramUpdate(),
             $this->createMock(UpdateHandlerInterface::class)
         );
     }
@@ -150,7 +151,7 @@ final class MiddlewareFactoryTest extends TestCase
 
         $this->expectException(InvalidMiddlewareDefinitionException::class);
         $middleware->process(
-            $this->getTelegramUpdate(),
+            $this->createTelegramUpdate(),
             $this->createMock(UpdateHandlerInterface::class)
         );
     }
@@ -196,12 +197,12 @@ final class MiddlewareFactoryTest extends TestCase
         return new class () implements UpdateHandlerInterface {
             public function handle(Update $update): ResponseInterface
             {
-                return (new Response())->withRequest(new CallbackResponse('default-id'));
+                return (new Response($update))->withRequest(new CallbackResponse('default-id'));
             }
         };
     }
 
-    private function getTelegramUpdate(): Update
+    private function createTelegramUpdate(): Update
     {
         return new Update(
             new UpdateId(123),

@@ -12,11 +12,11 @@ use Botasis\Runtime\UpdateHandlerInterface;
 
 final class EnsureCallbackResponseMiddleware implements MiddlewareInterface
 {
-    public function process(Update $request, UpdateHandlerInterface $handler): ResponseInterface
+    public function process(Update $update, UpdateHandlerInterface $handler): ResponseInterface
     {
-        $response = $handler->handle($request);
-        if ($request->callbackQueryId !== null && $response->hasCallbackResponse() === false) {
-            $response = $response->withRequest(new CallbackResponse($request->callbackQueryId));
+        $response = $handler->handle($update);
+        if ($update->callbackQueryId !== null && $response->hasCallbackResponse() === false) {
+            $response = $response->withRequest(new CallbackResponse($update->callbackQueryId));
         }
 
         return $response;

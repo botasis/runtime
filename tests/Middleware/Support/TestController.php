@@ -8,12 +8,13 @@ use Botasis\Client\Telegram\Request\Message\Message;
 use Botasis\Client\Telegram\Request\Message\MessageFormat;
 use Botasis\Runtime\Response\Response;
 use Botasis\Runtime\Response\ResponseInterface;
+use Botasis\Runtime\Update\Update;
 
 final class TestController
 {
-    public function index(): ResponseInterface
+    public function index(Update $update): ResponseInterface
     {
-        return (new Response())
+        return (new Response($update))
             ->withRequest(new Message('test message', MessageFormat::TEXT, 'chatId'));
     }
 }

@@ -13,8 +13,8 @@ use Botasis\Runtime\UpdateHandlerInterface;
 
 final class TestMiddleware implements MiddlewareInterface
 {
-    public function process(Update $request, UpdateHandlerInterface $handler): ResponseInterface
+    public function process(Update $update, UpdateHandlerInterface $handler): ResponseInterface
     {
-        return (new Response())->withRequest(new CallbackResponse('42'));
+        return (new Response($update))->withRequest(new CallbackResponse('42'));
     }
 }

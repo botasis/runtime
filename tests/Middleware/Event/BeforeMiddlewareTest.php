@@ -41,6 +41,6 @@ final class BeforeMiddlewareTest extends TestCase
         $event = new BeforeMiddleware($middleware, $request);
 
         self::assertSame($middleware, $event->middleware);
-        self::assertSame($request, $event->request);
+        self::assertSame($request, $event->update);
     }
 }

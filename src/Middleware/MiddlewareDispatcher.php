@@ -33,18 +33,18 @@ final class MiddlewareDispatcher
     /**
      * Dispatch request through middleware to get response.
      *
-     * @param Update $request Request to pass to middleware.
+     * @param Update $update Request to pass to middleware.
      * @param UpdateHandlerInterface $fallbackHandler Handler to use in case no middleware produced response.
      */
     public function dispatch(
-        Update $request,
+        Update $update,
         UpdateHandlerInterface $fallbackHandler
     ): ResponseInterface {
         if ($this->stack === null) {
             $this->stack = new MiddlewareStack($this->buildMiddlewares(), $fallbackHandler, $this->eventDispatcher);
         }
 
-        return $this->stack->handle($request);
+        return $this->stack->handle($update);
     }
 
     /**

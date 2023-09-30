@@ -18,44 +18,32 @@ final class Router
     public const ROUTE_KEY_ACTION = 'action';
     public const ROUTE_KEY_ROUTES_LIST = 'routes';
     public const ROUTE_KEY_MIDDLEWARES = 'middlewares';
-    private readonly array $rulesStatic;
+    /** @var array<Group|Route> */
+    private array $routes;
+    /** @var array<Group|Route> */
+    private array $rulesStatic;
     private array $compiled = [];
+    private array $compiledStatic = [];
     private ?UpdateHandlerInterface $emptyFallbackHandler = null;
 
+
     /**
-     * @psalm-param $routes list<array{rule: callable, action: class-string<UpdateHandlerInterface>}>
+     * @psalm-param $routes array<Group|Route>
      */
     public function __construct(
         private readonly ContainerInterface $container,
         private readonly MiddlewareDispatcher $middlewareDispatcher,
-        private array $routes,
+        Group|Route ...$routes,
     ) {
         $rulesStatic = [];
-        foreach ($this->routes as $key => &$route) {
-            $isGroup = ($route[self::ROUTE_KEY_ROUTES_LIST] ?? []) !== [];
-            if (!$isGroup xor isset($route[self::ROUTE_KEY_ACTION])) {
-                throw new InvalidArgumentException('Telegram route must have either "action" or "routes" key.');
-            }
 
-            if ($isGroup) {
-                $route[self::ROUTE_KEY_ACTION] = new self(
-                    $this->container,
-                    $this->middlewareDispatcher,
-                    $route[self::ROUTE_KEY_ROUTES_LIST],
-                );
-            }
-
-            $staticRule = $this->getRuleStatic($route);
-            $hasStaticRule = $staticRule !== null;
-            if (!$hasStaticRule xor isset($route[self::ROUTE_KEY_RULE])) {
-                throw new InvalidArgumentException('Telegram route must have either "rule_static" or "rule" key.');
-            }
-
-            if ($hasStaticRule) {
-                $rulesStatic[$staticRule] = $key;
+        foreach ($routes as $key => $route) {
+            if ($route->rule instanceof RuleStatic) {
+                $rulesStatic[$route->rule->message] = $route;
+            } else {
+                $this->routes[$key] = $route;
             }
         }
-        unset($route);
 
         $this->rulesStatic = $rulesStatic;
     }
@@ -63,47 +51,31 @@ final class Router
     public function match(Update $update): UpdateHandlerInterface
     {
         $route = $this->rulesStatic[$update->requestData] ?? null;
+        if ($route !== null) {
+            if (!isset($this->compiledStatic[$route->rule->message])) {
+                $this->compiledStatic[$route->rule->message] = $this->compileRoute($route);
+            }
 
-        if ($route === null) {
-            foreach ($this->routes as $key => $routeConfig) {
-                if (isset($routeConfig[self::ROUTE_KEY_RULE]) && $routeConfig[self::ROUTE_KEY_RULE]($update)) {
-                    $route = $key;
+            return $this->compiledStatic[$route->rule->message];
+        }
 
-                    break;
+        foreach ($this->routes as $key => $route) {
+            if ($route->rule->getCallback()($update)) {
+                if (!isset($this->compiled[$key])) {
+                    $this->compiled[$key] = $this->compileRoute($route);
                 }
+
+                return $this->compiled[$key];
             }
         }
 
-        if ($route === null) {
-            throw new NotFoundException($update);
-        }
-
-        if (!isset($this->compiled[$route])) {
-            $this->compiled[$route] = $this->compileRoute($this->routes[$route]);
-        }
-
-        return $this->compiled[$route];
+        throw new NotFoundException($update);
     }
 
-    private function getRuleStatic(array $route): ?string
+    private function compileRoute(Route|Group $route): UpdateHandlerInterface
     {
-        if (isset($route[self::ROUTE_KEY_RULE_STATIC])) {
-            $rule = $route[self::ROUTE_KEY_RULE_STATIC];
-            if (is_string($rule) && $rule !== '') {
-                return $rule;
-            }
-
-            $key = self::ROUTE_KEY_RULE_STATIC;
-            throw new InvalidArgumentException("Telegram route key $key must contain non-empty string");
-        }
-
-        return null;
-    }
-
-    private function compileRoute(array $route): UpdateHandlerInterface
-    {
-        $middlewares = $route[self::ROUTE_KEY_MIDDLEWARES] ?? [];
-        $middlewares[] = $this->getActionWrapped($route[self::ROUTE_KEY_ACTION]);
+        $middlewares = $route->getMiddlewares();
+        $middlewares[] = $this->getActionWrapped($route);
         $dispatcher = $this->middlewareDispatcher->withMiddlewares(...$middlewares);
 
         return new class ($dispatcher, $this->getEmptyFallbackHandler()) implements UpdateHandlerInterface {
@@ -120,28 +92,28 @@ final class Router
         };
     }
 
-    private function getActionWrapped(mixed $definition): Closure
+    private function getActionWrapped(Route|Group $route): Closure
     {
-        if (is_string($definition)) {
-            return fn(Update $update, UpdateHandlerInterface $handler): ResponseInterface => $this
-                ->container
-                ->get($definition)
-                ->handle($update);
-        }
+        if ($route instanceof Group) {
+            $router = new self(
+                $this->container,
+                $this->middlewareDispatcher,
+                ...$route->routes,
+            );
 
-        if ($definition instanceof self) {
-            return static fn(Update $update, UpdateHandlerInterface $handler): ResponseInterface => $definition
+            return static fn(Update $update, UpdateHandlerInterface $handler): ResponseInterface => $router
                 ->match($update)
                 ->handle($update);
         }
 
-        if ($definition instanceof UpdateHandlerInterface) {
-            return static fn(Update $update, UpdateHandlerInterface $handler): ResponseInterface => $definition->handle($update);
+        if (is_string($route->action)) {
+            return fn(Update $update, UpdateHandlerInterface $handler): ResponseInterface => $this
+                ->container
+                ->get($route->action)
+                ->handle($update);
         }
 
-        throw new InvalidArgumentException(
-            'Telegram route action must be a string identifier of an UpdateHandlerInterface class.'
-        );
+        return static fn(Update $update, UpdateHandlerInterface $handler): ResponseInterface => $route->action->handle($update);
     }
 
     private function getEmptyFallbackHandler(): UpdateHandlerInterface
