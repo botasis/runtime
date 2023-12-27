@@ -162,3 +162,29 @@ final class CustomUpdateHandler implements UpdateHandlerInterface
     }
 }
 ```
+
+# Match a route with the Update Handler
+The general routing looks like this:
+```php
+$routes = [
+    new Route(new RuleStatic('/start'), CustomUpdateHandler::class);
+    new Route(new RuleDynamic(static fn(Update $update) => $update->chat?->type === ChatType::GROUP && $update->requestData !== null), Foo::class);
+    new Route(new RuleDynamic(static fn(Update $update) => str_contains($update->requestData, 'obscene')), BanHandler::class);
+    
+];
+```
+
+1. **Define Rules**:
+    There are two types of routing rules:
+    - **Static Rules (`RuleStatic` class)**: Matches a specific string sent to bot as either a message or a callback query.  
+      It can be defined like this: `new RuleStatic('/start')`. This routing rule will be matched when a 
+    - **Dynamic Rules (`RuleDynamic` class)**: Uses a callback for more complex matching logic.
+      Definition example: `new RuleDynamic(static fn(Update $update) => $update->chat?->type === ChatType::PRIVATE)` 
+
+2. **Create Routes and Groups**:
+    - Use `Route` for individual routes, specifying the rule and action (handler).
+    - Use `Group` to combine multiple routes under a common rule or middleware.
+
+3. **Configure Router**:
+    - Instantiate `Router` with defined routes.
+    - Use the `match` method to find a suitable handler based on the incoming `Update`.

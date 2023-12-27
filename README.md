@@ -57,7 +57,7 @@ If you don't want to use it, or you want to embed Botasis into your existing app
 2. Create a new PHP script to initialize your bot. Normally a DI container will handle the most of this stuff.
     <details>
     <summary>PHP script listing</summary>
-    
+
     ```php
     
     use Botasis\Client\Telegram\Client\ClientPsr;
@@ -68,7 +68,9 @@ If you don't want to use it, or you want to embed Botasis into your existing app
     use Botasis\Runtime\Middleware\Implementation\RouterMiddleware;
     use Botasis\Runtime\Middleware\MiddlewareDispatcher;
     use Botasis\Runtime\Middleware\MiddlewareFactory;
+    use Botasis\Runtime\Router\Route;
     use Botasis\Runtime\Router\Router;
+    use Botasis\Runtime\Router\RuleStatic;
     use Botasis\Runtime\UpdateHandlerInterface;
     use Http\Client\Socket\Client;
     use HttpSoft\Message\RequestFactory;
@@ -112,16 +114,13 @@ If you don't want to use it, or you want to embed Botasis into your existing app
     * Routes definition. Here we define a route for the /start message. The HelloHandler should implement the {@see UpdateHandlerInterface}.
     */
     $routes = [
-      [
-          Router::ROUTE_KEY_RULE_STATIC => '/start',
-          Router::ROUTE_KEY_ACTION => HelloHandler::class,
-      ],
+        new Route(new RuleStatic('/start'), HelloHandler::class),
     ];
     
     /**
-    * Middlewares definition. At least {@see RouterMiddleware} should be here.
+    * Middlewares definition. {@see RouterMiddleware} should be the last one.
     */
-    $middlewares = [new RouterMiddleware(new Router($container, $middlewareDispatcher, $routes))];
+    $middlewares = [new RouterMiddleware(new Router($container, $middlewareDispatcher, ...$routes))];
     
     $middlewareDispatcher = $middlewareDispatcher->withMiddlewares();
     $application = new Application($emitter, new DummyUpdateHandler(), $middlewareDispatcher);
