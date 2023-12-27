@@ -11,7 +11,10 @@ final readonly class IgnoredErrorHandler
 {
     private array $ignoredErrors;
 
-    public function __construct($ignoredErrors = [])
+    /**
+     * @param list<string> $ignoredErrors List of telegram error messages to ignore
+     */
+    public function __construct(string ...$ignoredErrors)
     {
         if (array_is_list($ignoredErrors)) {
             $ignoredErrors = array_fill_keys($ignoredErrors, true);

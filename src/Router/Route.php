@@ -9,11 +9,10 @@ use Botasis\Runtime\UpdateHandlerInterface;
 
 final class Route
 {
-    private array $middlewares;
+    private array $middlewares = [];
 
     /**
      * @param class-string<UpdateHandlerInterface>|UpdateHandlerInterface $action
-     * @param class-string<MiddlewareInterface>|array{0:class-string, 1:string}|callable|MiddlewareInterface ...$middlewares
      */
     public function __construct(
         public readonly RuleStatic|RuleDynamic $rule,
@@ -21,7 +20,7 @@ final class Route
     ) {
     }
 
-    public function withMiddlewares( callable|array|string|MiddlewareInterface ...$middlewares): self
+    public function withMiddlewares(callable|array|string|MiddlewareInterface ...$middlewares): self
     {
         $new = clone $this;
         $new->middlewares = $middlewares;

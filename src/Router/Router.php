@@ -8,18 +8,12 @@ use Botasis\Runtime\Response\ResponseInterface;
 use Botasis\Runtime\Update\Update;
 use Botasis\Runtime\UpdateHandlerInterface;
 use Closure;
-use InvalidArgumentException;
 use Psr\Container\ContainerInterface;
 
 final class Router
 {
-    public const ROUTE_KEY_RULE_STATIC = 'rule_static';
-    public const ROUTE_KEY_RULE = 'rule';
-    public const ROUTE_KEY_ACTION = 'action';
-    public const ROUTE_KEY_ROUTES_LIST = 'routes';
-    public const ROUTE_KEY_MIDDLEWARES = 'middlewares';
     /** @var array<Group|Route> */
-    private array $routes;
+    private array $routes = [];
     /** @var array<Group|Route> */
     private array $rulesStatic;
     private array $compiled = [];
@@ -60,6 +54,7 @@ final class Router
         }
 
         foreach ($this->routes as $key => $route) {
+            /** @psalm-suppress PossiblyUndefinedMethod The rule property is always RuleDynamic here */
             if ($route->rule->getCallback()($update)) {
                 if (!isset($this->compiled[$key])) {
                     $this->compiled[$key] = $this->compileRoute($route);
@@ -107,12 +102,14 @@ final class Router
         }
 
         if (is_string($route->action)) {
+            /** @psalm-suppress PossiblyInvalidArgument Action is a string */
             return fn(Update $update, UpdateHandlerInterface $handler): ResponseInterface => $this
                 ->container
                 ->get($route->action)
                 ->handle($update);
         }
 
+        /** @psalm-suppress PossiblyInvalidMethodCall It's always an object because the string case is checked above */
         return static fn(Update $update, UpdateHandlerInterface $handler): ResponseInterface => $route->action->handle($update);
     }
 

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Botasis\Runtime\Router;
 
 use Botasis\Runtime\Middleware\MiddlewareInterface;
-use Botasis\Runtime\UpdateHandlerInterface;
 
 final class Group
 {
@@ -13,7 +12,7 @@ final class Group
      * @var Group[]|Route[]
      */
     public readonly array $routes;
-    private array $middlewares;
+    private array $middlewares = [];
 
     public function __construct(
         public readonly RuleStatic|RuleDynamic $rule,
