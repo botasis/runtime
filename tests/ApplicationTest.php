@@ -24,6 +24,7 @@ use Botasis\Runtime\Router\RuleStatic;
 use Botasis\Runtime\Update\Update;
 use Botasis\Runtime\Update\UpdateId;
 use Botasis\Runtime\UpdateHandlerInterface;
+use Http\Message\MultipartStream\MultipartStreamBuilder;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -100,13 +101,15 @@ final class ApplicationTest extends TestCase
         $requestFactory = $this->createMock(RequestFactoryInterface::class);
         $requestFactory->method('createRequest')->willReturn($apiRequest);
 
+        $streamFactory = $this->createMock(StreamFactoryInterface::class);
         $response = (new Application(
             new Emitter(
                 new ClientPsr(
                     'token',
                     $httpClient,
                     $requestFactory,
-                    $this->createMock(StreamFactoryInterface::class),
+                    $streamFactory,
+                    new MultipartStreamBuilder($streamFactory)
                 ),
                 $eventDispatcher,
             ),
