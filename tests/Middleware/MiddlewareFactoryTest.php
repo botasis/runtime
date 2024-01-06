@@ -7,7 +7,6 @@ namespace Botasis\Runtime\Tests\Middleware;
 use Botasis\Client\Telegram\Request\CallbackResponse;
 use Botasis\Runtime\CallableFactory;
 use Botasis\Runtime\Entity\User\User;
-use Botasis\Runtime\Entity\User\UserId;
 use Botasis\Runtime\InvalidCallableConfigurationException;
 use Botasis\Runtime\Middleware\Exception\InvalidMiddlewareDefinitionException;
 use Botasis\Runtime\Middleware\MiddlewareFactory;
@@ -240,7 +239,7 @@ final class MiddlewareFactoryTest extends TestCase
             'messageId',
             'data',
             new User(
-                new UserId('user-id'),
+                'user-id',
                 false,
                 'testUser',
                 null,

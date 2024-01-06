@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Botasis\Runtime\Tests\Middleware\Event;
 
 use Botasis\Runtime\Entity\User\User;
-use Botasis\Runtime\Entity\User\UserId;
 use Botasis\Runtime\Middleware\Event\BeforeMiddleware;
 use Botasis\Runtime\Middleware\MiddlewareInterface;
 use Botasis\Runtime\Update\Update;
@@ -23,7 +22,7 @@ final class BeforeMiddlewareTest extends TestCase
             'messageId',
             'data',
             new User(
-                new UserId('user-id'),
+                'user-id',
                 false,
                 'testUser',
                 null,
