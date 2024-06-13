@@ -141,7 +141,7 @@ for your users.
 ## Features
 ### 1. State management
 When your application requires to handle chat/user state, you would like this feature.  
-There are three steps to use it:
+There are four steps to use it:
 1. Implement [StateRepositoryInterface](./src/State/StateRepositoryInterface.php). You may use any existing implementation
    *(they will be added later)*.
 2. Save user/chat state using this repository:
@@ -171,3 +171,17 @@ There are three steps to use it:
     ```
     > **Caution!** This middleware searches for both user and chat ids. In case you need only user or only chat id,
     you have implement this logic on your own.
+4. Use state in routing:
+    ```php
+    [
+        new Route(new RuleStatic('/set_name'), CharacterNameCommandHandler::class),
+        new Route(
+            new RuleDynamic(static fn(Update $update) => $update->getAttributes(StateMiddleware::class)?->getData() === json_encode('setting-name')),
+            CharacterNameSetHandler::class,
+        ),
+    ]
+    ```
+
+> Sometimes you'd like to create a strictly typed `State` object. In this case you have to implement the
+[StateInterface](./src/State/StateInterface.php) on your own along with the
+[StateRepositoryInterface](./src/State/StateRepositoryInterface.php).
