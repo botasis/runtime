@@ -9,6 +9,9 @@ use Botasis\Runtime\Response\ResponseInterface;
 use Botasis\Runtime\Update\Update;
 use Botasis\Runtime\UpdateHandlerInterface;
 
+/**
+ * Finds current state for the user and chat in the Update object and adds a found state as an attribute to it.
+ */
 final readonly class StateMiddleware implements MiddlewareInterface
 {
     public function __construct(private StateRepositoryInterface $repository)
