@@ -13,6 +13,9 @@ interface StateInterface
      */
     public function getUserId(): ?string;
 
+    /**
+     * @return string|null Telegram chat id
+     */
     public function getChatId(): ?string;
 
     /**
