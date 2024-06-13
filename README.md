@@ -136,3 +136,38 @@ That's it! You've now set up the foundation for your bot using Botasis Runtime.
 You can continue to enhance your bot's functionality by customizing its
 handlers, middleware, and routes to create engaging and interactive experiences
 for your users.
+
+
+## Features
+### 1. State management
+When your application requires to handle chat/user state, you would like this feature.  
+There are three steps to use it:
+1. Implement [StateRepositoryInterface](./src/State/StateRepositoryInterface.php). You may use any existing implementation
+   *(they will be added later)*.
+2. Save user/chat state using this repository:
+    ```php
+    final class CharacterNameCommandHandler implements UpdateHandlerInterface
+    {
+    public function __construct(private StateRepositoryInterface $repository) {}
+    
+        public function handle(Update $update): ResponseInterface
+        {
+            $state = new StateJson($update->user->id, $update->chat->id, 'setting-name');
+            $this->repository->save($state);
+    
+            return (new Response($update))
+                ->withRequest(new Message(
+                    'Enter your character name below',
+                    MessageFormat::TEXT,
+                    $update->chat->id,
+                ));
+        }
+    }
+    ```
+3. Add [StateMiddleware](./src/State/StateMiddleware.php) before the router middleware. After that, you can access
+    the current state inside your update handlers like this:
+    ```php
+    $state = $update->getAttribute(\Botasis\Runtime\State\StateMiddleware::class);
+    ```
+    > **Caution!** This middleware searches for both user and chat ids. In case you need only user or only chat id,
+    you have implement this logic on your own.
