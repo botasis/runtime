@@ -140,11 +140,11 @@ for your users.
 
 ## Features
 ### 1. State management
-When your application requires to handle chat/user state, you would like this feature.  
-There are four steps to use it:
-1. Implement [StateRepositoryInterface](./src/State/StateRepositoryInterface.php). You may use any existing implementation
-   *(they will be added later)*.
-2. Save user/chat state using this repository:
+When your application requires handling chat or user state, this feature is essential. Follow these four steps to use it:
+
+1. Implement [StateRepositoryInterface](./src/State/StateRepositoryInterface.php).  
+    You may use any existing implementation *(they will be implemented later)*.
+2. Save user/chat state using the repository:
     ```php
     final class CharacterNameCommandHandler implements UpdateHandlerInterface
     {
@@ -164,13 +164,13 @@ There are four steps to use it:
         }
     }
     ```
-3. Add [StateMiddleware](./src/State/StateMiddleware.php) before the router middleware. After that, you can access
-    the current state inside your update handlers like this:
+3. Add [StateMiddleware](./src/State/StateMiddleware.php) before the router middleware.  
+    This allows you to access the current state within your update handlers.
     ```php
     $state = $update->getAttribute(\Botasis\Runtime\State\StateMiddleware::class);
     ```
     > **Caution!** This middleware searches for both user and chat ids. In case you need only user or only chat id,
-    you have implement this logic on your own.
+       you have implement this logic on your own.
 4. Use state in routing:
     ```php
     [
@@ -182,6 +182,6 @@ There are four steps to use it:
     ]
     ```
 
-> Sometimes you'd like to create a strictly typed `State` object. In this case you have to implement the
-[StateInterface](./src/State/StateInterface.php) on your own along with the
+> If you prefer to create a strictly typed State object, you need to implement the
+[StateInterface](./src/State/StateInterface.php) along with the
 [StateRepositoryInterface](./src/State/StateRepositoryInterface.php).
