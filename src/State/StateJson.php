@@ -36,6 +36,8 @@ final readonly class StateJson implements StateInterface
             } catch (JsonException) {
                 $this->data = $data;
             }
+        } else {
+            $this->data = $data;
         }
     }
 
