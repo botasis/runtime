@@ -9,6 +9,7 @@ use Botasis\Runtime\Update\Update;
 use Botasis\Runtime\UpdateHandlerInterface;
 use Closure;
 use Psr\Container\ContainerInterface;
+use RuntimeException;
 
 final class Router
 {
@@ -18,8 +19,9 @@ final class Router
     private array $rulesStatic;
     private array $compiled = [];
     private array $compiledStatic = [];
+    /** @var array<callable(update):bool> */
+    private array $compiledRules = [];
     private ?UpdateHandlerInterface $emptyFallbackHandler = null;
-
 
     /**
      * @psalm-param $routes array<Group|Route>
@@ -27,6 +29,7 @@ final class Router
     public function __construct(
         private readonly ContainerInterface $container,
         private readonly MiddlewareDispatcher $middlewareDispatcher,
+        private readonly CallableResolver $callableResolver,
         Group|Route ...$routes,
     ) {
         $rulesStatic = [];
@@ -46,6 +49,7 @@ final class Router
     {
         $route = $this->rulesStatic[$update->requestData] ?? null;
         if ($route !== null) {
+            /** @psalm-suppress UndefinedPropertyFetch The rule property is always a RuleStatic */
             if (!isset($this->compiledStatic[$route->rule->message])) {
                 $this->compiledStatic[$route->rule->message] = $this->compileRoute($route);
             }
@@ -54,8 +58,19 @@ final class Router
         }
 
         foreach ($this->routes as $key => $route) {
-            /** @psalm-suppress PossiblyUndefinedMethod The rule property is always RuleDynamic here */
-            if ($route->rule->getCallback()($update)) {
+            if (!isset($this->compiledRules[$key])) {
+                /** @psalm-suppress PossiblyUndefinedMethod The rule property is always a RuleDynamic */
+                $this->compiledRules[$key] = $this->callableResolver->resolve($route->rule->getCallbackDefinition());
+            }
+            $rule = $this->compiledRules[$key];
+
+            $checkResult = $rule($update);
+            if (!is_bool($checkResult)) {
+                // TODO domain exception with explanation (use yiisoft friendly exceptions)
+                throw new RuntimeException();
+            }
+
+            if ($checkResult) {
                 if (!isset($this->compiled[$key])) {
                     $this->compiled[$key] = $this->compileRoute($route);
                 }
@@ -93,6 +108,7 @@ final class Router
             $router = new self(
                 $this->container,
                 $this->middlewareDispatcher,
+                $this->callableResolver,
                 ...$route->routes,
             );
 

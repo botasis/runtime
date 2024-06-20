@@ -27,4 +27,6 @@
 
 ## 0.12.0
 
-Work in progress
+- Router dynamic rules may contain not closures only, but any callable, including name of invokable class and array `[Foo::class, 'method']` where Foo will be automatically instantiated via DI Container. These callables MUST return boolean value.
+- `UpdateHandlerInterface` is removed. Handler now may be any callable, like dynamic rules.
+- `UpdateAttribute` is added, so router dynamic rules and update handlers may use typed arguments received from an `Update` object
