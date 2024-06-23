@@ -124,6 +124,8 @@ That's the overall Botasis Runtime processing schema. Now let's find out how to 
 
 # Create an Update Handler
 
+See also [explanation in details](./update-handlers.md).
+
 In Botasis Runtime, an Update Handler is responsible for defining the actions to be taken when a specific type of update
 is received from Telegram. To create a custom Update Handler, you have to implement the `UpdateHandlerInterface`.
 This interface defines a single method, `handle(Update $update): ResponseInterface`, which receives the incoming update 
@@ -167,10 +169,9 @@ final class CustomUpdateHandler implements UpdateHandlerInterface
 The general routing looks like this:
 ```php
 $routes = [
-    new Route(new RuleStatic('/start'), CustomUpdateHandler::class);
-    new Route(new RuleDynamic(static fn(Update $update) => $update->chat?->type === ChatType::GROUP && $update->requestData !== null), Foo::class);
-    new Route(new RuleDynamic(static fn(Update $update) => str_contains($update->requestData, 'obscene')), BanHandler::class);
-    
+    '/start' => new Route(new RuleStatic('/start'), CustomUpdateHandler::class);
+    'foo' => new Route(new RuleDynamic(static fn(Update $update) => $update->chat?->type === ChatType::GROUP && $update->requestData !== null), Foo::class);
+    'obscene' => new Route(new RuleDynamic(static fn(Update $update) => str_contains($update->requestData, 'obscene')), BanHandler::class);
 ];
 ```
 
@@ -188,3 +189,5 @@ $routes = [
 3. **Configure Router**:
     - Instantiate `Router` with defined routes.
     - Use the `match` method to find a suitable handler based on the incoming `Update`.
+
+See also: [Defining routes](./defining-routes.md) detailed.

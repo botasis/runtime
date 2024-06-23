@@ -32,6 +32,13 @@ making it easier than ever to create interactive and intelligent chatbots.
   to make changes and enhancements easily, ensuring your bot remains adaptable
   to new features and user interactions.
 
+- **Supports best practices:**
+  - **PSR-enabled**. Not a single hard-coded dependency. You may use any PSR implementations you want.
+  - **SOLID code**. You will especially like Dependency Inversion Principle implementation, as it allows you to pass
+    anything anywhere and switch implementations with a snap of your fingers.
+  - **Long-running enabled**. It is ready to be used with **RoadRunner**, **Swoole** and others long-running
+    application engines. That means Botasis Runtime has *no any stateful services* and *never computes one thing twice*.
+
 ## Quick Start
 
 The quickest way to start your app with Botasis is to use the [Botasis Application Template](https://github.com/botasis/bot-template).
@@ -139,6 +146,26 @@ for your users.
 
 
 ## Features
+### 1. Routing
+You can create routes and sub-routes for your Telegram bot. Every route consists of two parts;
+- A `Rule`. When an `Update` comes from Telegram, `Router` checks whether it satisfy a rule of every route. Once a such route
+    was found, its `Handler` is executed. There are two types of rules:
+  - `RuleStatic`. It maps to a message or a callback data in an Update. When a message or a callback comes from Telegram,
+    it's text compared to every existing `RuleStatic`. Creation of such a rule is very simple: 
+    `new RuleStatic('/command')`. And only when there is no suitable static rule, we go further to `RuleDynamic` list.
+  - `RuleDynamic`. In contrast to `RuleStatic`, this rule type executes a callable on every `Update`. Creation of such a
+    rule may look like this: 
+    `new RuleDynamic(static fn(Update $update) => str_starts_with($update->requestData ?? '', '/start@myBot'))`.  
+    Such a callable **MUST** return a boolean value. Callable definition should follow the
+    [Extended Callable Definitions](./docs/extended-callable-definitions.md) format.
+    
+    [Defining routes in detail](./docs/defining-routes).
+- A `Handler`. It's a callable, which may be defined in an equal way as a `RuleDynamic` callable.
+  But an update handler return value MUST be either `void` or `ResponseInterface`. In all the other cases Router will
+  throw an exception.
+
+### 1. Attributes usage in routing
+
 ### 1. State management
 When your application requires handling chat or user state, this feature is essential. Follow these four steps to use it:
 
