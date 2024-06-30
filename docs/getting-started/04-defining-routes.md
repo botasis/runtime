@@ -34,14 +34,14 @@ new Route(
 )
 ```
 
-Dynamic rule callables should follow the [Callable Definitions Extended](./extended-callable-definitions.md) format. 
+Dynamic rule callables should follow the [Callable Definitions Extended](../key-concepts/04-extended-callable-definitions.md) format. 
 
 # Route Groups
 
 Routes may be grouped with a `Group` object. This is useful in some cases:
 - You have similar route rules, which should be divided by an additional condition. I.e. the same messages will be
     handled differently in public and in private chats. Example:
-- You want to add a [middleware](./middlewares.md) (or a middleware list) to a group of routes
+- You want to add a [middleware](../key-concepts/02-middlewares.md) (or a middleware list) to a group of routes
 
 Example:
 ```php
@@ -63,9 +63,9 @@ Example:
 
 Handlers are callables which are called when a route is matched against a Telegram Update. It carries out the payload.
 
-Update Handlers should follow the [Callable Definitions Extended](./extended-callable-definitions.md) format and
+Update Handlers should follow the [Callable Definitions Extended](../key-concepts/04-extended-callable-definitions.md) format and
 **MUST** return either `ResponseInterface` or `null`/`void`. Any other return value will cause an exception.
 
 ------
 
-Next: [Telegram Update Handler in details](./update-handlers.md).
+Next: [Telegram Update Handler in details](./05-update-handlers.md).
