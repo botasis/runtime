@@ -18,6 +18,11 @@ final class Route
         public readonly RuleStatic|RuleDynamic $rule,
         public readonly mixed $action,
     ) {
+        /**
+         * These checks should be done for projects without Psalm
+         * @psalm-suppress DocblockTypeContradiction
+         * @psalm-suppress RedundantCondition
+         */
         if (
             !is_callable($this->action)
             && !is_object($this->action)
