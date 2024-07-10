@@ -12,6 +12,7 @@ use Botasis\Runtime\Middleware\MiddlewareFactory;
 use Botasis\Runtime\Middleware\MiddlewareInterface;
 use Botasis\Runtime\Response\Response;
 use Botasis\Runtime\Response\ResponseInterface;
+use Botasis\Runtime\Router\CallableResolver;
 use Botasis\Runtime\Router\Group;
 use Botasis\Runtime\Router\Route;
 use Botasis\Runtime\Router\Router;
@@ -21,6 +22,7 @@ use Botasis\Runtime\Update\Update;
 use Botasis\Runtime\Update\UpdateId;
 use Botasis\Runtime\UpdateHandlerInterface;
 use PHPUnit\Framework\TestCase;
+use Yiisoft\Injector\Injector;
 use Yiisoft\Test\Support\Container\SimpleContainer;
 use Yiisoft\Test\Support\EventDispatcher\SimpleEventDispatcher;
 
@@ -37,8 +39,8 @@ final class RouterTest extends TestCase
                     new RuleStatic('test'),
                     (new Route(
                         new RuleDynamic(static fn() => true),
-                        new class implements UpdateHandlerInterface {
-                            public function handle(Update $update): ResponseInterface
+                        new class {
+                            public function __invoke(Update $update): ResponseInterface
                             {
                                 return (new Response($update))
                                     ->withRequest(
@@ -64,13 +66,17 @@ final class RouterTest extends TestCase
     private function getRouter(array $routes): Router
     {
         $container = new SimpleContainer();
+        $callableFactory = new CallableFactory($container);
+        $injector = new Injector($container);
+        $callableResolver = new CallableResolver($callableFactory, $injector);
 
         return new Router(
             $container,
             new MiddlewareDispatcher(
-                new MiddlewareFactory($container, new CallableFactory($container)),
+                new MiddlewareFactory($container, $callableFactory),
                 new SimpleEventDispatcher(),
             ),
+            $callableResolver,
             ...$routes,
         );
     }

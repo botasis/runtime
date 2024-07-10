@@ -42,8 +42,8 @@ final readonly class CallableResolver
             $callable = $callable(...);
         }
 
-        $reflection = new ReflectionFunction($callable);
-        foreach ($reflection->getParameters() as $index => $parameter) {
+        $function = new ReflectionFunction($callable);
+        foreach ($function->getParameters() as $index => $parameter) {
             if ($parameter->getType() instanceof ReflectionNamedType && $parameter->getType()->getName() === Update::class) {
                 $resolvers[$index] = static fn(Update $update): Update => $update;
             }

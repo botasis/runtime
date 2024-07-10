@@ -102,6 +102,10 @@ final class Router
         };
     }
 
+    /**
+     * @param Route|Group $route
+     * @return Closure(Update, UpdateHandlerInterface):ResponseInterface
+     */
     private function getActionWrapped(Route|Group $route): Closure
     {
         if ($route instanceof Group) {
@@ -117,16 +121,22 @@ final class Router
                 ->handle($update);
         }
 
-        if (is_string($route->action)) {
-            /** @psalm-suppress PossiblyInvalidArgument Action is a string */
-            return fn(Update $update, UpdateHandlerInterface $handler): ResponseInterface => $this
-                ->container
-                ->get($route->action)
-                ->handle($update);
-        }
+        return function(Update $update, UpdateHandlerInterface $handler) use($route): ResponseInterface {
+            /** @var callable(Update):mixed $action */
+            $action = $this->callableResolver->resolve($route->action);
 
-        /** @psalm-suppress PossiblyInvalidMethodCall It's always an object because the string case is checked above */
-        return static fn(Update $update, UpdateHandlerInterface $handler): ResponseInterface => $route->action->handle($update);
+            $result = $action($update);
+            if ($result === null) {
+                $result = new Response($update);
+            }
+
+            if (!$result instanceof ResponseInterface) {
+                // TODO domain exception with explanation (use yiisoft friendly exceptions)
+                throw new RuntimeException('Action must return either ResponseInterface or null.');
+            }
+
+            return $result;
+        };
     }
 
     private function getEmptyFallbackHandler(): UpdateHandlerInterface
