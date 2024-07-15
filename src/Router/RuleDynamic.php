@@ -23,7 +23,8 @@ final class RuleDynamic
      *  - A pair of a class name and a method name in format `[Foo::class, 'rule']`. `Foo` instance will
      *    be created by a DI container and `rule()` method will be executed.
      */
-    public function __construct(callable|array|string|object $callbackDefinition) {
+    public function __construct(callable|array|string|object $callbackDefinition)
+    {
         $this->callbackDefinition = $callbackDefinition;
     }
 
