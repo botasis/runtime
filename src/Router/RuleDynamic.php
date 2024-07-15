@@ -9,7 +9,7 @@ final class RuleDynamic
     /**
      * @var callable|array|string|object
      */
-    private $callbackDefinition;
+    private mixed $callbackDefinition;
 
     /**
      * Creates a dynamic route rule. Accepts a callable which should decide if a route should handle
@@ -25,6 +25,14 @@ final class RuleDynamic
      */
     public function __construct(callable|array|string|object $callbackDefinition) {
         $this->callbackDefinition = $callbackDefinition;
+    }
+
+    /**
+     * @deprecated Use {@see getCallbackDefinition()} instead
+     */
+    public function getCallback(): callable|array|string|object
+    {
+        return $this->callbackDefinition;
     }
 
     public function getCallbackDefinition(): callable|array|string|object
