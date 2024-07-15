@@ -12,7 +12,7 @@ final class Route
     private array $middlewares = [];
 
     /**
-     * @param callable|array|string|object $action
+     * @param callable|array|string|object|UpdateHandlerInterface $action
      */
     public function __construct(
         public readonly RuleStatic|RuleDynamic $rule,

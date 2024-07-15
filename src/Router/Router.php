@@ -2,6 +2,7 @@
 
 namespace Botasis\Runtime\Router;
 
+use Botasis\Runtime\InvalidCallableConfigurationException;
 use Botasis\Runtime\Middleware\MiddlewareDispatcher;
 use Botasis\Runtime\Response\Response;
 use Botasis\Runtime\Response\ResponseInterface;
@@ -59,6 +60,7 @@ final class Router
 
         foreach ($this->routes as $key => $route) {
             if (!isset($this->compiledRules[$key])) {
+                // TODO domain exception with explanation (use yiisoft friendly exceptions) on callable not created
                 /** @psalm-suppress PossiblyUndefinedMethod The rule property is always a RuleDynamic */
                 $this->compiledRules[$key] = $this->callableResolver->resolve($route->rule->getCallbackDefinition());
             }
@@ -122,10 +124,7 @@ final class Router
         }
 
         return function(Update $update, UpdateHandlerInterface $handler) use($route): ResponseInterface {
-            /** @var callable(Update):mixed $action */
-            $action = $this->callableResolver->resolve($route->action);
-
-            $result = $action($update);
+            $result = $this->resolveAction($route)($update);
             if ($result === null) {
                 $result = new Response($update);
             }
@@ -151,5 +150,35 @@ final class Router
         }
 
         return $this->emptyFallbackHandler;
+    }
+
+    /**
+     * @param Route $route
+     * @return Closure(Update):mixed
+     */
+    private function resolveAction(Route $route): Closure
+    {
+        // TODO add tests for extended callables and update handlers as actions
+        // TODO also test exception text with route name chains
+        if ($route->action instanceof UpdateHandlerInterface) {
+            return [$route->action, 'handle'](...);
+        }
+
+        try {
+            return $this->callableResolver->resolve($route->action);
+        } catch (InvalidCallableConfigurationException $exception) {
+            if (is_string($route->action) && $this->container->has($route->action)) {
+                $action = $this->container->get($route->action);
+                if ($action instanceof UpdateHandlerInterface) {
+                    return [$action, 'handle'](...);
+                }
+            }
+
+            // TODO domain exception with explanation (use yiisoft friendly exceptions)
+            throw new RuntimeException(
+                'Action must be an UpdateHandlerInterface or a callable definition.',
+                previous: $exception,
+            );
+        }
     }
 }
