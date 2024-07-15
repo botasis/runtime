@@ -28,7 +28,6 @@ final class Route
             && !is_object($this->action)
             && !is_string($this->action)
             && !is_array($this->action)
-            && !is_object($this->action)
         ) {
             throw new \InvalidArgumentException('Action must be callable, object, string or array.');
         }
