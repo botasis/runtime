@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Botasis\Runtime\Router;
 
 use Botasis\Runtime\CallableFactory;
+use Botasis\Runtime\InvalidCallableConfigurationException;
 use Botasis\Runtime\Update\Update;
 use Closure;
 use InvalidArgumentException;
@@ -32,6 +33,7 @@ final readonly class CallableResolver
      * Resolves callable definition into a Closure with injected dependencies
      *
      * @return Closure(Update):mixed
+     * @throws InvalidCallableConfigurationException
      */
     public function resolve(array|callable|object|string $definition): Closure
     {

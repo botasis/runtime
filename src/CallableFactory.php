@@ -65,7 +65,6 @@ final class CallableFactory
             [$className, $methodName] = $definition;
 
             if (!class_exists($className) && $this->container->has($className)) {
-                /** @var mixed */
                 return [
                     $this->container->get($className),
                     $methodName,
@@ -90,6 +89,7 @@ final class CallableFactory
                     $methodName,
                 ];
             }
+
             return null;
         }
 
