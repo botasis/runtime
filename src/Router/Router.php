@@ -6,23 +6,30 @@ use Botasis\Runtime\InvalidCallableConfigurationException;
 use Botasis\Runtime\Middleware\MiddlewareDispatcher;
 use Botasis\Runtime\Response\Response;
 use Botasis\Runtime\Response\ResponseInterface;
+use Botasis\Runtime\Router\Exception\InvalidActionReturnTypeException;
+use Botasis\Runtime\Router\Exception\InvalidRuleDefinitionException;
+use Botasis\Runtime\Router\Exception\InvalidRuleReturnTypeException;
 use Botasis\Runtime\Update\Update;
 use Botasis\Runtime\UpdateHandlerInterface;
 use Closure;
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use RuntimeException;
 
 final class Router
 {
-    /** @var array<Group|Route> */
-    private array $routes = [];
-    /** @var array<Group|Route> */
-    private array $rulesStatic;
+    /** @var array<Group<RuleDynamic>|Route<RuleDynamic>> */
+    private readonly array $routes;
+    /** @var array<mixed, array{key: mixed, route: Group<RuleStatic>|Route<RuleStatic>}> */
+    private readonly array $routesStatic;
     private array $compiled = [];
     private array $compiledStatic = [];
     /** @var array<callable(update):bool> */
     private array $compiledRules = [];
     private ?UpdateHandlerInterface $emptyFallbackHandler = null;
+
+    /** @var string[] */
+    private array $routeKeys = [];
 
     /**
      * @psalm-param $routes array<Group|Route>
@@ -33,26 +40,28 @@ final class Router
         private readonly CallableResolver $callableResolver,
         Group|Route ...$routes,
     ) {
-        $rulesStatic = [];
+        $routesDynamic = $routesStatic = [];
 
         foreach ($routes as $key => $route) {
             if ($route->rule instanceof RuleStatic) {
-                $rulesStatic[$route->rule->message] = $route;
+                /** @psalm-var Route<RuleStatic>|Group<RuleStatic> $route */
+                $routesStatic[$route->rule->message] = ['key' => $key, 'route' => $route];
             } else {
-                $this->routes[$key] = $route;
+                /** @psalm-var Route<RuleDynamic>|Group<RuleDynamic> $route */
+                $routesDynamic[$key] = $route;
             }
         }
 
-        $this->rulesStatic = $rulesStatic;
+        $this->routes = $routesDynamic;
+        $this->routesStatic = $routesStatic;
     }
 
     public function match(Update $update): UpdateHandlerInterface
     {
-        $route = $this->rulesStatic[$update->requestData] ?? null;
+        ['key' => $key, 'route' => $route] = $this->routesStatic[$update->requestData] ?? ['key' => null, 'route' => null];
         if ($route !== null) {
-            /** @psalm-suppress UndefinedPropertyFetch The rule property is always a RuleStatic */
             if (!isset($this->compiledStatic[$route->rule->message])) {
-                $this->compiledStatic[$route->rule->message] = $this->compileRoute($route);
+                $this->compiledStatic[$route->rule->message] = $this->compileRoute($route, (string) $key);
             }
 
             return $this->compiledStatic[$route->rule->message];
@@ -60,21 +69,24 @@ final class Router
 
         foreach ($this->routes as $key => $route) {
             if (!isset($this->compiledRules[$key])) {
-                // TODO domain exception with explanation (use yiisoft friendly exceptions) on callable not created
-                /** @psalm-suppress PossiblyUndefinedMethod The rule property is always a RuleDynamic */
-                $this->compiledRules[$key] = $this->callableResolver->resolve($route->rule->getCallbackDefinition());
+                try {
+                    $this->compiledRules[$key] = $this->callableResolver->resolve(
+                        $route->rule->getCallbackDefinition(),
+                    );
+                } catch (ContainerExceptionInterface|InvalidCallableConfigurationException $e) {
+                    throw new InvalidRuleDefinitionException($e, ...$this->routeKeys);
+                }
             }
             $rule = $this->compiledRules[$key];
 
             $checkResult = $rule($update);
             if (!is_bool($checkResult)) {
-                // TODO domain exception with explanation (use yiisoft friendly exceptions)
-                throw new RuntimeException();
+                throw new InvalidRuleReturnTypeException($checkResult, ...$this->routeKeys);
             }
 
             if ($checkResult) {
                 if (!isset($this->compiled[$key])) {
-                    $this->compiled[$key] = $this->compileRoute($route);
+                    $this->compiled[$key] = $this->compileRoute($route, (string) $key);
                 }
 
                 return $this->compiled[$key];
@@ -84,10 +96,10 @@ final class Router
         throw new NotFoundException($update);
     }
 
-    private function compileRoute(Route|Group $route): UpdateHandlerInterface
+    private function compileRoute(Route|Group $route, string $routeKey): UpdateHandlerInterface
     {
         $middlewares = $route->getMiddlewares();
-        $middlewares[] = $this->getActionWrapped($route);
+        $middlewares[] = $this->getActionWrapped($route, $routeKey);
         $dispatcher = $this->middlewareDispatcher->withMiddlewares(...$middlewares);
 
         return new class ($dispatcher, $this->getEmptyFallbackHandler()) implements UpdateHandlerInterface {
@@ -108,7 +120,7 @@ final class Router
      * @param Route|Group $route
      * @return Closure(Update, UpdateHandlerInterface):ResponseInterface
      */
-    private function getActionWrapped(Route|Group $route): Closure
+    private function getActionWrapped(Route|Group $route, string $routeKey): Closure
     {
         if ($route instanceof Group) {
             $router = new self(
@@ -117,6 +129,7 @@ final class Router
                 $this->callableResolver,
                 ...$route->routes,
             );
+            $router->setRouteKeys(...[...$this->routeKeys, $routeKey]);
 
             return static fn(Update $update, UpdateHandlerInterface $handler): ResponseInterface => $router
                 ->match($update)
@@ -131,7 +144,7 @@ final class Router
 
             if (!$result instanceof ResponseInterface) {
                 // TODO domain exception with explanation (use yiisoft friendly exceptions)
-                throw new RuntimeException('Action must return either ResponseInterface or null.');
+                throw new InvalidActionReturnTypeException($result, ...$this->routeKeys);
             }
 
             return $result;
@@ -180,5 +193,9 @@ final class Router
                 previous: $exception,
             );
         }
+    }
+
+    private function setRouteKeys(string ...$keys): void {
+        $this->routeKeys = $keys;
     }
 }

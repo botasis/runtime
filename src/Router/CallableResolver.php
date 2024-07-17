@@ -9,6 +9,7 @@ use Botasis\Runtime\InvalidCallableConfigurationException;
 use Botasis\Runtime\Update\Update;
 use Closure;
 use InvalidArgumentException;
+use Psr\Container\ContainerExceptionInterface;
 use ReflectionFunction;
 use ReflectionIntersectionType;
 use ReflectionNamedType;
@@ -33,7 +34,7 @@ final readonly class CallableResolver
      * Resolves callable definition into a Closure with injected dependencies
      *
      * @return Closure(Update):mixed
-     * @throws InvalidCallableConfigurationException
+     * @throws InvalidCallableConfigurationException|ContainerExceptionInterface
      */
     public function resolve(array|callable|object|string $definition): Closure
     {

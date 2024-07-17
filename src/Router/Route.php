@@ -7,11 +7,15 @@ namespace Botasis\Runtime\Router;
 use Botasis\Runtime\Middleware\MiddlewareInterface;
 use Botasis\Runtime\UpdateHandlerInterface;
 
+/**
+ * @template-covariant T of RuleStatic|RuleDynamic
+ */
 final class Route
 {
     private array $middlewares = [];
 
     /**
+     * @psalm-param T $rule
      * @param callable|array|string|object|UpdateHandlerInterface $action
      */
     public function __construct(
