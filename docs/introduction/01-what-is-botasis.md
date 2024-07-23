@@ -1,4 +1,4 @@
-# What is Botasis
+# What is Botasis and what's the difference?
 
 Botasis is oasis of bot creation. It is ready for:
 - Simple bots. Just create a and a handler to handle user requests.
