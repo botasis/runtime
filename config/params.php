@@ -9,6 +9,11 @@ return [
     'botasis/telegram-bot' => [
         'bot token' => '',
         'errors to ignore' => [],
+        'response tags' => [
+            'success' => [],
+            'error' => [],
+        ],
+        'routes' => [],
     ],
     'yiisoft/yii-console' => [
         'commands' => [
