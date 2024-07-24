@@ -28,23 +28,23 @@ return [
     ClientInterface::class => [
         'class' => ClientPsr::class,
         '__construct()' => [
-            'token' => $params['botasis/telegram-bot']['bot token'],
+            'token' => $params['botasis/runtime']['bot token'],
         ],
     ],
     IgnoredErrorHandler::class => [
         '__construct()' => [
-            'ignoredErrors' => $params['botasis/telegram-bot']['errors to ignore'],
+            'ignoredErrors' => $params['botasis/runtime']['errors to ignore'],
         ],
     ],
     RequestTagsHandler::class => [
         '__construct()' => [
-            'tagsSuccess' => $params['botasis/telegram-bot']['response tags']['success'],
-            'tagsError' => $params['botasis/telegram-bot']['response tags']['error'],
+            'tagsSuccess' => $params['botasis/runtime']['request tags']['success'],
+            'tagsError' => $params['botasis/runtime']['request tags']['error'],
         ],
     ],
     Application::class => [
         '__construct()' => [
-            'fallbackHandler' => Reference::to($params['botasis/telegram-bot']['fallback handler']),
+            'fallbackHandler' => Reference::to($params['botasis/runtime']['fallback handler']),
             'dispatcher' => DynamicReference::to(static function (Injector $injector): MiddlewareDispatcher {
                 return ($injector->make(MiddlewareDispatcher::class))
                     ->withMiddlewares(
@@ -55,7 +55,7 @@ return [
         ],
     ],
     Router::class => [
-        '__construct()' => ['routes' => $params['telegram routes']],
+        '__construct()' => ['routes' => $params['botasis/runtime']['routes']],
     ],
     MultipartStreamBuilder::class => [
         '__construct()' => [

@@ -7,6 +7,9 @@
 - Added Extended Callable Definitions support to route actions.
   Usage of UpdateHandlerInterface as an action is now deprecated, and this ability will be removed in future versions.
 - Response tags and subscriptions are added.
+- Params section renamed from `botasis/telegram-bot` to `botasis/runtime`.
+- `yiisoft/config`-compatible configuration added for all possible classes. Dynamic part is moved to params.
+- More docs are added
 
 ## 0.11.3
 

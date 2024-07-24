@@ -18,3 +18,4 @@
 - [ ] [Ready for a long-running context](./key-concepts/03-long-running-applications.md)
 - [x] [Extended Callable Definitions](./key-concepts/04-extended-callable-definitions.md)
 - [x] [`UpdateAttribute`](./key-concepts/05-update-attibute.md)
+- [ ] [`Request tags`](./key-concepts/06-request-tags.md)

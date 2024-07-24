@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 use Botasis\Runtime\Console\GetUpdatesCommand;
 use Botasis\Runtime\Console\SetTelegramWebhookCommand;
+use Botasis\Runtime\Handler\DummyUpdateHandler;
 
 return [
-    'botasis/telegram-bot' => [
+    'botasis/runtime' => [
         'bot token' => '',
         'errors to ignore' => [],
-        'response tags' => [
+        'fallback handler' => DummyUpdateHandler::class,
+        'request tags' => [
             'success' => [],
             'error' => [],
         ],
