@@ -86,7 +86,7 @@ final readonly class CallableResolver
             return $value;
         }
 
-        throw new InvalidTypeAttributeValueException($attributeName, get_debug_type($value), $type === null ? 'null' : (string) $type);
+        throw new InvalidTypeAttributeValueException($attributeName, get_debug_type($value), (string) $type);
     }
 
     private function typeCheck(mixed $value, ReflectionType $type): bool
