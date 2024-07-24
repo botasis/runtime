@@ -184,6 +184,8 @@ final class Router
     private function resolveAction(Route $route, string $routeKey): Closure
     {
         if ($route->action instanceof UpdateHandlerInterface) {
+            trigger_deprecation('botasis/runtime', '0.12.0', 'Route actions implementing UpdateHandlerInterface are deprecated. Use Extended Callables syntax instead.');
+
             return [$route->action, 'handle'](...);
         }
 
