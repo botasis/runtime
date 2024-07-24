@@ -14,6 +14,7 @@ use Botasis\Runtime\Middleware\Implementation\RouterMiddleware;
 use Botasis\Runtime\Middleware\MiddlewareDispatcher;
 use Botasis\Runtime\Middleware\MiddlewareFactory;
 use Botasis\Runtime\Middleware\MiddlewareInterface;
+use Botasis\Runtime\Request\TelegramRequestDecorator;
 use Botasis\Runtime\Response\Response;
 use Botasis\Runtime\Response\ResponseInterface;
 use Botasis\Runtime\Router\CallableResolver;
@@ -34,7 +35,6 @@ use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\StreamInterface;
-
 use Yiisoft\Injector\Injector;
 
 use function PHPUnit\Framework\assertEquals;
@@ -56,9 +56,11 @@ final class ApplicationTest extends TestCase
                 );
                 return (new Response($update))
                     ->withRequest(
-                        $message->onSuccess(function () use ($handler, $message) {
-                            $handler->successCheck = $message->text . '5';
-                        })
+                        new TelegramRequestDecorator(
+                            $message->onSuccess(function () use ($handler, $message) {
+                                $handler->successCheck = $message->text . '5';
+                            }),
+                        ),
                     );
             }
         };
@@ -132,7 +134,7 @@ final class ApplicationTest extends TestCase
             ),
         ))->handle($update);
 
-        assertEquals('1234321', $response->getRequests()[0]?->text);
+        assertEquals('1234321', $response->getRequests()[0]?->request->text);
         assertEquals('12345', $updateHandler->successCheck);
     }
 
@@ -152,10 +154,9 @@ final class ApplicationTest extends TestCase
                     )
                 );
 
-                /** @var Message $message */
                 $message = $response->getRequests()[0];
 
-                return $response->withRequestReplaced($message, $message->withText($message->text . $this->addition));
+                return $response->withRequestReplaced($message->request, new TelegramRequestDecorator($message->request->withText($message->request->text . $this->addition)));
             }
         };
     }

@@ -11,6 +11,7 @@ use Botasis\Runtime\Middleware\Event\AfterMiddleware;
 use Botasis\Runtime\Middleware\Event\BeforeMiddleware;
 use Botasis\Runtime\Middleware\MiddlewareDispatcher;
 use Botasis\Runtime\Middleware\MiddlewareFactory;
+use Botasis\Runtime\Request\TelegramRequestDecorator;
 use Botasis\Runtime\Response\Response;
 use Botasis\Runtime\Response\ResponseInterface;
 use Botasis\Runtime\Tests\Middleware\Support\FailMiddleware;
@@ -34,12 +35,12 @@ final class MiddlewareDispatcherTest extends TestCase
 
         $dispatcher = $this->createDispatcher()->withMiddlewares(
             static function () use ($update): ResponseInterface {
-                return (new Response($update))->withRequest(new CallbackResponse('middleware-id'));
+                return (new Response($update))->withRequest(new TelegramRequestDecorator(new CallbackResponse('middleware-id')));
             },
         );
 
         $response = $dispatcher->dispatch($update, $this->getRequestHandler());
-        $this->assertSame('middleware-id', $response->getRequests()[0]?->id);
+        $this->assertSame('middleware-id', $response->getRequests()[0]?->request->id);
     }
 
     public function testArrayMiddlewareCall(): void
@@ -53,7 +54,7 @@ final class MiddlewareDispatcherTest extends TestCase
         $dispatcher = $this->createDispatcher($container)->withMiddlewares([TestController::class, 'index']);
 
         $response = $dispatcher->dispatch($update, $this->getRequestHandler());
-        $this->assertSame('test message', $response->getRequests()[0]?->text);
+        $this->assertSame('test message', $response->getRequests()[0]?->request->text);
     }
 
     public function testMiddlewareFullStackCalled(): void
@@ -68,13 +69,13 @@ final class MiddlewareDispatcherTest extends TestCase
         $middleware2 = static function (Update $update): ResponseInterface {
             $callbackResponse = new CallbackResponse($update->getAttribute('middleware'));
 
-            return (new Response($update))->withRequest($callbackResponse);
+            return (new Response($update))->withRequest(new TelegramRequestDecorator($callbackResponse));
         };
 
         $dispatcher = $this->createDispatcher()->withMiddlewares($middleware1, $middleware2);
 
         $response = $dispatcher->dispatch($update, $this->getRequestHandler());
-        $this->assertSame('middleware1', $response->getRequests()[0]?->id);
+        $this->assertSame('middleware1', $response->getRequests()[0]?->request->id);
     }
 
     public function testMiddlewareStackInterrupted(): void
@@ -84,18 +85,18 @@ final class MiddlewareDispatcherTest extends TestCase
         $middleware1 = static function () use ($update): ResponseInterface {
             $callbackResponse = new CallbackResponse('first');
 
-            return (new Response($update))->withRequest($callbackResponse);
+            return (new Response($update))->withRequest(new TelegramRequestDecorator($callbackResponse));
         };
         $middleware2 = static function () use ($update): ResponseInterface {
             $callbackResponse = new CallbackResponse('second');
 
-            return (new Response($update))->withRequest($callbackResponse);
+            return (new Response($update))->withRequest(new TelegramRequestDecorator($callbackResponse));
         };
 
         $dispatcher = $this->createDispatcher()->withMiddlewares($middleware1, $middleware2);
 
         $response = $dispatcher->dispatch($update, $this->getRequestHandler());
-        $this->assertSame('first', $response->getRequests()[0]?->id);
+        $this->assertSame('first', $response->getRequests()[0]?->request->id);
     }
 
     public function testEventsAreDispatched(): void
@@ -190,7 +191,7 @@ final class MiddlewareDispatcherTest extends TestCase
         $dispatcher = $dispatcher->withMiddlewares(TestMiddleware::class);
         $response = $dispatcher->dispatch($update, $this->getRequestHandler());
 
-        self::assertSame('42', $response->getRequests()[0]?->id);
+        self::assertSame('42', $response->getRequests()[0]?->request->id);
     }
 
     private function getRequestHandler(): UpdateHandlerInterface
@@ -198,7 +199,7 @@ final class MiddlewareDispatcherTest extends TestCase
         return new class () implements UpdateHandlerInterface {
             public function handle(Update $update): ResponseInterface
             {
-                return (new Response($update))->withRequest(new CallbackResponse('default-id'));
+                return (new Response($update))->withRequest(new TelegramRequestDecorator(new CallbackResponse('default-id')));
             }
         };
     }

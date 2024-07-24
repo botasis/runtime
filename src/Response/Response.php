@@ -6,11 +6,12 @@ namespace Botasis\Runtime\Response;
 
 use Botasis\Client\Telegram\Request\CallbackResponse;
 use Botasis\Client\Telegram\Request\TelegramRequestInterface;
+use Botasis\Runtime\Request\TelegramRequestDecorator;
 use Botasis\Runtime\Update\Update;
 
 final class Response implements ResponseInterface
 {
-    /** @var TelegramRequestInterface[] */
+    /** @var TelegramRequestDecorator[] */
     private array $requests = [];
 
     private bool $hasCallbackResponse = false;
@@ -27,11 +28,11 @@ final class Response implements ResponseInterface
         return $instance;
     }
 
-    public function withRequest(TelegramRequestInterface $request): ResponseInterface
+    public function withRequest(TelegramRequestDecorator $request): ResponseInterface
     {
         $instance = clone $this;
 
-        if ($request->getMethod() === CallbackResponse::METHOD) {
+        if ($request->request->getMethod() === CallbackResponse::METHOD) {
             $instance->hasCallbackResponse = true;
             array_unshift($instance->requests, $request);
         } else {
@@ -41,19 +42,19 @@ final class Response implements ResponseInterface
         return $instance;
     }
 
-    public function withRequestReplaced(TelegramRequestInterface $search, ?TelegramRequestInterface $replace): ResponseInterface
+    public function withRequestReplaced(TelegramRequestInterface $search, ?TelegramRequestDecorator $replace): ResponseInterface
     {
         $instance = clone $this;
 
         $requests = $this->requests;
         foreach ($requests as $index => $request) {
-            if ($request === $search) {
+            if ($request->request === $search) {
                 if ($replace === null) {
                     unset($requests[$index]);
-                } elseif ($request->getMethod() !== CallbackResponse::METHOD && $replace->getMethod() === CallbackResponse::METHOD) {
+                } elseif ($request->request->getMethod() !== CallbackResponse::METHOD && $replace->request->getMethod() === CallbackResponse::METHOD) {
                     unset($requests[$index]);
                     array_unshift($requests, $replace);
-                } elseif($replace->getMethod() !== CallbackResponse::METHOD && $request->getMethod() === CallbackResponse::METHOD) {
+                } elseif($replace->request->getMethod() !== CallbackResponse::METHOD && $request->request->getMethod() === CallbackResponse::METHOD) {
                     unset($requests[$index]);
                     $requests[] = $replace;
                 } else {

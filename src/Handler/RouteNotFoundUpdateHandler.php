@@ -6,6 +6,7 @@ namespace Botasis\Runtime\Handler;
 
 use Botasis\Client\Telegram\Request\Message\Message;
 use Botasis\Client\Telegram\Request\Message\MessageFormat;
+use Botasis\Runtime\Request\TelegramRequestDecorator;
 use Botasis\Runtime\Response\Response;
 use Botasis\Runtime\Response\ResponseInterface;
 use Botasis\Runtime\Update\Update;
@@ -21,7 +22,11 @@ final readonly class RouteNotFoundUpdateHandler implements UpdateHandlerInterfac
     {
         if ($update->chat !== null) {
             return (new Response($update))
-                ->withRequest(new Message($this->message, MessageFormat::TEXT, $update->chat->id));
+                ->withRequest(
+                    new TelegramRequestDecorator(
+                        new Message($this->message, MessageFormat::TEXT, $update->chat->id)
+                    )
+                );
         }
 
         return new Response($update);
