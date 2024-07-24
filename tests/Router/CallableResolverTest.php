@@ -103,11 +103,34 @@ final class CallableResolverTest extends TestCase
         $callableResolver->resolve($callable)($update);
     }
 
+    public function testMultipleAttributes(): void
+    {
+        $callableResolver = $this->getCallableResolver();
+
+        $update = new Update(new UpdateId(1), null, '1', 'test', null, []);
+        $update = $update
+            ->withAttribute('foo', 123)
+            ->withAttribute('bar', 'hello');
+        $callable = function(
+            Update $updatePassed,
+            #[UpdateAttribute('foo')]
+            int $foo,
+            #[UpdateAttribute('bar')]
+            string $bar,
+        ) use($update): void {
+            $this->assertEquals($update, $updatePassed);
+            $this->assertEquals(123, $foo);
+            $this->assertEquals('hello', $bar);
+        };
+
+        $callableResolver->resolve($callable)($update);
+    }
+
     /**
      * @return CallableResolver
      * @throws \PHPUnit\Framework\MockObject\Exception
      */
-    public function getCallableResolver(): CallableResolver
+    private function getCallableResolver(): CallableResolver
     {
         $container = $this->createMock(ContainerInterface::class);
         $callableFactory = new CallableFactory($container);
