@@ -17,7 +17,7 @@ final class RequiredAttributeValueException extends AttributeValueException
         ?Throwable $previous = null,
     ) {
         parent::__construct(
-            "Required attribute value $attributeName is null or not set. Expected $attributeType.",
+            "Required attribute value \"$attributeName\" is null or not set. Expected \"$attributeType\".",
             previous: $previous,
         );
     }

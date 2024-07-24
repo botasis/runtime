@@ -18,7 +18,7 @@ final class InvalidTypeAttributeValueException extends AttributeValueException
         ?Throwable $previous = null,
     ) {
         parent::__construct(
-            "Required attribute value $attributeName has a wrong type \"$currentType\". Expected $expectedType.",
+            "Attribute \"$attributeName\" value has a wrong type \"$currentType\". Expected \"$expectedType\".",
             previous: $previous,
         );
     }
