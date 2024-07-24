@@ -6,10 +6,10 @@
 
 ## Getting Started
 - [ ] [Using an application template](./getting-started/01-using-application-template.md) (for a new application creation)
-- [ ] [Quick start with `yiisoft/config` and `yiisoft/di`](./getting-started/02-quick-start-yiisoft-config)
-- [ ] [Quick start common](./getting-started/03-getting-started-common)
-- [x] [Defining routes](./getting-started/04-defining-routes)
-- [ ] [Update Handlers](./getting-started/05-update-handlers.md)
+- [ ] [Quick start with `yiisoft/config` and `yiisoft/di`](./getting-started/02-quick-start-yiisoft-config.md)
+- [ ] [Quick start common](./getting-started/03-getting-started-common.md)
+- [x] [Defining routes](./getting-started/04-defining-routes.md)
+- [ ] [Route Actions](./getting-started/05-route-actions.md)
 - [ ] [Working with state](./getting-started/06-working-with-state.md)
 
 ## Key Concepts

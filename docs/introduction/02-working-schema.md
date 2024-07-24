@@ -10,7 +10,7 @@ your application. Here is an overview:
     1. Passing Telegram Update through a common middleware stack forward
     2. Finding a route that suites the Telegram Update
     3. Executing a route middleware stack forward
-    4. Executing a Telegram Update Handler
+    4. Executing a Route Action
     5. Executing a route middleware stack backward
     6. Passing Telegram Update through a common middleware stack backward
     7. Emitting Telegram Requests which are set by executed Handler and Middlewares

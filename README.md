@@ -23,7 +23,7 @@ making it easier than ever to create interactive and intelligent chatbots.
   bot application, Botasis Runtime adapts to your project's needs.
 
 - **Extensibility:** Extend and customize the behavior of your Telegram bot
-  by adding your own middleware, handlers, and custom logic. It has all extension points you may ever need.
+  by adding your own middlewares, actions, and custom logic. It has all extension points you may ever need.
 
 - **Configuration:** Fine-tune bot settings, routing rules, and middleware
   stacks to create a bot that behaves exactly as you envision. No hard code, everything is configurable.
@@ -118,10 +118,10 @@ If you don't want to use it, or you want to embed Botasis into your existing app
     );
     
     /**
-    * Routes definition. Here we define a route for the /start message. The HelloHandler should implement the {@see UpdateHandlerInterface}.
+    * Routes definition. Here we define a route for the /start message. The HelloAction will be instantiated by a DI container.
     */
     $routes = [
-        new Route(new RuleStatic('/start'), HelloHandler::class),
+        new Route(new RuleStatic('/start'), [HelloAction::class, 'handle']),
     ];
     
     /**
@@ -133,7 +133,7 @@ If you don't want to use it, or you want to embed Botasis into your existing app
     $application = new Application($emitter, new DummyUpdateHandler(), $middlewareDispatcher);
     ```
     </details>
-3. Customize your bot by registering middleware, handlers, and routes based on
+3. Customize your bot by registering middleware, actions, and routes based on
    your bot's behavior and requirements.
 4. Start receiving updates. You can use the [GetUpdatesCommand](src/Console/GetUpdatesCommand.php) to pull
   updates from Telegram API while working locally or [SetTelegramWebhookCommand](src/Console/SetTelegramWebhookCommand.php) to set 
@@ -141,7 +141,7 @@ If you don't want to use it, or you want to embed Botasis into your existing app
 
 That's it! You've now set up the foundation for your bot using Botasis Runtime.
 You can continue to enhance your bot's functionality by customizing its
-handlers, middleware, and routes to create engaging and interactive experiences
+actions, middleware, and routes to create engaging and interactive experiences
 for your users.
 
 
@@ -149,7 +149,7 @@ for your users.
 ### 1. Routing
 You can create routes and sub-routes for your Telegram bot. Every route consists of two parts;
 - A `Rule`. When an `Update` comes from Telegram, `Router` checks whether it satisfy a rule of every route. Once a such route
-    was found, its `Handler` is executed. There are two types of rules:
+    was found, its `Action` is executed. There are two types of rules:
   - `RuleStatic`. It maps to a message or a callback data in an Update. When a message or a callback comes from Telegram,
     it's text compared to every existing `RuleStatic`. Creation of such a rule is very simple: 
     `new RuleStatic('/command')`. And only when there is no suitable static rule, we go further to `RuleDynamic` list.
@@ -160,8 +160,8 @@ You can create routes and sub-routes for your Telegram bot. Every route consists
     [Extended Callable Definitions](./docs/extended-callable-definitions.md) format.
     
     [Defining routes in detail](./docs/defining-routes).
-- A `Handler`. It's a callable, which may be defined in an equal way as a `RuleDynamic` callable.
-  But an update handler return value MUST be either `void` or `ResponseInterface`. In all the other cases Router will
+- An `Action`. It's a callable, which may be defined in an equal way as a `RuleDynamic` callable.
+  But a route action return value **MUST** be either `null`/`void` or `ResponseInterface`. In all the other cases Router will
   throw an exception.
 
 ### 1. Attributes usage in routing
@@ -173,7 +173,7 @@ When your application requires handling chat or user state, this feature is esse
     You may use any existing implementation *(they will be implemented later)*.
 2. Save user/chat state using the repository:
     ```php
-    final class CharacterNameCommandHandler implements UpdateHandlerInterface
+    final class CharacterNameCommandAction
     {
     public function __construct(private StateRepositoryInterface $repository) {}
     
@@ -192,7 +192,7 @@ When your application requires handling chat or user state, this feature is esse
     }
     ```
 3. Add [StateMiddleware](./src/State/StateMiddleware.php) before the router middleware.  
-    This allows you to access the current state within your update handlers.
+    This allows you to access the current state within your router actions.
     ```php
     $state = $update->getAttribute(\Botasis\Runtime\State\StateMiddleware::class);
     ```
@@ -201,10 +201,10 @@ When your application requires handling chat or user state, this feature is esse
 4. Use state in routing:
     ```php
     [
-        new Route(new RuleStatic('/set_name'), CharacterNameCommandHandler::class),
+        new Route(new RuleStatic('/set_name'), CharacterNameCommandAction::class),
         new Route(
             new RuleDynamic(static fn(Update $update) => $update->getAttributes(StateMiddleware::class)?->getData() === json_encode('setting-name')),
-            CharacterNameSetHandler::class,
+            CharacterNameSetAction::class,
         ),
     ]
     ```
