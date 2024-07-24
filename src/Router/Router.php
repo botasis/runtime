@@ -81,7 +81,7 @@ final class Router
 
             $checkResult = $rule($update);
             if (!is_bool($checkResult)) {
-                throw new InvalidRuleReturnTypeException($checkResult, ...$this->routeKeys);
+                throw new InvalidRuleReturnTypeException($checkResult, ...[...$this->routeKeys, $key]);
             }
 
             if ($checkResult) {
@@ -136,7 +136,7 @@ final class Router
                 ->handle($update);
         }
 
-        return function(Update $update, UpdateHandlerInterface $handler) use($route): ResponseInterface {
+        return function(Update $update, UpdateHandlerInterface $handler) use($route, $routeKey): ResponseInterface {
             $result = $this->resolveAction($route)($update);
             if ($result === null) {
                 $result = new Response($update);
@@ -144,7 +144,7 @@ final class Router
 
             if (!$result instanceof ResponseInterface) {
                 // TODO domain exception with explanation (use yiisoft friendly exceptions)
-                throw new InvalidActionReturnTypeException($result, ...$this->routeKeys);
+                throw new InvalidActionReturnTypeException($result, ...[...$this->routeKeys, $routeKey]);
             }
 
             return $result;

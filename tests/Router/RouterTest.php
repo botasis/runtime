@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Botasis\Runtime\Tests;
+namespace Botasis\Runtime\Tests\Router;
 
 use Botasis\Client\Telegram\Request\Message\Message;
 use Botasis\Client\Telegram\Request\Message\MessageFormat;
@@ -14,6 +14,8 @@ use Botasis\Runtime\Request\TelegramRequestDecorator;
 use Botasis\Runtime\Response\Response;
 use Botasis\Runtime\Response\ResponseInterface;
 use Botasis\Runtime\Router\CallableResolver;
+use Botasis\Runtime\Router\Exception\InvalidActionReturnTypeException;
+use Botasis\Runtime\Router\Exception\InvalidRuleReturnTypeException;
 use Botasis\Runtime\Router\Group;
 use Botasis\Runtime\Router\Route;
 use Botasis\Runtime\Router\Router;
@@ -64,6 +66,52 @@ final class RouterTest extends TestCase
         $response = $router->match($update)->handle($update);
 
         assertEquals('1234', $response->getRequests()[0]?->request->text);
+    }
+
+    public function testInvalidRuleReturnTypeException(): void
+    {
+        $routes = [
+            'group-1' => new Group(
+                new RuleDynamic(static fn() => true),
+                ...[
+                    'group-2' => new Group(
+                        new RuleDynamic(static fn() => 123),
+                    )
+                ],
+            ),
+        ];
+        $router = $this->getRouter($routes);
+        $update = new Update(new UpdateId(1), null, '1', 'test', null, []);
+
+        $this->expectException(InvalidRuleReturnTypeException::class);
+        $this->expectExceptionMessage('Invalid rule return type in route "group-1" => "group-2". Expected boolean, int given.');
+        $router->match($update)->handle($update);
+    }
+
+    public function testInvalidActionReturnTypeException(): void
+    {
+        $routes = [
+            'group-1' => new Group(
+                new RuleDynamic(static fn() => true),
+                ...[
+                    'group-2' => new Group(
+                        new RuleDynamic(static fn() => true),
+                        ...[
+                            'route-key' => new Route(
+                                new RuleStatic('test'),
+                                static fn() => 123,
+                            )
+                        ]
+                    )
+                ],
+            ),
+        ];
+        $router = $this->getRouter($routes);
+        $update = new Update(new UpdateId(1), null, '1', 'test', null, []);
+
+        $this->expectException(InvalidActionReturnTypeException::class);
+        $this->expectExceptionMessage('Invalid action return type in route "group-1" => "group-2" => "route-key". Expected null|Botasis\Runtime\Response\ResponseInterface, int given.');
+        $router->match($update)->handle($update);
     }
 
     private function getRouter(array $routes): Router
