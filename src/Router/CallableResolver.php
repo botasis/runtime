@@ -6,6 +6,8 @@ namespace Botasis\Runtime\Router;
 
 use Botasis\Runtime\CallableFactory;
 use Botasis\Runtime\InvalidCallableConfigurationException;
+use Botasis\Runtime\Router\Exception\InvalidTypeAttributeValueException;
+use Botasis\Runtime\Router\Exception\RequiredAttributeValueException;
 use Botasis\Runtime\Update\Update;
 use Closure;
 use InvalidArgumentException;
@@ -70,58 +72,51 @@ final readonly class CallableResolver
     private function getAttributeValue(Update $update, string $attributeName, ReflectionParameter $parameter): mixed
     {
         $value = $update->getAttribute($attributeName);
+        $type = $parameter->getType();
+
         if ($value === null) {
             if ($parameter->allowsNull()) {
                 return null;
             }
 
-            // TODO domain exception with explanation (use yiisoft friendly exceptions)
-            throw new RuntimeException();
+            throw new RequiredAttributeValueException($attributeName, $type === null ? 'null' : (string) $type);
         }
 
-        $type = $parameter->getType();
-        switch (true) {
-            case $type instanceof ReflectionNamedType:
-                if ($this->typeCheck($value, $type)) {
-                    return $value;
-                }
-
-                // TODO domain exception with explanation (use yiisoft friendly exceptions)
-                throw new RuntimeException();
-            case $type instanceof ReflectionUnionType:
-                foreach ($type->getTypes() as $subType) {
-                    if ($this->typeCheck($value, $subType)) {
-                        return $value;
-                    }
-                }
-
-                // TODO domain exception with explanation (use yiisoft friendly exceptions)
-                throw new RuntimeException();
-            case $type instanceof ReflectionIntersectionType:
-                foreach ($type->getTypes() as $subType) {
-                    if (!$this->typeCheck($value, $subType)) {
-                        // TODO domain exception with explanation (use yiisoft friendly exceptions)
-                        throw new RuntimeException();
-                    }
-                }
-
-                return $value;
-            default:
-                throw new InvalidArgumentException('Unknown parameter type ' . $type::class);
+        if ($this->typeCheck($value, $type)) {
+            return $value;
         }
+
+        throw new InvalidTypeAttributeValueException($attributeName, get_debug_type($value), $type === null ? 'null' : (string) $type);
     }
 
     private function typeCheck(mixed $value, ReflectionType $type): bool
     {
-        if (!$type instanceof ReflectionNamedType) {
-            throw new InvalidArgumentException('Only ReflectionNamedType supported');
+        switch (true) {
+            case $type instanceof ReflectionNamedType:
+                $typeName = $type->getName();
+
+                return match($type->isBuiltin()) {
+                    true => $typeName === 'mixed' ? true : "is_$typeName"($value),
+                    false => (class_exists($typeName) || interface_exists($typeName)) && is_a($value, $typeName),
+                };
+            case $type instanceof ReflectionUnionType:
+                foreach ($type->getTypes() as $subType) {
+                    if ($this->typeCheck($value, $subType)) {
+                        return true;
+                    }
+                }
+
+                return false;
+            case $type instanceof ReflectionIntersectionType:
+                foreach ($type->getTypes() as $subType) {
+                    if (!$this->typeCheck($value, $subType)) {
+                        return false;
+                    }
+                }
+
+                return true;
+            default:
+                throw new InvalidArgumentException('Unknown parameter type ' . $type::class);
         }
-
-        $typeName = $type->getName();
-
-        return match($type->isBuiltin()) {
-            true => $typeName === 'mixed' ? true : "is_$typeName"($value),
-            false => (class_exists($typeName) || interface_exists($typeName)) && is_a($value, $typeName),
-        };
     }
 }

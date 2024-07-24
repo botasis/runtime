@@ -6,9 +6,12 @@ use Botasis\Runtime\InvalidCallableConfigurationException;
 use Botasis\Runtime\Middleware\MiddlewareDispatcher;
 use Botasis\Runtime\Response\Response;
 use Botasis\Runtime\Response\ResponseInterface;
+use Botasis\Runtime\Router\Exception\AttributeValueException;
+use Botasis\Runtime\Router\Exception\InvalidActionDefinitionException;
 use Botasis\Runtime\Router\Exception\InvalidActionReturnTypeException;
 use Botasis\Runtime\Router\Exception\InvalidRuleDefinitionException;
 use Botasis\Runtime\Router\Exception\InvalidRuleReturnTypeException;
+use Botasis\Runtime\Router\Exception\RouterDecoratorAttributeValueException;
 use Botasis\Runtime\Update\Update;
 use Botasis\Runtime\UpdateHandlerInterface;
 use Closure;
@@ -79,7 +82,12 @@ final class Router
             }
             $rule = $this->compiledRules[$key];
 
-            $checkResult = $rule($update);
+            try {
+                $checkResult = $rule($update);
+            } catch (AttributeValueException $exception) {
+                throw new RouterDecoratorAttributeValueException('rule', $exception, ...[...$this->routeKeys, $key]);
+            }
+
             if (!is_bool($checkResult)) {
                 throw new InvalidRuleReturnTypeException($checkResult, ...[...$this->routeKeys, $key]);
             }
@@ -137,7 +145,12 @@ final class Router
         }
 
         return function(Update $update, UpdateHandlerInterface $handler) use($route, $routeKey): ResponseInterface {
-            $result = $this->resolveAction($route)($update);
+            try {
+                $result = $this->resolveAction($route, $routeKey)($update);
+            } catch (AttributeValueException $exception) {
+                throw new RouterDecoratorAttributeValueException('action', $exception, ...[...$this->routeKeys, $routeKey]);
+            }
+
             if ($result === null) {
                 $result = new Response($update);
             }
@@ -168,10 +181,8 @@ final class Router
      * @param Route $route
      * @return Closure(Update):mixed
      */
-    private function resolveAction(Route $route): Closure
+    private function resolveAction(Route $route, string $routeKey): Closure
     {
-        // TODO add tests for extended callables and update handlers as actions
-        // TODO also test exception text with route name chains
         if ($route->action instanceof UpdateHandlerInterface) {
             return [$route->action, 'handle'](...);
         }
@@ -188,10 +199,9 @@ final class Router
                 }
             }
 
-            // TODO domain exception with explanation (use yiisoft friendly exceptions)
-            throw new RuntimeException(
-                'Action must be an UpdateHandlerInterface or a callable definition.',
-                previous: $exception,
+            throw new InvalidActionDefinitionException(
+                $exception,
+                ...[...$this->routeKeys, $routeKey],
             );
         }
     }
