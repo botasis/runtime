@@ -85,6 +85,24 @@ final class CallableResolverTest extends TestCase
         $callableResolver->resolve($callable)($update);
     }
 
+    public function testResolveUpdateAttributeNotTyped(): void
+    {
+        $callableResolver = $this->getCallableResolver();
+
+        $update = new Update(new UpdateId(1), null, '1', 'test', null, []);
+        $update = $update->withAttribute('foo', 123);
+        $callable = function(
+            Update $updatePassed,
+            #[UpdateAttribute('foo')]
+            $foo,
+        ) use($update): void {
+            $this->assertEquals($update, $updatePassed);
+            $this->assertEquals(123, $foo);
+        };
+
+        $callableResolver->resolve($callable)($update);
+    }
+
     /**
      * @return CallableResolver
      * @throws \PHPUnit\Framework\MockObject\Exception

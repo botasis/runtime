@@ -82,7 +82,7 @@ final readonly class CallableResolver
             throw new RequiredAttributeValueException($attributeName, $type === null ? 'null' : (string) $type);
         }
 
-        if ($this->typeCheck($value, $type)) {
+        if ($type === null || $this->typeCheck($value, $type)) {
             return $value;
         }
 
