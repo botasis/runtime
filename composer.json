@@ -16,6 +16,7 @@
         "psr/container": "^2.0",
         "psr/event-dispatcher": "^1.0",
         "psr/log": "^1.0.0||^2.0.0||^3.0.0",
+        "symfony/deprecation-contracts": "^3.5",
         "yiisoft/friendly-exception": "^1.1",
         "yiisoft/injector": "^1.0"
     },

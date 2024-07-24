@@ -143,7 +143,6 @@ final class Router
             }
 
             if (!$result instanceof ResponseInterface) {
-                // TODO domain exception with explanation (use yiisoft friendly exceptions)
                 throw new InvalidActionReturnTypeException($result, ...[...$this->routeKeys, $routeKey]);
             }
 
@@ -183,6 +182,8 @@ final class Router
             if (is_string($route->action) && $this->container->has($route->action)) {
                 $action = $this->container->get($route->action);
                 if ($action instanceof UpdateHandlerInterface) {
+                    trigger_deprecation('botasis/runtime', '0.12.0', 'Route actions implementing UpdateHandlerInterface are deprecated. Use Extended Callables syntax instead.');
+
                     return [$action, 'handle'](...);
                 }
             }
