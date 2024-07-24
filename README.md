@@ -67,7 +67,28 @@ If you don't want to use it, or you want to embed Botasis into your existing app
 
     ```php
     
-    use Botasis\Client\Telegram\Client\ClientPsr;use Botasis\Runtime\Application;use Botasis\Runtime\CallableFactory;use Botasis\Runtime\Emitter;use Botasis\Runtime\Handler\DummyUpdateHandler;use Botasis\Runtime\Middleware\Implementation\RouterMiddleware;use Botasis\Runtime\Middleware\MiddlewareDispatcher;use Botasis\Runtime\Middleware\MiddlewareFactory;use Botasis\Runtime\Router\Route;use Botasis\Runtime\Router\Router;use Botasis\Runtime\Router\RuleStatic;use Botasis\Runtime\UpdateHandlerInterface;use Http\Client\Socket\Client;use HttpSoft\Message\RequestFactory;use HttpSoft\Message\StreamFactory;use Psr\Container\ContainerInterface;use Psr\EventDispatcher\EventDispatcherInterface;use Psr\Http\Client\ClientInterface;use Psr\Http\Message\RequestFactoryInterface;use Psr\Http\Message\StreamFactoryInterface;use Yiisoft\Di\Container;use Yiisoft\EventDispatcher\Dispatcher\Dispatcher;
+    use Botasis\Client\Telegram\Client\ClientPsr;
+    use Botasis\Runtime\Application;
+    use Botasis\Runtime\CallableFactory;
+    use Botasis\Runtime\Emitter;
+    use Botasis\Runtime\Handler\DummyUpdateHandler;
+    use Botasis\Runtime\Middleware\Implementation\RouterMiddleware;
+    use Botasis\Runtime\Middleware\MiddlewareDispatcher;
+    use Botasis\Runtime\Middleware\MiddlewareFactory;
+    use Botasis\Runtime\Router\Route;
+    use Botasis\Runtime\Router\Router;
+    use Botasis\Runtime\Router\RuleStatic;
+    use Botasis\Runtime\UpdateHandlerInterface;
+    use Http\Client\Socket\Client;
+    use HttpSoft\Message\RequestFactory;
+    use HttpSoft\Message\StreamFactory;
+    use Psr\Container\ContainerInterface;
+    use Psr\EventDispatcher\EventDispatcherInterface;
+    use Psr\Http\Client\ClientInterface;
+    use Psr\Http\Message\RequestFactoryInterface;
+    use Psr\Http\Message\StreamFactoryInterface;
+    use Yiisoft\Di\Container;
+    use Yiisoft\EventDispatcher\Dispatcher\Dispatcher;
     
     /**
     * @var string $token - a bot token you've got from the BotFather
