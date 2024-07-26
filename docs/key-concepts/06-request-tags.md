@@ -42,7 +42,7 @@ Here is an instruction for:
     
     You can also create a failure handler for the case when a request fails. We just don't need it in the example.  
     _**Note: for failure handlers the third argument will be of type `TelegramRequestException`, not `array`.**_
-3. Connect a tag and its handler. See the correct way to do this [via yiisoft/config](../getting-started/02-quick-start-yiisoft-config.md)
+3. Connect a tag and its handler to each other. See the correct way to do this [via yiisoft/config](../getting-started/02-quick-start-yiisoft-config.md)
     or [by hand](../getting-started/03-getting-started-common.md).  
     Generally we'll add a new success handler which will look like
     ```php
