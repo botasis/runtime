@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Botasis\Runtime\Event;
 
 use Botasis\Runtime\CallableFactory;
-use Botasis\Runtime\Request\TelegramRequestDecorator;
 use Yiisoft\Injector\Injector;
 
 final class RequestTagsHandler
@@ -45,25 +44,31 @@ final class RequestTagsHandler
         $this->tagsError = $tagsError;
     }
 
-    public function handleSuccess(TelegramRequestDecorator $request): void
+    public function handleSuccess(RequestSuccessEvent $event): void
     {
         array_map(
             fn(string $tag) => array_map(
-                fn(callable $callable): mixed => $this->injector->invoke($callable, [$request]),
+                fn(callable $callable): mixed => $this->injector->invoke(
+                    $callable,
+                    [$event->update, $event->request, $event->responseDecoded],
+                ),
                 $this->tagsSuccess[$tag],
             ),
-            $request->responseTags,
+            $event->request->responseTags,
         );
     }
 
-    public function handleError(TelegramRequestDecorator $request): void
+    public function handleError(RequestErrorEvent $event): void
     {
         array_map(
             fn(string $tag) => array_map(
-                fn(callable $callable): mixed => $this->injector->invoke($callable, [$request]),
+                fn(callable $callable): mixed => $this->injector->invoke(
+                    $callable,
+                    [$event->update, $event->request, $event->exception],
+                ),
                 $this->tagsError[$tag],
             ),
-            $request->responseTags,
+            $event->request->responseTags,
         );
     }
 }
