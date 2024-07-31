@@ -12,7 +12,7 @@ use Botasis\Runtime\Middleware\Exception\InvalidMiddlewareDefinitionException;
 use Botasis\Runtime\Middleware\MiddlewareFactory;
 use Botasis\Runtime\Middleware\MiddlewareFactoryInterface;
 use Botasis\Runtime\Middleware\MiddlewareInterface;
-use Botasis\Runtime\Request\TelegramRequestDecorator;
+use Botasis\Runtime\Request\TelegramRequestEnriched;
 use Botasis\Runtime\Response\Response;
 use Botasis\Runtime\Response\ResponseInterface;
 use Botasis\Runtime\Tests\Middleware\Support\InvalidController;
@@ -57,7 +57,7 @@ final class MiddlewareFactoryTest extends TestCase
         $update = $this->createTelegramUpdate();
         $middleware = $this->getMiddlewareFactory($container)->create(
             static function () use ($update): ResponseInterface {
-                return (new Response($update))->withRequest(new TelegramRequestDecorator(new CallbackResponse('418')));
+                return (new Response($update))->withRequest(new CallbackResponse('418'));
             }
         );
         self::assertSame(
@@ -197,7 +197,7 @@ final class MiddlewareFactoryTest extends TestCase
         return new class () implements UpdateHandlerInterface {
             public function handle(Update $update): ResponseInterface
             {
-                return (new Response($update))->withRequest(new TelegramRequestDecorator(new CallbackResponse('default-id')));
+                return (new Response($update))->withRequest(new CallbackResponse('default-id'));
             }
         };
     }

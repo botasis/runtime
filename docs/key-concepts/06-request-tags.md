@@ -16,13 +16,13 @@ Here is an instruction for:
 1. Inside an action - add a tag to the message into `Response`: 
     ```php
     return new Response($update)
-       ->withRequest(new TelegramRequestDecorator($message, 'foo'));
+       ->withRequest($message, 'foo');
     ```
     In this example we add a `foo` tag to the given message.
 2. Create a tag handler. It should follow the [Extended Callable Definitions syntax](./04-extended-callable-definitions.md).
     As argument list it should take
     1. An `Update` object
-    2. A `TelegramRequestDecorator` object
+    2. A `TelegramRequestEnriched` object
     3. An array containing Telegram API response
     4. It also may take as additional arguments any dependency which can be resolved by a DI Container. 
     
@@ -34,7 +34,7 @@ Here is an instruction for:
     {
         public function __construct(private FooRepository $repository) {}
     
-        public function handleSuccess(Update $update, TelegramRequestDecorator $request, array $response): void {
+        public function handleSuccess(Update $update, TelegramRequestEnriched $request, array $response): void {
             $this->repository->saveMessageId($response['message_id']);
         }
     }

@@ -10,7 +10,7 @@ use Botasis\Runtime\CallableFactory;
 use Botasis\Runtime\Middleware\MiddlewareDispatcher;
 use Botasis\Runtime\Middleware\MiddlewareFactory;
 use Botasis\Runtime\Middleware\MiddlewareInterface;
-use Botasis\Runtime\Request\TelegramRequestDecorator;
+use Botasis\Runtime\Request\TelegramRequestEnriched;
 use Botasis\Runtime\Response\Response;
 use Botasis\Runtime\Response\ResponseInterface;
 use Botasis\Runtime\Router\CallableResolver;
@@ -50,12 +50,10 @@ final class RouterTest extends TestCase
                             {
                                 return (new Response($update))
                                     ->withRequest(
-                                        new TelegramRequestDecorator(
-                                            new Message(
-                                                ($update->getAttribute('test') ?? '') . '4',
-                                                MessageFormat::TEXT,
-                                                'test',
-                                            ),
+                                        new Message(
+                                            ($update->getAttribute('test') ?? '') . '4',
+                                            MessageFormat::TEXT,
+                                            'test',
                                         ),
                                     );
                             }

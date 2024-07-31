@@ -14,7 +14,7 @@ use Botasis\Runtime\Middleware\Implementation\RouterMiddleware;
 use Botasis\Runtime\Middleware\MiddlewareDispatcher;
 use Botasis\Runtime\Middleware\MiddlewareFactory;
 use Botasis\Runtime\Middleware\MiddlewareInterface;
-use Botasis\Runtime\Request\TelegramRequestDecorator;
+use Botasis\Runtime\Request\TelegramRequestEnriched;
 use Botasis\Runtime\Response\Response;
 use Botasis\Runtime\Response\ResponseInterface;
 use Botasis\Runtime\Router\CallableResolver;
@@ -56,11 +56,9 @@ final class ApplicationTest extends TestCase
                 );
                 return (new Response($update))
                     ->withRequest(
-                        new TelegramRequestDecorator(
-                            $message->onSuccess(function () use ($handler, $message) {
-                                $handler->successCheck = $message->text . '5';
-                            }),
-                        ),
+                        $message->onSuccess(function () use ($handler, $message) {
+                            $handler->successCheck = $message->text . '5';
+                        }),
                     );
             }
         };
@@ -156,7 +154,7 @@ final class ApplicationTest extends TestCase
 
                 $message = $response->getRequests()[0];
 
-                return $response->withRequestReplaced($message->request, new TelegramRequestDecorator($message->request->withText($message->request->text . $this->addition)));
+                return $response->withRequestReplaced($message->request, $message->request->withText($message->request->text . $this->addition));
             }
         };
     }

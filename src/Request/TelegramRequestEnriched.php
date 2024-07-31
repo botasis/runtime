@@ -6,7 +6,7 @@ namespace Botasis\Runtime\Request;
 
 use Botasis\Client\Telegram\Request\TelegramRequestInterface;
 
-final readonly class TelegramRequestDecorator
+final readonly class TelegramRequestEnriched
 {
     public array $responseTags;
 

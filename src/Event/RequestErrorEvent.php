@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Botasis\Runtime\Event;
 
 use Botasis\Client\Telegram\Client\Exception\TelegramRequestException;
-use Botasis\Runtime\Request\TelegramRequestDecorator;
+use Botasis\Runtime\Request\TelegramRequestEnriched;
 use Botasis\Runtime\Update\Update;
 use Psr\EventDispatcher\StoppableEventInterface;
 
@@ -16,7 +16,7 @@ final class RequestErrorEvent implements StoppableEventInterface
      * @param bool $isPropagationStopped Set this to true to stop propagation of the event.
      */
     public function __construct(
-        public readonly TelegramRequestDecorator $request,
+        public readonly TelegramRequestEnriched $request,
         public readonly TelegramRequestException $exception,
         public readonly Update $update,
         public bool $suppressException = false,
