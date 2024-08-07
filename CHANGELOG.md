@@ -25,6 +25,10 @@
 
 - Bugfix: `StateJson` didn't correctly set data when data is not a string
 
+## 0.11.4
+
+- Bugfix: IgnoredErrorHandler was not working
+
 ## 0.12.0
 
 Work in progress
