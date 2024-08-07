@@ -6,6 +6,9 @@ namespace Botasis\Runtime\Router;
 
 use Botasis\Runtime\Middleware\MiddlewareInterface;
 
+/**
+ * @template-covariant T of RuleStatic|RuleDynamic
+ */
 final class Group
 {
     /**
@@ -14,6 +17,9 @@ final class Group
     public readonly array $routes;
     private array $middlewares = [];
 
+    /**
+     * @psalm-param T $rule
+     */
     public function __construct(
         public readonly RuleStatic|RuleDynamic $rule,
         Route|Group ...$routes,

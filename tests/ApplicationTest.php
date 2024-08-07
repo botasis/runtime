@@ -14,8 +14,10 @@ use Botasis\Runtime\Middleware\Implementation\RouterMiddleware;
 use Botasis\Runtime\Middleware\MiddlewareDispatcher;
 use Botasis\Runtime\Middleware\MiddlewareFactory;
 use Botasis\Runtime\Middleware\MiddlewareInterface;
+use Botasis\Runtime\Request\TelegramRequestEnriched;
 use Botasis\Runtime\Response\Response;
 use Botasis\Runtime\Response\ResponseInterface;
+use Botasis\Runtime\Router\CallableResolver;
 use Botasis\Runtime\Router\Group;
 use Botasis\Runtime\Router\Route;
 use Botasis\Runtime\Router\Router;
@@ -33,6 +35,7 @@ use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\StreamInterface;
+use Yiisoft\Injector\Injector;
 
 use function PHPUnit\Framework\assertEquals;
 
@@ -40,7 +43,7 @@ final class ApplicationTest extends TestCase
 {
     public function testFullStack(): void
     {
-        $updateHandler = new class implements UpdateHandlerInterface {
+        $updateHandler = new class {
             public ?string $successCheck = null;
 
             public function handle(Update $update): ResponseInterface
@@ -55,7 +58,7 @@ final class ApplicationTest extends TestCase
                     ->withRequest(
                         $message->onSuccess(function () use ($handler, $message) {
                             $handler->successCheck = $message->text . '5';
-                        })
+                        }),
                     );
             }
         };
@@ -66,12 +69,11 @@ final class ApplicationTest extends TestCase
                     new RuleStatic('test'),
                     (new Route(
                         new RuleDynamic(static fn() => true),
-                        $updateHandler,
+                        [$updateHandler, 'handle'],
                     ))->withMiddlewares($this->getMiddleware('3')),
                 ))->withMiddlewares($this->getMiddleware('2')),
             ))->withMiddlewares($this->getMiddleware('1')),
         ];
-
 
         $body = $this->createMock(StreamInterface::class);
         $body->method('getContents')->willReturn('{"ok":true}');
@@ -85,14 +87,18 @@ final class ApplicationTest extends TestCase
         $update = new Update(new UpdateId(1), null, '1', 'test', null, []);
         $container = $this->createMock(ContainerInterface::class);
         $eventDispatcher = $this->createMock(EventDispatcherInterface::class);
+        $callableFactory = new CallableFactory($container);
 
         $middlewareDispatcher = new MiddlewareDispatcher(
             new MiddlewareFactory(
                 $container,
-                new CallableFactory($container)
+                $callableFactory
             ),
             $eventDispatcher,
         );
+
+        $injector = new Injector($container);
+        $callableResolver = new CallableResolver($callableFactory, $injector);
 
         $apiRequest = $this->createMock(RequestInterface::class);
         $apiRequest->method('withHeader')->willReturn($apiRequest);
@@ -119,13 +125,14 @@ final class ApplicationTest extends TestCase
                     new Router(
                         $container,
                         $middlewareDispatcher,
+                        $callableResolver,
                         ...$routes,
                     )
                 )
             ),
         ))->handle($update);
 
-        assertEquals('1234321', $response->getRequests()[0]?->text);
+        assertEquals('1234321', $response->getRequests()[0]?->request->text);
         assertEquals('12345', $updateHandler->successCheck);
     }
 
@@ -145,10 +152,9 @@ final class ApplicationTest extends TestCase
                     )
                 );
 
-                /** @var Message $message */
                 $message = $response->getRequests()[0];
 
-                return $response->withRequestReplaced($message, $message->withText($message->text . $this->addition));
+                return $response->withRequestReplaced($message->request, $message->request->withText($message->request->text . $this->addition));
             }
         };
     }

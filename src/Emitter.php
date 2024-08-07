@@ -22,7 +22,7 @@ final readonly class Emitter
         $update = $response->getUpdate();
         foreach ($response->getRequests() as $request) {
             try {
-                $clientResponse = $this->client->send($request);
+                $clientResponse = $this->client->send($request->request);
                 $this->eventDispatcher->dispatch(new RequestSuccessEvent($request, $clientResponse, $update));
             } catch (TelegramRequestException $exception) {
                 /** @var RequestErrorEvent $event */

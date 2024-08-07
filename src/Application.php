@@ -10,6 +10,12 @@ use Botasis\Runtime\Update\Update;
 
 final readonly class Application
 {
+    /**
+     * @param Emitter $emitter
+     * @param UpdateHandlerInterface $fallbackHandler An update handler which will be used to create a response
+     *                                                in case no previous middleware (including Router) produced response.
+     * @param MiddlewareDispatcher $dispatcher
+     */
     public function __construct(
         private Emitter $emitter,
         private UpdateHandlerInterface $fallbackHandler,
