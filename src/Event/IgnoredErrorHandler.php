@@ -25,7 +25,7 @@ final readonly class IgnoredErrorHandler
 
     public function handle(RequestErrorEvent $event): RequestErrorEvent
     {
-        if (isset($this->ignoredErrors[$event->responseDecoded['description'] ?? ''])) {
+        if (isset($this->ignoredErrors[$event->exception->responseDecoded['description'] ?? ''])) {
             $event->suppressException = true;
         }
 
