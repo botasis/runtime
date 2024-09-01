@@ -63,7 +63,6 @@ final class Router
     {
         ['key' => $key, 'route' => $route] = $this->routesStatic[$update->requestData] ?? ['key' => null, 'route' => null];
         if ($route !== null) {
-            /** @psalm-suppress UndefinedPropertyFetch The rule property is always RuleStatic here */
             if (!isset($this->compiledStatic[$route->rule->message])) {
                 $this->compiledStatic[$route->rule->message] = $this->compileRoute($route, (string) $key);
             }

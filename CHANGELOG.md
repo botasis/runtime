@@ -9,6 +9,7 @@
 - Response tags and subscriptions are added.
 - Params section renamed from `botasis/telegram-bot` to `botasis/runtime`.
 - `yiisoft/config`-compatible configuration added for all possible classes. Dynamic part is moved to params.
+- `GetUpdatesCommand` don't throw exceptions anymore. It just logs them to a PSR logger instead.
 - More docs are added
 
 ## 0.11.3
@@ -35,7 +36,6 @@
 - Fix failed tests
 - PhpUnit cache is removed from the repository
 - Telegram Update variables are completely renamed from $request to $update
-- Telegram Update variables are completely renamed from $request to $update 
 
 ## 0.11.0
 

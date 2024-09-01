@@ -8,10 +8,13 @@ use Botasis\Client\Telegram\Client\ClientInterface;
 use Botasis\Client\Telegram\Request\TelegramRequest;
 use Botasis\Runtime\Application;
 use Botasis\Runtime\Update\UpdateFactory;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Throwable;
 
 final class GetUpdatesCommand extends Command
 {
@@ -22,6 +25,7 @@ final class GetUpdatesCommand extends Command
         private readonly ClientInterface $client,
         private readonly Application $application,
         private readonly UpdateFactory $updateFactory,
+        private readonly LoggerInterface $logger = new NullLogger(),
         string $name = null,
     ) {
         parent::__construct($name);
@@ -45,8 +49,13 @@ final class GetUpdatesCommand extends Command
         $request = new TelegramRequest('getUpdates', $data);
 
         foreach ($this->client->send($request)['result'] ?? [] as $update) {
-            $update = $this->updateFactory->create($update);
-            $this->application->handle($update);
+            try {
+                $update = $this->updateFactory->create($update);
+                $this->application->handle($update);
+            } catch (Throwable $exception) {
+                // TODO Add an error handler? I.e. to send messages to Sentry.
+                $this->logger->error($exception);
+            }
         }
 
         if ($update !== null) {
