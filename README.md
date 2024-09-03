@@ -133,7 +133,7 @@ already paid for this functionality.
        }
        ```
 
-With Botasis Runtime you shouldn't think of Telegram infrastructure. Just write your business logic as you already do
+With Botasis Runtime you shouldn't think about Telegram infrastructure. Just write your business logic as you already do
 for HTTP request handling!
 
 ## Key Features
