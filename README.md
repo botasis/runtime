@@ -4,6 +4,132 @@ Botasis Runtime is a powerful and versatile PHP library designed to streamline t
 It serves as a foundational framework for building Telegram bots by providing essential abstractions and features,
 making it easier than ever to create interactive and intelligent chatbots.
 
+## Example
+
+Here is an example of a simple Telegram bot that will send currency exchange rates by your request, but only if you
+already paid for this functionality.
+
+1. Create routes:
+    ```php
+    [
+      (new Group(
+        // This bot will work in private chats only
+        new RuleDynamic(static fn(Update $update) => $update->chat->type === ChatType::PRIVATE),
+        ...[
+          '/start' => new Route(
+            new RuleStatic('/start'),
+            [StartAction::class, 'handle'],
+          ),
+          '/pay' => new Route(
+            new RuleStatic('/pay'),
+            [PayAction::class, 'handle'],
+          ),
+          'rates requests' => (new Route(
+            new RuleDynamic(
+              static fn(Update $update): bool => preg_match('#^/rates \w+ \w+$#', $update->requestData ?? '') === 1,
+            ),
+            [RatesAction::class, 'handle'],
+          ))->withMiddlewares(PaidAccessMiddleware::class),
+        ],
+      ))->withMiddlewares(UserRegisterMiddleware::class),
+    ]
+    ```
+    Here we map three commands to their corresponding actions. `/start` and `/pay` commands are static routes. That means
+    they will be mapped only if they match exactly to what did user send.  
+    On the other hand, `/rates` command is a dynamic one and should look like `/rates USD GBP`.
+2. Create command handlers.
+    1. The most simple one is `StartAction`. It will only send a greeting message.
+        ```php
+        final readonly class StartAction
+        {
+          public function handle(Update $update): ResponseInterface
+          {
+            return (new Response($update))
+              ->withRequest(
+                new Message(
+                  // You should properly escape all special characters to send a markdown message
+                  'Hello\\! Use \\/pay command to get premium\\, and then use \\/rates command to see currency exchange ' .
+                      'rates\\. I\\.e\\. `/pay USD GBP`\\.',
+                  MessageFormat::MARKDOWN, 
+                  $update->chat->id,
+                ),
+              );
+          }
+        }
+        ```
+    2. Accepting payments is out of scope of this example. I will skip the `PayAction` handler,
+        as there is nothing interesting in comparison to `RatesAction`.
+    3. `RatesAction` handler:
+        ```php
+        final readonly class RatesAction
+        {
+            public function __construct(private readonly RatesService $ratesService) {}
+       
+            public function handle(
+                Update $update,
+                #[UpdateAttribute('user')] User $user,
+            ): ResponseInterface {
+              // User sent a request like "/rates USD GBP", so we need to get USD and GBP from the request
+              [, $currency1, $currency2] = explode(' ', $update->requestData);
+              
+              $user->saveRequestHistory($currency1, $currency2);
+              $rate = $this->ratesService->getRate($currency1, $currency2);
+              $date = date('Y-m-d H:i:s');
+              
+              // send a message as a response
+              return (new Response($update))
+                ->withRequest(
+                  new Message(
+                    "1 $currency1 = $rate $currency2 on $date. To get a reverse rate, use /rates $currency2 $currency1 command.",
+                    MessageFormat::TEXT, 
+                    $update->chat->id,
+                  ),
+                );
+            }
+        }
+        ```
+3. Create middlewares.
+   1. `UserRegisterMiddleware` is assigned to the outer group. So it's always executed before each handler. It registers
+       a user and adds it to an Update object as an attribute:
+       ```php
+       final class HolderRegisterMiddleware implements MiddlewareInterface
+       {
+           public function __construct(private UserRepository $repository)
+           {
+           }
+       
+           public function process(Update $update, UpdateHandlerInterface $handler): ResponseInterface
+           {                                                                          
+               // Repository either finds a user or creates a new one
+               $holder = $this->repository->getUser($update->user, $update->chat->id);
+       
+               // now $update->getAttribute('user') contains a User object 
+               return $handler->handle($update->withAttribute('user', $holder));
+           }
+       }
+       ```
+      Because of this middleware, request handlers may use `#[UpdateAttribute('user')]` attribute and get a typed `User` object.
+   2. `PaidAccessMiddleware` won't let to make a rates request if the user is not a premium user:
+       ```php
+       final class PaidAccessMiddleware implements MiddlewareInterface
+       {
+           public function process(Update $update, UpdateHandlerInterface $handler): ResponseInterface
+           {
+               /** @var User $user */
+               $user = $update->getAttribute('user');
+               if (!$user->isPremium()) {
+                   return (new Response($update))
+                       ->withRequest(new Message('Only premium users can use this command', MessageFormat::TEXT, $update->chat->id));
+               }
+       
+               return $handler->handle($update);
+           }
+       }
+       ```
+
+With Botasis Runtime you shouldn't think of Telegram infrastructure. Just write your business logic as you already do
+for HTTP request handling!
+
 ## Key Features
 
 - **Middleware Stack:** Botasis Runtime offers a robust middleware system, allowing you to easily define and organize
