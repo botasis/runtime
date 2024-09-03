@@ -48,8 +48,8 @@ already paid for this functionality.
               ->withRequest(
                 new Message(
                   // You should properly escape all special characters to send a markdown message
-                  'Hello\\! Use \\/pay command to get premium\\, and then use \\/rates command to see currency exchange ' .
-                      'rates\\. I\\.e\\. `/pay USD GBP`\\.',
+                  'Hello\\! Use \\/pay command to get premium\\, and then use \\/rates command ' .
+                      'to see currency exchange rates\\. I\\.e\\. `/pay USD GBP`\\.',
                   MessageFormat::MARKDOWN, 
                   $update->chat->id,
                 ),
@@ -80,7 +80,8 @@ already paid for this functionality.
               return (new Response($update))
                 ->withRequest(
                   new Message(
-                    "1 $currency1 = $rate $currency2 on $date. To get a reverse rate, use /rates $currency2 $currency1 command.",
+                    "1 $currency1 = $rate $currency2 on $date. To get a reverse rate, " .
+                        "use /rates $currency2 $currency1 command.",
                     MessageFormat::TEXT, 
                     $update->chat->id,
                   ),
@@ -92,14 +93,14 @@ already paid for this functionality.
    1. `UserRegisterMiddleware` is assigned to the outer group. So it's always executed before each handler. It registers
        a user and adds it to an Update object as an attribute:
        ```php
-       final class HolderRegisterMiddleware implements MiddlewareInterface
+       final class UserRegisterMiddleware implements MiddlewareInterface
        {
            public function __construct(private UserRepository $repository)
            {
            }
        
            public function process(Update $update, UpdateHandlerInterface $handler): ResponseInterface
-           {                                                                          
+           {
                // Repository either finds a user or creates a new one
                $holder = $this->repository->getUser($update->user, $update->chat->id);
        
@@ -119,7 +120,11 @@ already paid for this functionality.
                $user = $update->getAttribute('user');
                if (!$user->isPremium()) {
                    return (new Response($update))
-                       ->withRequest(new Message('Only premium users can use this command', MessageFormat::TEXT, $update->chat->id));
+                       ->withRequest(new Message(
+                           'Only premium users can use this command',
+                           MessageFormat::TEXT,
+                           $update->chat->id,
+                       ));
                }
        
                return $handler->handle($update);
