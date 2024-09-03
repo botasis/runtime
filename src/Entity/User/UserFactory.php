@@ -13,7 +13,7 @@ final readonly class UserFactory
     public function create(array $userData): User
     {
         return new User(
-            new UserId((string) $userData['id']),
+            (string)$userData['id'],
             (bool) $userData['is_bot'],
             $userData['first_name'] ?? null,
             $userData['last_name'] ?? null,

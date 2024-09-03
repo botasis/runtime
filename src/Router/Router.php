@@ -46,6 +46,7 @@ final class Router
     {
         $route = $this->rulesStatic[$update->requestData] ?? null;
         if ($route !== null) {
+            /** @psalm-suppress UndefinedPropertyFetch The rule property is always RuleStatic here */
             if (!isset($this->compiledStatic[$route->rule->message])) {
                 $this->compiledStatic[$route->rule->message] = $this->compileRoute($route);
             }

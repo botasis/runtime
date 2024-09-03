@@ -10,7 +10,7 @@ namespace Botasis\Runtime\Entity\User;
 final readonly class User
 {
     public function __construct(
-        public UserId $id,
+        public string $id,
         public bool $isBot,
         public ?string $fistName,
         public ?string $lastName,

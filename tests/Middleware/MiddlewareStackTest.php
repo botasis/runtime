@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Botasis\Runtime\Tests\Middleware;
 
 use Botasis\Runtime\Entity\User\User;
-use Botasis\Runtime\Entity\User\UserId;
 use Botasis\Runtime\Middleware\MiddlewareStack;
 use Botasis\Runtime\Update\Update;
 use Botasis\Runtime\Update\UpdateId;
@@ -27,7 +26,7 @@ final class MiddlewareStackTest extends TestCase
             'messageId',
             'data',
             new User(
-                new UserId('user-id'),
+                'user-id',
                 false,
                 'testUser',
                 null,

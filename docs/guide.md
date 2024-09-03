@@ -17,7 +17,7 @@ An example of getting updates with polling is available as a Symfony Console com
 To set up a webhook, you'll need a public HTTPS URL where Telegram can send updates. Configure your bot to use this URL
 using the `setWebhook` method. When an event occurs on your bot's chat, Telegram will send an HTTP POST request to your
 webhook URL with the update data.  
-An example of setting a webhook is available as a Symfony Console command [GetUpdatesCommand](../src/Console/GetUpdatesCommand.php).
+An example of setting a webhook is available as a Symfony Console command [SetTelegramWebhookCommand](../src/Console/SetTelegramWebhookCommand.php).
 
 For detailed information on getting updates, refer to the [Telegram Bot API Documentation](https://core.telegram.org/bots/api#getting-updates).
 

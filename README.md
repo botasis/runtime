@@ -136,3 +136,52 @@ That's it! You've now set up the foundation for your bot using Botasis Runtime.
 You can continue to enhance your bot's functionality by customizing its
 handlers, middleware, and routes to create engaging and interactive experiences
 for your users.
+
+
+## Features
+### 1. State management
+When your application requires handling chat or user state, this feature is essential. Follow these four steps to use it:
+
+1. Implement [StateRepositoryInterface](./src/State/StateRepositoryInterface.php).  
+    You may use any existing implementation *(they will be implemented later)*.
+2. Save user/chat state using the repository:
+    ```php
+    final class CharacterNameCommandHandler implements UpdateHandlerInterface
+    {
+    public function __construct(private StateRepositoryInterface $repository) {}
+    
+        public function handle(Update $update): ResponseInterface
+        {
+            $state = new StateJson($update->user->id, $update->chat->id, 'setting-name');
+            $this->repository->save($state);
+    
+            return (new Response($update))
+                ->withRequest(new Message(
+                    'Enter your character name below',
+                    MessageFormat::TEXT,
+                    $update->chat->id,
+                ));
+        }
+    }
+    ```
+3. Add [StateMiddleware](./src/State/StateMiddleware.php) before the router middleware.  
+    This allows you to access the current state within your update handlers.
+    ```php
+    $state = $update->getAttribute(\Botasis\Runtime\State\StateMiddleware::class);
+    ```
+    > **Caution!** This middleware searches for both user and chat ids. In case you need only user or only chat id,
+       you have implement this logic on your own.
+4. Use state in routing:
+    ```php
+    [
+        new Route(new RuleStatic('/set_name'), CharacterNameCommandHandler::class),
+        new Route(
+            new RuleDynamic(static fn(Update $update) => $update->getAttributes(StateMiddleware::class)?->getData() === json_encode('setting-name')),
+            CharacterNameSetHandler::class,
+        ),
+    ]
+    ```
+
+> If you prefer to create a strictly typed State object, you need to implement the
+[StateInterface](./src/State/StateInterface.php) along with the
+[StateRepositoryInterface](./src/State/StateRepositoryInterface.php).
