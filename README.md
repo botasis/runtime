@@ -110,7 +110,8 @@ already paid for this functionality.
        }
        ```
       Because of this middleware, request handlers may use `#[UpdateAttribute('user')]` attribute and get a typed `User` object (see `RatesAction::handle()`).
-   2. `PaidAccessMiddleware` won't let to make a rates request if the user is not a premium user:
+   2. `PaidAccessMiddleware` won't let to make a rates request if the user is not a premium user.
+       It's also ready to be attached to any other paid endpoint.
        ```php
        final class PaidAccessMiddleware implements MiddlewareInterface
        {
