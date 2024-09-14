@@ -16,6 +16,7 @@
         "psr/container": "^2.0",
         "psr/event-dispatcher": "^1.0",
         "psr/log": "^1.0.0||^2.0.0||^3.0.0",
+        "symfony/deprecation-contracts": "^3.5",
         "yiisoft/friendly-exception": "^1.1",
         "yiisoft/injector": "^1.0"
     },
@@ -24,8 +25,9 @@
         "phpunit/phpunit": "^10.1",
         "roave/infection-static-analysis-plugin": "^1.16",
         "symfony/console": "^6.2",
-        "symfony/http-client": "^6.2",
+        "symfony/http-client": "^7.0",
         "vimeo/psalm": "^5.4",
+        "yiisoft/definitions": "^3.3",
         "yiisoft/test-support": "^3.0"
     },
     "suggest": {

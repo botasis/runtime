@@ -6,6 +6,7 @@ namespace Botasis\Runtime\Handler;
 
 use Botasis\Client\Telegram\Request\Message\Message;
 use Botasis\Client\Telegram\Request\Message\MessageFormat;
+use Botasis\Runtime\Request\TelegramRequestEnriched;
 use Botasis\Runtime\Response\Response;
 use Botasis\Runtime\Response\ResponseInterface;
 use Botasis\Runtime\Update\Update;

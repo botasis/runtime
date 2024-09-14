@@ -6,6 +6,7 @@ namespace Botasis\Runtime\Middleware\Implementation;
 
 use Botasis\Client\Telegram\Request\CallbackResponse;
 use Botasis\Runtime\Middleware\MiddlewareInterface;
+use Botasis\Runtime\Request\TelegramRequestEnriched;
 use Botasis\Runtime\Response\ResponseInterface;
 use Botasis\Runtime\Update\Update;
 use Botasis\Runtime\UpdateHandlerInterface;
