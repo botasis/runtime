@@ -4,14 +4,23 @@ declare(strict_types=1);
 
 namespace Botasis\Runtime\Entity\User;
 
+/**
+ * Factory for creating User objects from Telegram API data.
+ */
 final readonly class UserFactory
 {
     public function __construct()
     {
     }
 
+    /**
+     * Converts array, received from Telegram API, into User object
+     */
     public function create(array $userData): User
     {
+        /**
+         * @psalm-suppress MixedArgument
+         */
         return new User(
             (string)$userData['id'],
             (bool) $userData['is_bot'],

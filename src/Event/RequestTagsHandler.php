@@ -20,8 +20,8 @@ final class RequestTagsHandler
     private array $tagsError;
 
     /**
-     * @param array<string, list<mixed>> $tagsSuccess
-     * @param array<string, list<mixed>> $tagsError
+     * @param array<string, list<string|array>> $tagsSuccess
+     * @param array<string, list<string|array>> $tagsError
      */
     public function __construct(
         CallableFactory $factory,
@@ -29,19 +29,20 @@ final class RequestTagsHandler
         array $tagsSuccess = [],
         array $tagsError = [],
     ) {
+        $listenersSuccess = $listenersError = [];
         foreach ($tagsSuccess as $tag => $definitions) {
             foreach ($definitions as $index => $definition) {
-                $tagsSuccess[$tag][$index] = $factory->create($definition);
+                $listenersSuccess[$tag][$index] = $factory->create($definition);
             }
         }
         foreach ($tagsError as $tag => $definitions) {
             foreach ($definitions as $index => $definition) {
-                $tagsError[$tag][$index] = $factory->create($definition);
+                $listenersError[$tag][$index] = $factory->create($definition);
             }
         }
 
-        $this->tagsSuccess = $tagsSuccess;
-        $this->tagsError = $tagsError;
+        $this->tagsSuccess = $listenersSuccess;
+        $this->tagsError = $listenersError;
     }
 
     public function handleSuccess(RequestSuccessEvent $event): void

@@ -73,9 +73,11 @@ final class SetTelegramWebhookCommand extends Command
 
     public function execute(InputInterface $input, OutputInterface $output): int
     {
+        /** @var string $url */
         $url = $input->getOption('url');
 
         if ($url === '') {
+            /** @var bool $answer */
             $answer = $this->questionHelper->ask(
                 $input,
                 $output,
@@ -108,16 +110,19 @@ final class SetTelegramWebhookCommand extends Command
             'drop_pending_updates' => $input->getOption('drop_pending_updates'),
         ];
 
+        /** @var string|null $ip */
         $ip = $input->getOption('ip_address');
         if ($ip !== null && $ip !== '') {
             $fields['ip_address'] = $ip;
         }
 
+        /** @var int|null $connections */
         $connections = $input->getOption('max_connections');
         if ($connections !== null && $connections > 0) {
             $fields['max_connections'] = $connections;
         }
 
+        /** @var string|null $token */
         $token = $input->getOption('secret_token');
         if ($token !== null && $token !== '') {
             $fields['secret_token'] = $token;

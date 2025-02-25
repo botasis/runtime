@@ -7,6 +7,7 @@ namespace Botasis\Runtime\Console;
 use Botasis\Client\Telegram\Client\ClientInterface;
 use Botasis\Client\Telegram\Request\TelegramRequest;
 use Botasis\Runtime\Application;
+use Botasis\Runtime\Update\Update;
 use Botasis\Runtime\Update\UpdateFactory;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -48,6 +49,7 @@ final class GetUpdatesCommand extends Command
         $data = ['allowed_updates' => $input->getOption('allowed-updates')];
         $request = new TelegramRequest('getUpdates', $data);
 
+        /** @var array $update */
         foreach ($this->client->send($request)['result'] ?? [] as $update) {
             try {
                 $update = $this->updateFactory->create($update);
@@ -58,6 +60,7 @@ final class GetUpdatesCommand extends Command
             }
         }
 
+        /** @var Update|null $update */
         if ($update !== null) {
             $data['offset'] = $update->id->value + 1;
             $this->client->send(new TelegramRequest('getUpdates', $data));

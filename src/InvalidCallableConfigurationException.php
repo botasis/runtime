@@ -7,11 +7,11 @@ namespace Botasis\Runtime;
 use InvalidArgumentException;
 use Yiisoft\FriendlyException\FriendlyExceptionInterface;
 
-class InvalidCallableConfigurationException extends InvalidArgumentException implements FriendlyExceptionInterface
+final class InvalidCallableConfigurationException extends InvalidArgumentException implements FriendlyExceptionInterface
 {
     public function getName(): string
     {
-        return 'Invalid event listener configuration.';
+        return 'Invalid callable configuration.';
     }
 
     public function getSolution(): ?string
