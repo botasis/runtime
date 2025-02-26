@@ -74,4 +74,4 @@ jobs:
         run: composer update --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
 
       - name: Analyse project dependencies
-        run: vendor/bin/composer-dependency-analyser --colors=always
+        run: vendor/bin/composer-dependency-analyser
