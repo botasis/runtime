@@ -24,7 +24,7 @@ final class SetTelegramWebhookCommand extends Command
     public function __construct(
         private readonly ClientInterface $client,
         private readonly QuestionHelper $questionHelper,
-        string $name = null
+        ?string $name = null
     ) {
         parent::__construct($name);
     }

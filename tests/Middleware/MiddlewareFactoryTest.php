@@ -179,7 +179,7 @@ final class MiddlewareFactoryTest extends TestCase
         $this->getMiddlewareFactory()->create([7, 42]);
     }
 
-    private function getMiddlewareFactory(ContainerInterface $container = null): MiddlewareFactoryInterface
+    private function getMiddlewareFactory(?ContainerInterface $container = null): MiddlewareFactoryInterface
     {
         $container = $container ?? $this->getContainer();
 
