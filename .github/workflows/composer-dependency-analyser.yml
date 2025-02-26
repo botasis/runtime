@@ -25,23 +25,8 @@ name: Composer dependency analyser
 
 jobs:
   composer-dependency-analyser:
-    name: PHP ${{ matrix.php }}-${{ matrix.os }}
-
-    env:
-      key: cache-v1
-
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      matrix:
-        os:
-          - ubuntu-latest
-
-        php:
-          - 8.2
-          - 8.3
-          - 8.4
-
+    name: PHP 8.4-ubuntu-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -51,7 +36,7 @@ jobs:
         env:
           update: true
         with:
-          php-version: ${{ matrix.php }}
+          php-version: 8.4
           ini-values: date.timezone='UTC'
           coverage: none
           tools: composer:v2
@@ -64,9 +49,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ${{ env.COMPOSER_CACHE_DIR }}
-          key: php${{ matrix.php }}-composer-${{ hashFiles('**/composer.json') }}
+          key: php8.4-composer-${{ hashFiles('**/composer.json') }}
           restore-keys: |
-            php${{ matrix.php }}-composer-
+            php8.4-composer-
 
       - name: Update composer
         run: composer self-update
