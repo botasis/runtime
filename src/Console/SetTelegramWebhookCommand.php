@@ -7,6 +7,7 @@ namespace Botasis\Runtime\Console;
 use Botasis\Client\Telegram\Client\ClientInterface;
 use Botasis\Client\Telegram\Request\TelegramRequest;
 use InvalidArgumentException;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
@@ -17,11 +18,9 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 use function str_contains;
 use function str_starts_with;
 
+#[AsCommand(name: 'botasis:telegram:set-webhook', description: 'Set TG webhook address')]
 final class SetTelegramWebhookCommand extends Command
 {
-    protected static $defaultName = 'botasis/telegram/set-webhook';
-    protected static $defaultDescription = 'Set TG webhook address';
-
     public function __construct(
         private readonly ClientInterface $client,
         private readonly QuestionHelper $questionHelper,

@@ -11,17 +11,16 @@ use Botasis\Runtime\Update\Update;
 use Botasis\Runtime\Update\UpdateFactory;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Throwable;
 
+#[AsCommand(name: 'botasis:telegram:updates', description: 'Get updates from the bot and process them')]
 final class GetUpdatesCommand extends Command
 {
-    protected static $defaultName = 'botasis/telegram/updates';
-    protected static $defaultDescription = 'Get updates from the bot and process them';
-
     public function __construct(
         private readonly ClientInterface $client,
         private readonly Application $application,
