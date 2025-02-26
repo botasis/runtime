@@ -11,7 +11,7 @@
     },
     "minimum-stability": "stable",
     "require": {
-        "php": "^8.2",
+        "php": "~8.2||~8.3||~8.4",
         "botasis/telegram-client": "^1.0",
         "psr/container": "^2.0",
         "psr/event-dispatcher": "^1.0",

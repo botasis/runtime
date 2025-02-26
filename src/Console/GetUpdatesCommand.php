@@ -26,7 +26,7 @@ final class GetUpdatesCommand extends Command
         private readonly Application $application,
         private readonly UpdateFactory $updateFactory,
         private readonly LoggerInterface $logger = new NullLogger(),
-        string $name = null,
+        ?string $name = null,
     ) {
         parent::__construct($name);
     }
