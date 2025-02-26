@@ -21,9 +21,13 @@
         "yiisoft/injector": "^1.0"
     },
     "require-dev": {
-        "maglnet/composer-require-checker": "^4.5",
+        "php-http/multipart-stream-builder": "^1.4",
         "phpunit/phpunit": "^10.1",
+        "psr/http-client": "^1.0",
+        "psr/http-factory": "^1.1",
+        "psr/http-message": "^2.0",
         "roave/infection-static-analysis-plugin": "^1.16",
+        "shipmonk/composer-dependency-analyser": "^1.8",
         "symfony/console": "^7.2",
         "symfony/http-client": "^7.0",
         "vimeo/psalm": "^6.8",
@@ -31,8 +35,8 @@
         "yiisoft/test-support": "^3.0"
     },
     "suggest": {
-        "symfony/http-client": "^6.0",
-        "yiisoft/yii-console": "^1.0",
+        "symfony/http-client": "^7.0",
+        "yiisoft/yii-console": "^2.0",
         "yiisoft/yii-event": "^2.0"
     },
     "autoload": {
